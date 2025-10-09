@@ -173,6 +173,8 @@
 
         return {
 
+            load_page:      _load_page
+
         };
 
     };

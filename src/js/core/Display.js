@@ -26,13 +26,13 @@
 
 
     /**************************************************************************
-     * __number_of_columns()
+     *  __number_of_columns()
      * 
-     * Returns the number of columns given the display width - see the
-     * ../config/Display.config.js file for more info.
+     *  Returns the number of columns given the display width - see the
+     *  ../config/Display.config.js file for more info.
      * 
      */
-        const __number_of_columns = () => {
+        const   __number_of_columns = () => {
 
             _display_width = document.getElementById(__config['terminal']).getBoundingClientRect().width;
             _display_height = document.getElementById(__config['terminal']).getBoundingClientRect().height;
@@ -55,13 +55,13 @@
 
 
     /**************************************************************************
-     * __calculate_font_width()
+     *  __calculate_font_width()
      * 
-     * Calculates the required font width for the given number of columns
-     * on this display.
+     *  Calculates the required font width for the given number of columns
+     *  on this display.
      * 
      */
-        const __calculate_font_width = () => {
+        const   __calculate_font_width = () => {
 
             let last_font_size = 10;
 
@@ -91,11 +91,11 @@
 
 
     /**************************************************************************
-     * __build_display()
+     *  __build_display()
      * 
-     * Clears and builds the character-cell display dird.
+     *  Clears and builds the character-cell display dird.
      */
-        const __build_display = () => {
+        const   __build_display = () => {
 
             __calculate_font_width();
 
@@ -134,12 +134,12 @@
 
 
     /**************************************************************************
-     * __initialise()
+     *  __initialise()
      * 
-     * Builds the default display and initialises the resize handler.
+     *  Builds the default display and initialises the resize handler.
      * 
      */
-        const __initialise = () => {
+        const   __initialise = () => {
 
             console.log("Initialising Display");
 
@@ -162,12 +162,12 @@
 
 
     /**************************************************************************
-     * _display_info()
+     *  _display_info()
      * 
-     * Returns an object with display parameters after the last build.
+     *  Returns an object with display parameters after the last build.
      * 
      */
-        const _display_info = () => {
+        const   _display_info = () => {
         
             return {
                 'display_width': _display_width,
