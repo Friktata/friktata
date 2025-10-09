@@ -1,22 +1,122 @@
-///////////////////////////////////////////////////////////////////////////////
-//  friktata/src/js/core/Router.js
-//
+/******************************************************************************
+ *  friktata/src/js/core/Router.js
+ * 
+ */
 
     import { RouterConfig } from "./../config/Router.config.js";
 
 
     export const Router = async () => {
 
-        const __config = RouterConfig;
+        const   __config = RouterConfig;
 
 
-        let _current_page = __config['default_page'];
-        let _page_path = false;
-
-        let _page_cache = {};
+        let     _current_path = false;
+        let     _current_page = false;
 
 
-        const __fetch_page = async page_path => {
+    /**************************************************************************
+     *  __validate_page_name()
+     * 
+     *  Page name must:
+     * 
+     *      Contain exactly __config['page_digits'] bytes
+     *      Contain digits 0-9 only
+     * 
+     *  Anything else is invalid.
+     * 
+     */
+        const   __validate_page_name = page_name => {
+
+            if (page_name == '404') {
+                return true;
+            }
+
+            if (page_name.length != __config['page_digits']) {
+                return false;
+            }
+
+            if (! /^[0-9]+$/.test(page_name)) {
+                return false;
+            }
+
+            return true;
+
+        };
+
+
+    /**************************************************************************
+     *  __set_page()
+     * 
+     */
+        const   __set_page = page_name => {
+
+            if (page_name != 404) {
+                _current_path = `${page_name.substring(0, 1)}000`;
+            }
+
+            _current_page = page_name;
+
+        };
+
+
+    /**************************************************************************
+     *  __set_current_page()
+     * 
+     */
+        const   __set_current_page = (
+            page_name = false
+        ) => {
+
+            let hash = window.location.hash
+
+            if (page_name !== false) {
+                hash = page_name;
+            }
+
+            if (hash === "" || hash === "#") {
+                console.log("A");
+                hash = __config['default_page'];
+            }
+
+            if (hash.substring(0, 1) === "#") {
+                hash = hash.substring(1);
+            }
+
+            if (! __validate_page_name(hash)) {
+                console.log("B");
+                hash = __config['not_found_page'];
+            }
+
+            __set_page(hash);
+
+        };
+
+
+    /**************************************************************************
+     *  __get_page_path()
+     * 
+     */
+        const   __get_page_path = (
+            page_path = false
+        ) => {
+
+            __set_current_page(page_path);
+
+            if (_current_path === false || _current_path === "") {
+                return `${__config['page_path']}/${_current_page}`;
+            }
+
+            return `${__config['page_path']}/${_current_path}/${_current_page}`;
+
+        };
+
+    
+    /**************************************************************************
+     *  __fetch_page()
+     * 
+     */
+        const   __fetch_page = async page_path => {
 
             const response = await fetch(page_path);
 
@@ -26,77 +126,44 @@
 
             const contentType = response.headers.get("content-type") || "";
 
-            // if (contentType.includes("application/json") || page_path.endsWith(".json")) {
-            //     return response.json();
-            // }
-
-            // if (contentType.includes("text/") || page_path.endsWith(".txt") || page_path.endsWith(".csv") || page_path.endsWith(".html")) {
-            //     return response.text();
-            // }
-
-            // if (contentType.includes("image/")) {
-            //     return response.blob();
-            // }
-
             return response.text();
             
         };
 
 
-        const __load_page = async (
+
+    /**************************************************************************
+     *  _load_page()
+     * 
+     */
+        const   _load_page = async (
             page_name = false
         ) => {
 
-            let page = window.location.hash;
+            let page_path = __get_page_path(page_name);
 
-            _page_path = false;
+            console.log(`Loading page ${page_path}`);
 
-            if (page_name) {
-                page = page_name;
-            }
-
-            if (page !== "" && page !== "#") {
-                if (page.substring(0, 1) === "#") {
-                    page = page.substring(1);
-                }
-
-                if (page.length != __config['page_digits'] || ! /^[0-9]+$/.test(page)) {
-                    page = _page_path = `${__config['page_path']}${__config['not_found_page']}`;
-                }
-            }
-            
-            if (_page_path === false) {
-                if (page === "" || page === "#") { 
-                    page = __config['default_page'];
-                }
-
-                let page_range = "";
-
-                for (let digit = 0; digit < __config['page_digits']; digit++) {
-                    page_range += page.substring(digit, 1);
-                }
-
-                _page_path = `${__config['page_path']}${page_range}/${page}`;
-            }
-
-            let page_data = await __fetch_page(_page_path);
-
-
-            console.log(`>>>>>>>>>>>>Set page to ${_page_path}`);
-            if (page_data === false) {
-                page = __config['undefined_page'];
-                _page_path = `${__config['page_path']}${page}`;
-                page_data = await __fetch_page(`${_page_path}`);
-            }
-
-            console.log(`Set page to ${_page_path}:\n${page_data}`);
+            return __fetch_page(page_path);
 
         };
 
 
-        const __initialise = async () => {
-            
-            await __load_page();
+    /**************************************************************************
+     *  __initialise()
+     * 
+     */
+        const   __initialise = async () => {
+
+            if (window.location.hash === "" || window.location.hash === "#") {
+                window.location.hash = __config['default_page'];
+            }
+
+            let page_data = await _load_page();
+
+            if (page_data === false) {
+                page_data = await _load_page(__config['undefined_page']);
+            }
 
         };
 

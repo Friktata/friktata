@@ -1,12 +1,18 @@
-///////////////////////////////////////////////////////////////////////////////
-//  friktata/src/js/config/Display.config.js
-//
+/******************************************************************************
+ *  friktata/src/js/config/Display.config.js
+ * 
+ */
 
     export const DisplayConfig = (() => {
 
         return {
 
+        //  The terminal option specifies the target HTML element
+        //  id.
             'terminal':         "outer",
+
+        //  The testcell is used to figure out the optimal font size given
+        //  the number of columns.
             'testcell':         "testcell",
 
         //  The display is a grid of character cells.

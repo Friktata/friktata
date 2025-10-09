@@ -1,6 +1,8 @@
-///////////////////////////////////////////////////////////////////////////////
-//  friktata/src/js/core/Display.js
-//
+/******************************************************************************
+ *  friktata/src/js/core/Dsiplay.js
+ * 
+ */
+
 
     import { DisplayConfig } from "../config/Display.config.js";
 
@@ -23,7 +25,7 @@
         let _font_size;
 
 
-    /**
+    /**************************************************************************
      * __number_of_columns()
      * 
      * Returns the number of columns given the display width - see the
@@ -52,7 +54,7 @@
         };
 
 
-    /**
+    /**************************************************************************
      * __calculate_font_width()
      * 
      * Calculates the required font width for the given number of columns
@@ -66,8 +68,6 @@
             _font_size = last_font_size;
 
             __number_of_columns();
-
-            console.log(`Total Columns = ${_columns}`);
 
             while (true) {
                 $(`#${__config['testcell']}`).css("font-size", `${_font_size}px`);
@@ -90,7 +90,7 @@
         };
 
 
-    /**
+    /**************************************************************************
      * __build_display()
      * 
      * Clears and builds the character-cell display dird.
@@ -133,7 +133,7 @@
         };
 
 
-    /**
+    /**************************************************************************
      * __initialise()
      * 
      * Builds the default display and initialises the resize handler.
@@ -161,7 +161,7 @@
         };
 
 
-    /**
+    /**************************************************************************
      * _display_info()
      * 
      * Returns an object with display parameters after the last build.

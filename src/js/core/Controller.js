@@ -1,6 +1,7 @@
-///////////////////////////////////////////////////////////////////////////////
-//  friktata/src/js/core/Controller.js
-//
+/******************************************************************************
+ *  friktata/src/js/core/Controller.js
+ * 
+ */
 
     import { Display } from "./Display.js";
     import { Router } from "./Router.js";
@@ -10,8 +11,5 @@
 
         const __display = Display();
         const __router = Router();
-
-
-        
 
     };
