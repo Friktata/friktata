@@ -3,28 +3,34 @@
  * 
  */
 
-	import { Parser } from "./PolyBASIC/Parser.js";
+	import { Process } from "./PolyBASIC/Process.js";
 
 
-	export const PolyBASIC = (
-		script_name,
-		script_data
-	) => {
+	export const PolyBASIC = async () => {
 
-		const	__parser = Parser();
+		const	__process = await Process();
 
+	/**************************************************************************
+	 *	_exec_script()
+	 *
+	 */
+		const	_exec_script = async (
+			script_name,
+			script_data
+		) => {
 
-		const	__initialise = () => {
+			let result = await __process.create_process(script_name, script_data);
 
-			console.log(`Parsing script: ${script_name}:\n\n${script_data}`);
+			if (result.status !== "success") {
+				throw new Error(result.message);
+			}
 
 		};
 
 
-		__initialise();
-
-
 		return {
+
+			exec_script:	_exec_script
 
 		};
 

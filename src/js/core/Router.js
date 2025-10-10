@@ -14,6 +14,8 @@
         let     _current_path = false;
         let     _current_page = false;
 
+        let     _current_data = false;
+
 
     /**************************************************************************
      *  __validate_page_name()
@@ -92,31 +94,12 @@
 
         };
 
-
-    /**************************************************************************
-     *  __get_page_path()
-     * 
-     */
-        const   __get_page_path = (
-            page_path = false
-        ) => {
-
-            __set_current_page(page_path);
-
-            if (_current_path === false || _current_path === "") {
-                return `${__config['page_path']}/${_current_page}`;
-            }
-
-            return `${__config['page_path']}/${_current_path}/${_current_page}`;
-
-        };
-
     
     /**************************************************************************
      *  __fetch_page()
      * 
      */
-        const   __fetch_page = async page_path => {
+        const   _fetch_page = async page_path => {
 
             const response = await fetch(page_path);
 
@@ -140,11 +123,51 @@
             page_name = false
         ) => {
 
-            let page_path = __get_page_path(page_name);
+            let page_path = _get_page_path(page_name);
 
-            console.log(`Loading page ${page_path}`);
+            _current_data = _fetch_page(page_path);
 
-            return __fetch_page(page_path);
+            return _current_data;
+
+        };
+
+
+    /**************************************************************************
+     *  _get_page_path()
+     * 
+     */
+        const   _get_page_path = (
+            page_path = false
+        ) => {
+
+            __set_current_page(page_path);
+
+            if (_current_path === false || _current_path === "") {
+                return `${__config['page_path']}/${_current_page}`;
+            }
+
+            return `${__config['page_path']}/${_current_path}/${_current_page}`;
+
+        };
+
+    
+    /**************************************************************************
+     *  _get_page_data()
+     * 
+     */
+        const   _get_page_data = async (
+            page_name = false
+        ) => {
+
+            if (page_name === false) {
+                return _current_data;
+            }
+
+            let page_data = await _load_page();
+
+            if (page_data === false) {
+                page_data = await _load_page(__config['undefined_page']);
+            }
 
         };
 
@@ -173,7 +196,10 @@
 
         return {
 
-            load_page:      _load_page
+            fetch_page:     _fetch_page,
+            load_page:      _load_page,
+            get_page_path:  _get_page_path,
+            get_page_data:  _get_page_data
 
         };
 

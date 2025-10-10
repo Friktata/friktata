@@ -5,7 +5,7 @@
 
     export const DisplayConfig = (() => {
 
-        return {
+        return                  {
 
         //  The terminal option specifies the target HTML element
         //  id.

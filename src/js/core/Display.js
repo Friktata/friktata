@@ -9,20 +9,20 @@
 
     export const Display = (config) => {
 
-        let __config = DisplayConfig;
+        let     __config = DisplayConfig;
 
-        let __resize_handler = false;
+        let     __resize_handler = false;
 
-        let _display_width;
-        let _display_height;
+        let     _display_width;
+        let     _display_height;
 
-        let _columns;
-        let _rows;
+        let     _columns;
+        let     _rows;
 
-        let _column_width;
-        let _column_height;
+        let     _column_width;
+        let     _column_height;
 
-        let _font_size;
+        let     _font_size;
 
 
     /**************************************************************************
@@ -76,7 +76,6 @@
                 _column_height = document.getElementById(__config['testcell']).getBoundingClientRect().height;
 
                 if (((_column_width + .5) * _columns) >= _display_width) {
-                    console.log(`Font size = ${last_font_size}, cell width = ${_column_width}`);
                     _rows = Math.floor(_display_height / _column_height);
                     break;
                 }
@@ -140,8 +139,6 @@
      * 
      */
         const   __initialise = () => {
-
-            console.log("Initialising Display");
 
             __build_display();
 

@@ -7,7 +7,7 @@
 
     (function Main() {
 
-        const __controller = Controller()
+        const   __controller = Controller()
 
     })();
     

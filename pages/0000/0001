@@ -1,2 +1,19 @@
+///////////////////////////////////////////////////////////////////////////////
+//  frikt/\t^/p465s/0000/0001
+//
+//  TT T T hiss was the-_-- [[firsS-t.
+//
 
-    Main index 
+    @include "a_lib" "test/b_lib" "../test/c_lib"
+
+    10 print "root line";
+
+    line_one 10 print "inside line_one";
+        11 print "still 
+                    inside";
+            subblock 10 print "nested";
+            end subblock;
+        20 print "back in line_one";
+    end line_one;
+
+    30 print "back in root";

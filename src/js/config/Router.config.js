@@ -5,7 +5,7 @@
 
     export const RouterConfig = (() => {
         
-        return {
+        return                  {
 
     //  Relative path to all pages.
             'page_path':        '../../../pages',
