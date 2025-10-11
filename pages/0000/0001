@@ -4,18 +4,13 @@
 //  TT T T hiss was the-_-- [[firsS-t.
 //
 
-    @include "script_one"
-    @include "test/../b_lib"
-    @include "c_lib"
+    [rwxl] line one;
+    [rw] line two;
 
-    10 print "root line";
+    block new_block;
+        newblock one;
+        newblock two;
+    endblock;
 
-    line_one 10 print "inside line_one";
-        11 print "still 
-                    inside";
-            subblock 10 print "nested";
-            end subblock;
-        20 print "back in line_one";
-    end line_one;
+    add this line;
 
-    30 print "back in root";

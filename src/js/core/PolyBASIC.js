@@ -3,12 +3,14 @@
  * 
  */
 
+	import { Preprocess } from "./PolyBASIC/Preprocess.js";
 	import { Process } from "./PolyBASIC/Process.js";
 
 
 	export const PolyBASIC = async () => {
 
-		const	__process = await Process();
+		const	__preprocess = await Preprocess();
+		const	__process = Process();
 
 	/**************************************************************************
 	 *	_exec_script()
@@ -19,17 +21,23 @@
 			script_data
 		) => {
 
-			let result = await __process.create_process(script_name, script_data);
+			let result = await __preprocess.preprocess(script_name, script_data);
 
 			if (result.status !== "success") {
 				throw new Error(result.message);
 			}
 
-			let lines = __process.get_lines();
+			let lines = __preprocess.get_lines();
 
-			for (let line = 0; line < lines.length; line++) {
-				console.log(`Line ${line}: ${lines[line]}`);
+			result = __process.process(lines);
+
+			if (result.status !== "success") {
+				throw new Error(result.message);
 			}
+
+			// for (let line = 0; line < lines.length; line++) {
+			// 	console.log(`Line ${line}: ${JSON.stringify(lines[line])}`);
+			// }
 
 		};
 

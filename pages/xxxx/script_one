@@ -5,10 +5,10 @@
 //  ThisssSSSS__S,;
 //  /       /       /       /.-               /       /       /
 
+    10 script_one, line 1;
+    20 script_one, line 2;
 
-    10 file line "with a string"
-    25 we can share ThisssSSSS__S)ddddS$__-|\\x-
+    script_one, line 3;
+    script_one, line 4;
 
-    do
- 0-=-
-
+    15 script_one, last line;

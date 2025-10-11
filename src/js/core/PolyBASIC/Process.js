@@ -3,200 +3,316 @@
  * 
  */
 
-	import { RouterConfig } from "./../../config/Router.config.js";
+    import { PolyBASICConfig } from "../../config/PolyBASIC.config.js";
 
-	import { Helpers } from "./../Helpers.js";
-	import { Router } from "./../Router.js";
-
-	import { Parser } from "./Parser.js";
+    import { Helpers } from "../Helpers.js";
 
 
-	export const Process = async () => {
+    export const Process = () => {
 
-		const	__router_config = RouterConfig;
+        const   __polybasic_config = PolyBASICConfig;
+        const   __helpers = Helpers();
 
-		const	__helpers = Helpers();
-		const	__router = await Router();
-
-		const	__parser = Parser();
-
-		let		__scripts = [];
-		let		_lines = [];
-
-		let		__working_dir = "";
+        const   __keywords = __polybasic_config['keywords'];
 
 
-	/**************************************************************************
-	 *	__include_script()
-	 */
-		const __include_script = async (
-			script_path,
-			separator = "/"
-		) => {
+        let     __line_no = 0;
+        let     __line_id = {};
 
-			let	script_base = __helpers.path_base(script_path, separator);
-			
-			let response = __helpers.path_new(__working_dir, script_base, separator);
-
-			if (response.status !== "success") {
-				return response;
-			}
-
-			let script_name = __helpers.path_name(script_path,separator);
-			response = __helpers.path_reduce(response.path, separator);
-
-			if (response.status !== "success") {
-				return response;
-			}
-
-			__working_dir = response.path;
-
-			if (__working_dir.trim() !== "") {
-				script_base = `${__router_config['page_path']}/xxxx/${__working_dir}/${script_name}`;
-			}
-			else {
-				script_base = `${__router_config['page_path']}/xxxx/${script_name}`;
-			}
-			
-			if (__scripts.includes(script_base)) {
-				return __helpers.err_object(`Error in __include_script(): File ${script_base} included more than once`);
-			}
-
-			let script_data = await __router.fetch_page(script_base);
-
-			if (script_data === false) {
-				return __helpers.err_object(`Error in __include_script(): Error loading script ${script_base}`);
-			}
-
-			__scripts[script_base] = [];
-
-			return await __process_script(script_base, script_data);
-
-		};
+        let     _lines = false;
+        let     _proc = false;
 
 
-	/**************************************************************************
-	 *	__process_directive()
-	 *
-	 */
-		const __process_directive = async (
-			tokens
-		) => {
+    /**************************************************************************
+     *  __process_new()
+     * 
+     */
+        const   __process_new = (
+            process_parent = false,
+            process_id = __polybasic_config['root_node_id']
+        ) => {
+            
+            return {
+                'parent':       process_parent,
+                'id':           process_id,
+                'code':         [],
+                'name':         [],
+                'data':         [],
+                'mode':         []
+            };
 
-			if (tokens[2] === "@include") {
-				if (tokens.length < 4) {
-					return __helpers.err_object("__process_directive(): The @include directive expects at least 1 parameter");
-				}
+        };
 
-				let script_name = __helpers.strip_quotes(tokens[3]);
+    
+    /**************************************************************************
+     *  __process_mode()
+     * 
+     */
+        const   __process_mode = (
+            proc,
+            tokens,
+            obj_line
+        ) => {
 
-				let result = await __include_script(script_name);
+            obj_line['status'] = "success";
 
-				if (result.status !== "success") {
-					return result;
-				}
-			}
+    //  We have a mode definition string if token 2 is the [
+    //  character and token 4 is the ] character. The mode
+    //  string is token 3.
+    //
+            if (tokens[2] !== "[") {
+                return obj_line;
+            }
 
-			return {
-				'status': "success",
-				'tokens': false
-			};
+            if (tokens.length < 5 || tokens[4] !== "]") {
+                return __helpers.err_object(
+                    `Error in ${tokens[0]} on line ${tokens[1]}: Malformed mode string.`
+                );
+            }
 
-		};
+            for (let char_no = 0; char_no < tokens[3].length; char_no++) {
+                let char = tokens[3].substring(char_no, (char_no + 1));
 
+                if (char === 'l') {
+                    obj_line['mode']['locked'] = ! obj_line['mode']['locked'];
+                }
+                else if (char === 'r') {
+                    obj_line['mode']['read'] = ! obj_line['mode']['read'];
+                }
+                else if (char === 'w') {
+                    obj_line['mode']['write'] = ! obj_line['mode']['write'];
+                }
+                else if (char === 'x') {
+                    obj_line['mode']['execute'] = ! obj_line['mode']['execute'];
+                }
+                else {
+                    return __helpers.err_object(
+                        `Error in ${tokens[0]} on line ${tokens[1]}: Unknown mode switch '${char}'`
+                    );
+                }
+            }
 
-	/**************************************************************************
-	 *	__process_tokens()
-	 *
-	 */
-		const	__process_tokens = async (
-			tokens
-		) => {
+    //  All of the mode tokens are removed.
+    //
+            tokens.splice(2, 3);
 
-			if (tokens[2].substring(0, 1) === '@') {
-				return await __process_directive(tokens);
-			}
+            return obj_line;
 
-			return {
-				'status': "success",
-				'tokens': tokens
-			};
-
-		};
-	
-	/**************************************************************************
-	 *	__process_script()
-	 *
-	 */
-		const	__process_script = async (
-			script_path,
-			script_data,
-		) => {
-
-			const result = __parser.get_lines(script_path, script_data);
-
-			if (result.status !== "success") {
-				return result;
-			}
-
-			const lines = result.lines;
-
-			for (let line = 0; line < lines.length; line++) {
-
-				let result = __parser.get_tokens(lines[line]);
-
-				if (result.status !== "success") {
-					return result;
-				}
-
-				const tokens = result.tokens;
-				
-				if (tokens.length < 2) {
-					continue;
-				}
-
-				result = await __process_tokens(tokens);
-
-				if (result.status !== "success") {
-					return result;
-				}
-
-				if (result.tokens !== false) {
-					console.log(`>>> Adding to ${script_path} ${result.tokens}: `)
-					_lines.push(tokens);
-				}
-				
-			}
-
-			return {
-				'status': "success"
-			};
-
-		};
+        };
 
 
-	/**************************************************************************
-	 *	_create_process()
-	 * 
-	 */
-		const	_create_process = async (
-			script_path,
-			script_data
-		) => {
+    /**************************************************************************
+     *  __process_line()
+     * 
+     */
+        const   __process_line = (
+            proc,
+            tokens
+        ) => {
 
-			return await __process_script(script_path, script_data);
+            let process_path = _process_path(proc);
 
-		};
+    //  Assume a blocked/scoped line...
+    //
+            let obj_line = {
+                'status':       "success",
+                'type':         "line",
+                'line_id':      false,
+                'mode':         structuredClone(__polybasic_config['line_mode_default'])
+            };
+
+    //  Is this the root node?
+    //
+            if (proc.id === __polybasic_config['root_node_id'] && proc.parent === false) {
+                obj_line['mode'] = structuredClone(__polybasic_config['root_mode_default']);
+            }
+
+    //  Is this a block or a line?
+    //
+            if (tokens[2] === "block") {
+                obj_line['type'] = "block";
+                obj_line['mode'] = structuredClone(__polybasic_config['block_mode_default']);
+
+                if (tokens.length < 4) {
+                    return __helpers.err_object(
+                        `Error in ${tokens[0]} on line ${tokens[1]}: Block identifier expected`
+                    )
+                }
+                if (tokens.length > 4) {
+                    return __helpers.err_object(
+                        `Error in ${tokens[0]} on line ${tokens[1]}: Junk tokens following block declaration`
+                    )
+                }
+                obj_line['line_id'] = tokens[3];
+            }
+            else {
+    //  Does this line have an id? If so, store it in obj_line and remove
+    //  the token.
+    //
+                if (/^[0-9]+$/.test(tokens[2])) {
+                    obj_line['line_id'] = parseInt(tokens[2]);
+
+                    // if (! __line_id.hasOwnProperty(process_path)) {
+                    //     __line_id[process_path] = __polybasic_config['line_start'];
+                    // }
+
+                    __line_id[process_path] = obj_line['line_id'];
+                
+                    tokens.splice(2, 1);
+                }
+                else {
+    //  There is no line number so we need to generate one, we do this using
+    //  the current __line_id value..
+    //
+                    if (__polybasic_config['line_mode'] === 'increment') {
+    //  If line_mode is increment we just add the line_increment value.
+    //
+                        __line_id[process_path] += __polybasic_config['line_increment'];
+                    }
+                    else {
+    //  Otherwise we increase __line_id to the next multiple of line_increment.
+    //
+                        const increment = __polybasic_config['line_increment'];
+
+                        if (__line_id[process_path] < increment) {
+                            __line_id[process_path] = increment;
+                        }
+                        else {
+                            let result = (__line_id[process_path] % increment) * increment;
+
+                            if (result == 0) {
+                                result = increment;
+                            }
+
+                            __line_id[process_path] += result;
+                        }    
+                    }
+
+                    obj_line['line_id'] = __line_id[process_path];
+                }
+            }
+
+            obj_line = __process_mode(proc, tokens, obj_line);
+
+            if (obj_line.status !== "success") {
+                return obj_line;
+            }
+
+            console.log(JSON.stringify(obj_line, null, 3))
+
+            return obj_line;
+
+        };
 
 
-		return {
+    /**************************************************************************
+     *  __process_lines()
+     * 
+     */
+        const   __process_lines = proc => {
 
-			create_process:		_create_process,
-			get_lines:			function () {
-				return _lines
-			}
+    //  Keep track of the __line_id for each individual process.
+    //
+            let process_path = _process_path(proc);
 
-		};
+            if (! __line_id.hasOwnProperty(process_path)) {
+                __line_id[process_path] = 0;
+            }
 
-	};
+            __helpers.log(`>>> Processing block: ${process_path}`);
 
+            for (; __line_no < _lines.length; __line_no++) {
+
+                let tokens = _lines[__line_no];
+
+                let response = __process_line(proc, tokens);
+
+                if (response.status !== "success") {
+                    return response;
+                }
+
+                if (response.type === "line") {
+    //  Add a line of code to the current proc - if a line currently exists
+    //  it will be overwritten.
+    //
+                    proc.name[response.line_id] = response.line_id;
+                    proc.code[response.line_id] = tokens;
+                    proc.mode[response.line_id] = response.mode;
+
+                    __helpers.log(`>>> Wrote line ${response.line_id} to ${process_path}: ${JSON.stringify(tokens, null, 3)}`);
+                
+                    continue;
+                }
+                
+
+                proc.name[response.line_id] = response.line_id;
+                proc.code[response.line_id] = __process_new(_process_path(proc));
+                proc.mode[response.line_id] = response.mode;
+                
+                proc.code[response.line_id].id = response.line_id;
+                proc.code[response.line_id].parent = proc;
+
+                // __helpers.log(`>>> Opening block ${response.line_id} in ${_process_path(proc)}: ${JSON.stringify(tokens, null, 3)}`);
+
+                __line_no++;
+
+                let result = __process_lines(proc.code[response.line_id]);
+
+                if (result.status !== "success") {
+                    return result;
+                }
+                
+            }
+
+            return {
+                'status': "success"
+            };
+
+        };
+
+
+    /**************************************************************************
+     *  _process_path()
+     * 
+     */
+        const _process_path = proc => {
+
+            if (proc.parent) {
+                return `${proc.parent.id}-${proc.id}`;
+            }
+
+            return proc.id;
+
+        };
+
+
+    /**************************************************************************
+     *  _process()
+     * 
+     */
+        const   _process = lines => {
+
+            __helpers.log(`>>> Processing ${lines.length} lines...\n`);
+
+            _proc = structuredClone(__process_new());
+            _lines = lines;
+
+    //  This keeps track of the current line being processed, i.e:
+    //
+    //      _lines[__process_line];
+    //
+            __line_no = 0;
+
+            return __process_lines(_proc);
+
+        };
+
+
+        return {
+
+            process:        _process
+
+        };
+
+    };
+    

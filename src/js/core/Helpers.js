@@ -3,7 +3,25 @@
  * 
  */
 
+    import { Config } from "./../config/Config.js"
+
+
     export const Helpers = () => {
+
+        const   __config = Config;
+
+
+    /**************************************************************************
+     *  _log()
+     * 
+     */
+        const _log = log_message => {
+
+            if (__config['enable_logging']) {
+                console.log(log_message);
+            }
+
+        };
 
 
     /**************************************************************************
@@ -209,6 +227,7 @@
 
         return {
 
+            log:            _log,
             err_object:     _err_object,
             strip_quotes:   _strip_quotes,
             path_base:      _path_base,

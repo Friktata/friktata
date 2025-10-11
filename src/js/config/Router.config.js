@@ -23,6 +23,11 @@
     //  page number hence 'undefined' page.
             'not_found_page':   '404',
 
+    //  Page scripts can include external files but they must be stored
+    //  in the include path (page_path/include_path/).
+    //            
+            'include_path':     'xxxx',
+
     //  Numbers of digits in a page name, a value of 4 gives us up to
     //  10,000 pages (0000 - 9999).
             'page_digits':      4
