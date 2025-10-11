@@ -8,9 +8,32 @@
     [rw] line two;
 
     block new_block;
-        newblock one;
-        newblock two;
+        new_block one;
+        block inner_block;
+            [rwxl] inner_block line one;
+            200 [rwx] inner_block line two
+        endblock;
     endblock;
 
     add this line;
+
+    block new_block;
+        another new_block line
+        block inner_block;
+            another inner_block line;
+            block even_inner;
+                even_inner first line;
+                even_inner last line;
+            endblock
+            yet more inner_block code;
+        endblock
+        new_block done;
+    endblock
+
+    block test_block;
+        200 some line;
+        one more;
+    endblock;
+    
+    last line ever;
 

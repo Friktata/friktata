@@ -5,9 +5,11 @@
     import { Controller } from "./core/Controller.js";
     
 
-    (function Main() {
+    (async function Main() {
 
-        const   __controller = Controller()
+        const   __controller = await Controller();
+
+        console.log(`Clean exit`);
 
     })();
     
