@@ -5,12 +5,15 @@
 
 	import { Preprocess } from "./PolyBASIC/Preprocess.js";
 	import { Process } from "./PolyBASIC/Process.js";
+	import { Runtime } from "./PolyBASIC/Runtime.js";
 
 
 	export const PolyBASIC = async () => {
 
 		const	__preprocess = await Preprocess();
 		const	__process = Process();
+		const	__runtime = Runtime();
+		
 
 	/**************************************************************************
 	 *	_exec_script()
@@ -35,9 +38,7 @@
 				throw new Error(result.message);
 			}
 
-			// for (let line = 0; line < lines.length; line++) {
-			// 	console.log(`Line ${line}: ${JSON.stringify(lines[line])}`);
-			// }
+			result = __runtime.execute(result.proc);
 
 		};
 

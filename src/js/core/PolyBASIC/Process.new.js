@@ -42,10 +42,10 @@
                 'path':         process_path,
                 'parent':       process_parent,
                 'id':           process_id,
-                'code':         [],
-                'name':         [],
-                'data':         [],
-                'mode':         []
+                'code':         new Map(),
+                'name':         new Map(),
+                'data':         new Map(),
+                'mode':         new Map()
             };
 
         };
@@ -131,7 +131,19 @@
     //  Is this the root node?
     //
             if (proc.id === __polybasic_config['root_node_id'] && proc.parent === false) {
-                obj_line['mode'] = structuredClone(__polybasic_config['root_mode_default']);
+                obj_line['mode'] = structuredClone(__polybasic_config['block_mode_default']);
+            }
+
+            if (__polybasic_config['inherit_modes']) {
+                if (proc.parent !== false) {
+                    obj_line['mode'] = structuredClone(proc.parent.mode[proc.id]);
+                }
+            }
+            
+            obj_line = __process_mode(proc, tokens, obj_line);
+
+            if (obj_line.status !== "success") {
+                return obj_line;
             }
 
     //  Is this a block or a line?
@@ -151,6 +163,16 @@
                     )
                 }
                 obj_line['line_id'] = tokens[3];
+
+                // if (__polybasic_config['inherit_modes']) {
+                //     if (proc.parent !== false) {
+                //         obj_line['mode'] = scructuredClose(proc.parent.mode[proc.id]);
+                //     }
+                //     // else {
+                //     //     obj_line['mode'] = __polybasic_config['root_mode_default']
+                //     // }
+                //     // obj_line['mode'] = structuredClone();
+                // }
             }
             else {
     //  Does this line have an id? If so, store it in obj_line and remove
@@ -158,13 +180,7 @@
     //
                 if (/^[0-9]+$/.test(tokens[2])) {
                     obj_line['line_id'] = parseInt(tokens[2]);
-
-                    // if (! __line_id.hasOwnProperty(process_path)) {
-                    //     __line_id[process_path] = __polybasic_config['line_start'];
-                    // }
-
                     __line_id[process_path] = obj_line['line_id'];
-                
                     tokens.splice(2, 1);
                 }
                 else {
@@ -172,13 +188,9 @@
     //  the current __line_id value..
     //
                     if (__polybasic_config['line_mode'] === 'increment') {
-    //  If line_mode is increment we just add the line_increment value.
-    //
                         __line_id[process_path] += __polybasic_config['line_increment'];
                     }
                     else {
-    //  Otherwise we increase __line_id to the next multiple of line_increment.
-    //
                         const increment = __polybasic_config['line_increment'];
                         
                         if (tokens[2] !== "endblock") {
@@ -201,14 +213,6 @@
                 }
             }
 
-            obj_line = __process_mode(proc, tokens, obj_line);
-
-            if (obj_line.status !== "success") {
-                return obj_line;
-            }
-
-            // console.log(JSON.stringify(obj_line, null, 3))
-
             return obj_line;
 
         };
@@ -228,8 +232,6 @@
                 __line_id[process_path] = 0;
             }
 
-            // __helpers.log(`>>> Processing block: ${process_path}`);
-
             for (; __line_no < _lines.length; __line_no++) {
 
                 let tokens = _lines[__line_no];
@@ -248,49 +250,42 @@
                             );
                         }
 
-                        __helpers.log(`>>> Returning from block ${proc.id} to ${_process_path(proc.parent)}`);
-
                         return {
                             'status': "success"
                         };
                     }
 
-    //  Add a line of code to the current proc - if a line currently exists
-    //  it will be overwritten.
-    //
-                    proc.name[response.line_id] = response.line_id;
-                    proc.code[response.line_id] = tokens;
-                    proc.mode[response.line_id] = response.mode;
-
-                    // __helpers.log(`>>> Wrote line ${response.line_id} to ${process_path}: ${JSON.stringify(tokens, null, 3)}`);
+                    proc.name.set(response.line_id, response.line_id);
+                    proc.code.set(response.line_id, tokens);
+                    proc.mode.set(response.line_id, response.mode);
                 
                     continue;
                 }
 
-                if (proc.code[response.line_id] === undefined) {
-                    proc.name[response.line_id] = response.line_id;
-                    proc.code[response.line_id] = __process_new(_process_path(proc));
-                    proc.mode[response.line_id] = response.mode;
+                if (!proc.code.has(response.line_id)) {
+                    proc.name.set(response.line_id, response.line_id);
+                    proc.code.set(response.line_id, __process_new(_process_path(proc)));
+                    proc.mode.set(response.line_id, response.mode);
                     
-                    proc.code[response.line_id].id = response.line_id;
-                    proc.code[response.line_id].parent = proc;
+                    proc.code.get(response.line_id).id = response.line_id;
+                    proc.code.get(response.line_id).parent = proc;
                 }
 
                 if (proc.parent) {
                     if (proc.parent.id === __polybasic_config['root_node_id']) {
-                        proc.code[response.line_id].path = `${proc.parent.id}.${proc.id}`;
+                        proc.code.get(response.line_id).path = `${proc.parent.id}.${proc.id}`;
                     }
                     else {
-                        proc.code[response.line_id].path = `${proc.path}.${proc.id}`;
+                        proc.code.get(response.line_id).path = `${proc.path}.${proc.id}`;
                     }
                 }
                 else {
-                    proc.code[response.line_id].path = __polybasic_config['root_node_id'];
+                    proc.code.get(response.line_id).path = __polybasic_config['root_node_id'];
                 }
             
                 __line_no++;
 
-                let result = __process_lines(proc.code[response.line_id]);
+                let result = __process_lines(proc.code.get(response.line_id));
 
                 if (result.status !== "success") {
                     return result;
@@ -309,7 +304,7 @@
      *  _process_path()
      * 
      */
-        const _process_path = proc => {
+        const   _process_path = proc => {
 
             if (proc.parent === false) {
                 return proc.id;
@@ -319,47 +314,78 @@
         };
 
 
+        const   __process_line_mode = obj_mode => {
+
+            let mode_str = "[";
+
+            mode_str += (obj_mode.locked) ? "l" : "-";
+            mode_str += (obj_mode.read) ? "r" : "-";
+            mode_str += (obj_mode.write) ? "w" : "-";
+            mode_str += (obj_mode.execute) ? "x" : "-";
+
+            return `${mode_str}]`;
+
+        };
+
+
     /**************************************************************************
      *  __process_print()
      *
+     *  Dumps the process tree in classic BASIC listing style.
      */
-        function __process_print(proc, indent = 0) {
+        const   __process_print = (
+            proc,
+            indent = 0
+        ) => {
 
             let _indent = " ".repeat(indent);
             let _indent_increment = 4;
 
             let path_info = "";
+            let line_mode;
 
             if (proc.parent !== false) {
-                path_info = ` ${proc.path}.`;
+                path_info = `${proc.path}.`;
             }
 
-            __helpers.log(`${_indent}${path_info}${proc.id}, ${proc.code.length} lines:\n`);
-            
-            let keys = Object.keys(proc.code);
+            let line_count = 0;
+            let block_count = 0;
 
-            for (let line = 0; line < keys.length; line++) {
-                let tokens = proc.code[keys[line]];
-                let str = `${_indent}${" ".repeat(4)}Line ${keys[line]}: `;
-                
+            for (let entry of proc.code.values()) {
+                if (Array.isArray(entry)) {
+                    line_count++;
+                }
+                else if (entry instanceof Map || typeof entry === "object") {
+                    block_count++;
+                }
+            }
+
+            let block_info = block_count > 0 ? `, ${block_count} block${block_count > 1 ? "s" : ""}` : "";
+            line_mode = __process_line_mode(proc.mode.get(proc.id));
+
+            __helpers.log(`${_indent}${path_info}${line_mode}${proc.id} (${line_count} lines${block_info})`);
+
+            let keys = Array.from(proc.code.keys()).sort((a, b) => {
+                if (!isNaN(a) && !isNaN(b)) return a - b;
+                return a.toString().localeCompare(b.toString());
+            });
+
+            for (let line_id of proc.code.keys()) {
+                let tokens = proc.code.get(line_id);
+                line_mode = __process_line_mode(proc.mode.get(line_id));
+
+                let line_prefix = `${_indent}${" ".repeat(4)}${line_id} `;
+
                 if (Array.isArray(tokens)) {
-                    for (let token = 0; token < tokens.length; token++) {
-                        if (token) {
-                            str += `, ${tokens[token]}`;
-                        }
-                        else {
-                            str += tokens[token];
-                        }
-                    }
-
-                    __helpers.log(`${str}`);
-
+                    let content = tokens.join(" ").trim();
+                    __helpers.log(`${line_prefix}${line_mode}${content}`);
                     continue;
                 }
 
-                __process_print(tokens, (indent + _indent_increment));
+                __process_print(tokens, indent + _indent_increment);
+                __helpers.log(`${_indent}${" ".repeat(4)}endblock ${tokens.id}`);
             }
-        }
+        };
 
 
     /**************************************************************************
@@ -372,11 +398,8 @@
 
             _proc = structuredClone(__process_new());
             _lines = lines;
+            __line_id = {};
 
-    //  This keeps track of the current line being processed, i.e:
-    //
-    //      _lines[__process_line];
-    //
             __line_no = 0;
 
             let response = __process_lines(_proc);
@@ -399,4 +422,3 @@
         };
 
     };
-    

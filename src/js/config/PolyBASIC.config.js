@@ -32,7 +32,8 @@
 
             'root_node_id':         "root",
 
-            'inherit_modes':        false,
+            'block_inherit':        false,
+            'line_inherit':         false,
 
             'line_start':           0,
 

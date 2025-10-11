@@ -4,14 +4,14 @@
 //  TT T T hiss was the-_-- [[firsS-t.
 //
 
-    [rwxl] line one;
-    [rw] line two;
+    line one;
+    line two;
 
-    block new_block;
+    block [lx] new_block;
         new_block one;
         block inner_block;
-            [rwxl] inner_block line one;
-            200 [rwx] inner_block line two
+            inner_block line one;
+            200 [lwrx] inner_block line two
         endblock;
     endblock;
 
@@ -31,9 +31,9 @@
     endblock
 
     block test_block;
-        200 some line;
+        200 [lrwx] some line;
         one more;
     endblock;
-    
+
     last line ever;
 
