@@ -4,7 +4,9 @@
 //  TT T T hiss was the-_-- [[firsS-t.
 //
 
-    @include "a_lib" "test/b_lib" "../test/c_lib"
+    @include "script_one"
+    @include "test/../b_lib"
+    @include "c_lib"
 
     10 print "root line";
 

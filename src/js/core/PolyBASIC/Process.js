@@ -16,57 +16,34 @@
 		const	__router_config = RouterConfig;
 
 		const	__helpers = Helpers();
-		const	__router = Router();
+		const	__router = await Router();
 
 		const	__parser = Parser();
 
 		let		__scripts = [];
+		let		_lines = [];
 
 		let		__working_dir = "";
-
-
-	/**************************************************************************
-	 *	__new_process()
-	 *
-	 */
-		const	__new_process = (
-			script_name,
-			process_id
-		) => {
-
-			return {
-				script_name:	script_name,
-				id:				process_id,
-				lines:			[],
-				name:			[],
-				data:			[],
-				meta:			[],
-				flags:			[]
-			};
-
-		};
 
 
 	/**************************************************************************
 	 *	__include_script()
 	 */
 		const __include_script = async (
-			script_name,
-			proc
+			script_path,
+			separator = "/"
 		) => {
 
-			// console.log(`>>> Importing script ${script_name}`);
-
-			let script_path = __helpers.path_base(script_name);
-			let response = __helpers.path_new(__working_dir, script_path);
-
-			script_name = __helpers.path_name(script_name);
+			let	script_base = __helpers.path_base(script_path, separator);
+			
+			let response = __helpers.path_new(__working_dir, script_base, separator);
 
 			if (response.status !== "success") {
 				return response;
 			}
 
-			response = __helpers.path_reduce(response.path);
+			let script_name = __helpers.path_name(script_path,separator);
+			response = __helpers.path_reduce(response.path, separator);
 
 			if (response.status !== "success") {
 				return response;
@@ -74,25 +51,26 @@
 
 			__working_dir = response.path;
 
-			console.log(">>> Set working dir: " + __working_dir + ", script name: " + script_name);
-
 			if (__working_dir.trim() !== "") {
-				script_path = `${__router_config['page_path']}/xxxx/${__working_dir}/${script_name}`;
+				script_base = `${__router_config['page_path']}/xxxx/${__working_dir}/${script_name}`;
 			}
 			else {
-				script_path = `${__router_config['page_path']}/xxxx/${script_name}`;
+				script_base = `${__router_config['page_path']}/xxxx/${script_name}`;
 			}
-			let script_data = (await __router).fetch_page(script_path);
+			
+			if (__scripts.includes(script_base)) {
+				return __helpers.err_object(`Error in __include_script(): File ${script_base} included more than once`);
+			}
+
+			let script_data = await __router.fetch_page(script_base);
 
 			if (script_data === false) {
-				throw new Error(`Error in __include_script(): Couldn\'t find script ${script_path}`);
+				return __helpers.err_object(`Error in __include_script(): Error loading script ${script_base}`);
 			}
 
-			console.log(`Loaded external script ${script_path}`);
-			return {
-				'status': "success",
-				'proc': proc
-			};
+			__scripts[script_base] = [];
+
+			return await __process_script(script_base, script_data);
 
 		};
 
@@ -102,8 +80,7 @@
 	 *
 	 */
 		const __process_directive = async (
-			tokens,
-			proc
+			tokens
 		) => {
 
 			if (tokens[2] === "@include") {
@@ -111,20 +88,18 @@
 					return __helpers.err_object("__process_directive(): The @include directive expects at least 1 parameter");
 				}
 
-				for (let script = 3; script < tokens.length; script++) {
-					let script_name = __helpers.strip_quotes(tokens[script]);
+				let script_name = __helpers.strip_quotes(tokens[3]);
 
-					let result = await __include_script(script_name, proc);
+				let result = await __include_script(script_name);
 
-					if (result.status !== "success") {
-						return result;
-					}
+				if (result.status !== "success") {
+					return result;
 				}
 			}
 
 			return {
 				'status': "success",
-				'proc': proc
+				'tokens': false
 			};
 
 		};
@@ -135,25 +110,16 @@
 	 *
 	 */
 		const	__process_tokens = async (
-			tokens,
-			proc
+			tokens
 		) => {
 
-			let	result;
-
-			console.log(tokens);
-
 			if (tokens[2].substring(0, 1) === '@') {
-				result = await __process_directive(tokens, proc);
-
-				if (result.status !== "success") {
-					return result;
-				}
+				return await __process_directive(tokens);
 			}
 
 			return {
 				'status': "success",
-				'proc': proc
+				'tokens': tokens
 			};
 
 		};
@@ -163,11 +129,11 @@
 	 *
 	 */
 		const	__process_script = async (
+			script_path,
 			script_data,
-			proc
 		) => {
 
-			const result = __parser.get_lines(proc.script_name, script_data);
+			const result = __parser.get_lines(script_path, script_data);
 
 			if (result.status !== "success") {
 				return result;
@@ -176,6 +142,7 @@
 			const lines = result.lines;
 
 			for (let line = 0; line < lines.length; line++) {
+
 				let result = __parser.get_tokens(lines[line]);
 
 				if (result.status !== "success") {
@@ -188,18 +155,21 @@
 					continue;
 				}
 
-				result = await __process_tokens(tokens, proc);
+				result = await __process_tokens(tokens);
 
 				if (result.status !== "success") {
 					return result;
 				}
 
-				proc = result.proc;
+				if (result.tokens !== false) {
+					console.log(`>>> Adding to ${script_path} ${result.tokens}: `)
+					_lines.push(tokens);
+				}
+				
 			}
 
 			return {
-				'status': "success",
-				'proc': proc
+				'status': "success"
 			};
 
 		};
@@ -210,20 +180,21 @@
 	 * 
 	 */
 		const	_create_process = async (
-			script_name,
+			script_path,
 			script_data
 		) => {
 
-			const	_proc = __new_process(script_name, "root");
-
-			return await __process_script(script_data, _proc);
+			return await __process_script(script_path, script_data);
 
 		};
 
 
 		return {
 
-			create_process:		_create_process
+			create_process:		_create_process,
+			get_lines:			function () {
+				return _lines
+			}
 
 		};
 

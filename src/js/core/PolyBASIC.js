@@ -25,6 +25,12 @@
 				throw new Error(result.message);
 			}
 
+			let lines = __process.get_lines();
+
+			for (let line = 0; line < lines.length; line++) {
+				console.log(`Line ${line}: ${lines[line]}`);
+			}
+
 		};
 
 

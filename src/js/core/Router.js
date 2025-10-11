@@ -107,8 +107,6 @@
                 return false;
             }
 
-            const contentType = response.headers.get("content-type") || "";
-
             return response.text();
             
         };
