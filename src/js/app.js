@@ -9,7 +9,5 @@
 
         const   __controller = await Controller();
 
-        console.log(`Clean exit`);
-
     })();
     

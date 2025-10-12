@@ -67,7 +67,7 @@
                 }
 
                 _methods[method_name] = methods[method_name];
-                __helpers.log(`Registered method '${method_name}' from module '${mod_name}'`);
+                __helpers.log(`>>>     Registered method '${method_name}' from module '${mod_name}'`);
             }
 
             return {
@@ -89,6 +89,8 @@
             for (let mod = 0; mod < modules.length; mod++) {
 
                 let script_path = `${deps_path}/${modules[mod]}`;
+
+                __helpers.log(`>>> Registering module ${modules[mod]} (${script_path}.js)...`);
 
                 if (_modules[modules[mod]] !== undefined) {
                     return __helpers.err_object(
@@ -117,8 +119,13 @@
                     return response;
                 }
 
-            }
+                __helpers.log(`>>> Done!`);
 
+            }
+            __helpers.log(`>>>`);
+            __helpers.log(`>>> Total modules: ${Object.keys(_modules).length}`);
+            __helpers.log(`>>> Total methods: ${Object.keys(_methods).length}`);
+            __helpers.log(`>>>`);
             return {
                 'status': "success"
             };

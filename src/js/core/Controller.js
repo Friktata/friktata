@@ -7,6 +7,7 @@
 
     import { Display } from "./Display.js";
     import { Router } from "./Router.js";
+    import { Helpers } from "./Helpers.js";
 
     import { Depmanager } from "./PolyBASIC/Depmanager.js";
 
@@ -17,8 +18,14 @@
 
         const   __display = Display();
         const   __router = await Router();
+        const   __helpers = Helpers();
 
         const   __depmanager = await Depmanager();
+
+        __helpers.log(`>>> I am PolyBASIC`)
+        __helpers.log(`>>>`);
+        __helpers.log(`>>> Initialising core modules...`)
+        __helpers.log(`>>>`)
 
         let     result = await __depmanager.modules_load(
             DepmanagerConfig['builtins_path'],
@@ -38,6 +45,13 @@
         const   __script_path = __router.get_page_path();
         const   __script_data = await __router.get_page_data();
 
-        await __polybasic.exec_script(__script_path, __script_data);
+        result = await __polybasic.exec_script(__script_path, __script_data);
+
+        if (result.status === "success") {
+            __helpers.log(`>>>`);
+            __helpers.log(`>>> That is a nice, clean exit|`);
+        }
+
+        return result;
 
     };

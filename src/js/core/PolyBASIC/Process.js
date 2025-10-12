@@ -22,6 +22,9 @@
         let     _lines = false;
         let     _proc = false;
 
+        let     _total_lines = 0;
+        let     _total_blocks = 0;
+
 
     /**************************************************************************
      *  __process_new()
@@ -300,8 +303,6 @@
                             );
                         }
 
-                        __helpers.log(`>>> Returning from block ${proc.id} to ${_process_path(proc.parent)}`);
-
                         return {
                             'status': "success"
                         };
@@ -412,7 +413,7 @@
                 mode = "";
             }
 
-            __helpers.log(`${_indent}${mode}${path_info}${proc.id}, ${proc.code.length} lines:\n`);
+            __helpers.log(`>>> ${_indent}${mode}${path_info}${proc.id}, ${proc.code.length} lines:`);
             
             let keys = Object.keys(proc.code);
 
@@ -431,7 +432,7 @@
                         }
                     }
 
-                    __helpers.log(`${str}`);
+                    __helpers.log(`>>> ${str}`);
 
                     continue;
                 }
@@ -447,7 +448,8 @@
      */
         const   _process = lines => {
 
-            __helpers.log(`>>> Processing ${lines.length} lines...\n`);
+            __helpers.log(`>>> Processed ${lines.length} lines in total...`);
+            __helpers.log(`>>>`);
 
             _proc = structuredClone(__process_new());
             _lines = lines;
@@ -464,7 +466,10 @@
                 return response;
             }
 
-            __process_print(_proc);
+            __helpers.log(`>>> All scripts processed, here's a lovely tree:`);
+            __helpers.log(`>>>`);
+
+            __process_print(_proc, 4);
 
             return {
                 'status': "success",

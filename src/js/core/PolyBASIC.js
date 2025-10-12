@@ -3,12 +3,16 @@
  * 
  */
 
+	import { Helpers } from "./Helpers.js";
+
 	import { Preprocess } from "./PolyBASIC/Preprocess.js";
 	import { Process } from "./PolyBASIC/Process.js";
 	import { Runtime } from "./PolyBASIC/Runtime.js";
 
 
 	export const PolyBASIC = async () => {
+
+		const	__helpers = Helpers();
 
 		const	__preprocess = await Preprocess();
 		const	__process = Process();
@@ -24,6 +28,9 @@
 			script_data
 		) => {
 
+			__helpers.log(`>>> Preprocessing scripts...`);
+			__helpers.log(`>>>`);
+
 			let result = await __preprocess.preprocess(script_name, script_data);
 
 			if (result.status !== "success") {
@@ -38,7 +45,11 @@
 				throw new Error(result.message);
 			}
 
-			result = __runtime.execute(result.proc);
+			__helpers.log(`>>>`);
+            __helpers.log(`>>> Environment prepared and ready for execution:`);
+			__helpers.log(`>>>`);
+
+			return __runtime.execute(result.proc, 4);
 
 		};
 

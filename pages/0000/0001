@@ -4,34 +4,41 @@
 //  TT T T hiss was the-_-- [[firsS-t.
 //
 
+    @include "test_script_1";
+
     line one;
     line two;
 
-    block [lx] new_block;
+    block [x] new_block;
         new_block one;
-        block inner_block;
+
+        block [x] inner_block;
             inner_block line one;
-            200 [lwrx] inner_block line two
+            200 inner_block line two
         endblock;
     endblock;
 
     add this line;
 
-    block new_block;
+    block [x] new_block;
         another new_block line
-        block inner_block;
+
+        block [x] inner_block;
             another inner_block line;
-            block even_inner;
+
+            block [x] even_inner;
                 even_inner first line;
                 even_inner last line;
             endblock
+
             yet more inner_block code;
         endblock
+
         new_block done;
     endblock
 
-    block test_block;
-        200 [lrwx] some line;
+    block [x] test_block;
+        200 some line;
         one more;
     endblock;
 

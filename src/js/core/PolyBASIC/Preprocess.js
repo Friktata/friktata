@@ -34,6 +34,7 @@
 	 */
 		const	__directive_include = async (
 			script_path,
+			indent,
 			separator = "/"
 		) => {
 
@@ -74,9 +75,9 @@
 				return __helpers.err_object(`Error in __include_script(): Error loading script ${script_base}`);
 			}
 
-			_scripts[script_base] = [];
+			_scripts.push(script_base);
 
-			return await __preprocess_script(script_base, script_data);
+			return await __preprocess_script(script_base, script_data, (indent + 4));
 
 		};
 
@@ -86,7 +87,8 @@
 	 *
 	 */
 		const	__preprocess_directive = async (
-			tokens
+			tokens,
+			indent
 		) => {
 
 	//	The @include directive allows us to include external scriots.
@@ -98,7 +100,7 @@
 
 				let script_name = __helpers.strip_quotes(tokens[3]);
 
-				let result = await __directive_include(script_name);
+				let result = await __directive_include(script_name, indent);
 
 				if (result.status !== "success") {
 					return result;
@@ -118,14 +120,15 @@
 	 *
 	 */
 		const	__preprocess_tokens = async (
-			tokens
+			tokens,
+			indent
 		) => {
 
 	//	Some pre-processing - we want to execute preprocessor directives and
 	//	remove those lines before we build the executable process.
 	//
 			if (tokens[2].substring(0, 1) === '@') {
-				return await __preprocess_directive(tokens);
+				return await __preprocess_directive(tokens, indent);
 			}
 
 			return {
@@ -143,11 +146,11 @@
 		const	__preprocess_script = async (
 			script_path,
 			script_data,
+			indent = 4
 		) => {
 
-	//	The get_lines() method will take the script_data and return an
-	//	array of lines.
-	//
+			__helpers.log(`>>> ${" ".repeat(indent)}Preprocessing script ${script_path} (${script_data.length} bytes)`);
+
 			const result = __parser.get_lines(script_path, script_data);
 
 			if (result.status !== "success") {
@@ -180,7 +183,7 @@
 					continue;
 				}
 
-				result = await __preprocess_tokens(tokens);
+				result = await __preprocess_tokens(tokens, indent);
 
 				if (result.status !== "success") {
 					return result;
@@ -211,9 +214,16 @@
 			script_data
 		) => {
 
-	//	__process_scripts() will generate the _lines array.
-	//
-			return await __preprocess_script(script_path, script_data);
+			let response = await __preprocess_script(script_path, script_data);
+
+			if (response.status !== "success") {
+				return response;
+			}
+
+			__helpers.log(`>>>`);
+			__helpers.log(`>>> Done, processed ${_scripts.length + 1} scripts`);
+
+			return response;
 
 		};
 
