@@ -9,6 +9,21 @@
 
     ) => {
 
+    
+    /**************************************************************************
+     *  _print()
+     * 
+     */
+        const _print = (
+            string
+        ) => {
+
+            console.log(string);
+
+            return "OK";
+
+        };
+
 
     /**************************************************************************
      *  _putchar()
@@ -51,6 +66,13 @@
      *  
      */
         const   _methods =          {
+            'print':                {
+                'callback':         _print,
+                'params':           [
+                    { 'type': 'string', 'name': 'string',       'info': "Print a string to the console" }
+                ],
+                'returns':  '"OK" on success or an error message on failure'
+            },
             'putchar':              {
                 'callback':         _putchar,
                 'params':           [

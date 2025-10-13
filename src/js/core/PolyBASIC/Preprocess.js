@@ -179,9 +179,9 @@
 	//	So if we only have two tokens this is an empty line and can
 	//	be discarded.
 	//
-				if (tokens.length < 2) {
-					continue;
-				}
+				// if (tokens.length < 2) {
+				// 	continue;
+				// }
 
 				result = await __preprocess_tokens(tokens, indent);
 

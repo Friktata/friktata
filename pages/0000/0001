@@ -4,43 +4,32 @@
 //  TT T T hiss was the-_-- [[firsS-t.
 //
 
-    @include "test_script_1";
+    string = str = "A string";
+    var = 20;
 
-    line one;
-    line two;
+    block [x] test;
+        string = "A different string";
+        var = (self<-var * 10);
 
-    block [x] new_block;
-        new_block one;
+         block [x] inner;
+            string = "Yet another string";
+            var = (self<-var * 10);
 
-        block [x] inner_block;
-            inner_block line one;
-            200 inner_block line two
+            print(`The root string is $parent<-string`);
+            print(`The parent string is $parent->string`);
+            print(`The parent var is $global->var`);
         endblock;
     endblock;
 
-    add this line;
+    test [x];
 
-    block [x] new_block;
-        another new_block line
+    print(here->string);
+    print(here->str);
+    print(here->var);
 
-        block [x] inner_block;
-            another inner_block line;
+    print(here->test->string);
+    print(here->test->var);
 
-            block [x] even_inner;
-                even_inner first line;
-                even_inner last line;
-            endblock
-
-            yet more inner_block code;
-        endblock
-
-        new_block done;
-    endblock
-
-    block [x] test_block;
-        200 some line;
-        one more;
-    endblock;
-
-    last line ever;
+    print(here->test->inner->string);    //  These lines won't
+    print(here->test->inner->var);       //  work (private).
 

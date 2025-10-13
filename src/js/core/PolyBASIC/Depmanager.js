@@ -122,10 +122,12 @@
                 __helpers.log(`>>> Done!`);
 
             }
+            
             __helpers.log(`>>>`);
             __helpers.log(`>>> Total modules: ${Object.keys(_modules).length}`);
             __helpers.log(`>>> Total methods: ${Object.keys(_methods).length}`);
             __helpers.log(`>>>`);
+
             return {
                 'status': "success"
             };

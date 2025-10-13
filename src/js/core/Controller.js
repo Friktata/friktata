@@ -51,6 +51,9 @@
             __helpers.log(`>>>`);
             __helpers.log(`>>> That is a nice, clean exit|`);
         }
+        else {
+            throw new Error(result.message);
+        }
 
         return result;
 

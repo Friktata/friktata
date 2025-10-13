@@ -18,7 +18,7 @@
      *  __get_next_byte()
      * 
      */
-        const __get_next_byte = () => {
+        const   __get_next_byte = () => {
 
             if (__script_byte >= __script_data.length) {
                 return false
@@ -50,6 +50,23 @@
 
             __script_byte++;
 
+            return next_byte;
+
+        };
+
+
+    /**************************************************************************
+     *  __peek_next_byte()
+     * 
+     */
+        const   __peek_next_byte = () => {
+
+            let next_byte = __get_next_byte();
+
+            if (next_byte !== false) {
+                __script_byte--;
+            }
+            
             return next_byte;
 
         };
@@ -211,6 +228,86 @@
 
     
     /**************************************************************************
+     *  __is_double()
+     * 
+     */
+        const   __is_double = char => {
+
+            const   next_byte = __peek_next_byte();
+
+            if (char === '+') {
+                return (
+                    next_byte === '+'   ||
+                    next_byte === '='
+                ) ? true : false;
+            }
+
+            if (char === '-') {
+                return (
+                    next_byte === '-'   ||
+                    next_byte === '='   ||
+                    next_byte === '>'
+                ) ? true : false;
+            }
+
+            if (char === '*') {
+                return (
+                    next_byte === '='
+                ) ? true : false;
+            }
+
+            if (char === '/') {
+                return (
+                    next_byte === '='
+                ) ? true : false;
+            }
+
+            if (char === '^') {
+                return (
+                    next_byte === '='
+                ) ? true : false;
+            }
+
+            if (char === '|') {
+                return (
+                    next_byte === '|'   ||
+                    next_byte === '='
+                ) ? true : false;
+            }
+
+            if (char === '&') {
+                return (
+                    next_byte === '&'
+                ) ? true : false;
+            }
+
+            if (char === '<') {
+                return (
+                    next_byte === '<'   ||
+                    next_byte === '='   ||
+                    next_byte === '-'
+                ) ? true : false;
+            }
+
+            if (char === '>') {
+                return (
+                    next_byte === '>'   ||
+                    next_byte === '='
+                ) ? true : false;
+            }
+
+            if (char === '=') {
+                return (
+                    next_byte === '='
+                ) ? true : false;
+            }
+
+            return false;
+
+        };
+
+    
+    /**************************************************************************
      *  __is_single()
      */
         const   __is_single = char => {
@@ -246,7 +343,7 @@
     /**************************************************************************
      *  __eat_my_comment()
      */
-        const __eat_my_comment = () => {
+        const   __eat_my_comment = () => {
             while (__script_byte < __script_data.length) {
                 let next_byte = __get_next_byte();
 
@@ -294,6 +391,12 @@
                 }
 
                 if (__is_whitespace(next_byte) || __is_newline(next_byte)) {
+                    continue;
+                }
+
+                if (__is_double(next_byte)) {
+                    token_buffer = next_byte + __get_next_byte()
+                    __add_token();
                     continue;
                 }
 

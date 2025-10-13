@@ -25,7 +25,6 @@
         let     _total_lines = 0;
         let     _total_blocks = 0;
 
-
     /**************************************************************************
      *  __process_new()
      * 
@@ -89,6 +88,9 @@
                 else if (char === 'r') {
                     obj_line['mode']['read'] = ! obj_line['mode']['read'];
                 }
+                else if (char === 'p') {
+                    obj_line['mode']['private'] = ! obj_line['mode']['private'];
+                }
                 else if (char === 'w') {
                     obj_line['mode']['write'] = ! obj_line['mode']['write'];
                 }
@@ -126,7 +128,7 @@
                 );
             }
 
-            if (! /^[a-zA-Z_]+$/.test(label.substring(0, 1))) {
+            if (! /^[a-zA-Z_][a-zA-Z0-9_]+$/.test(label)) {
                 return __helpers.err_object(
                     `Error in ${tokens[0]} on line ${tokens[1]}: Invalid label prefix'${label.substring(0, 1)}'.`
                 );
@@ -149,6 +151,7 @@
         ) => {
 
             let process_path = _process_path(proc);
+            let is_private = false;
 
     //  Assume a blocked/scoped line...
     //
@@ -164,6 +167,12 @@
             if (proc.id === __polybasic_config['root_node_id'] && proc.parent === false) {
                 obj_line['mode'] = structuredClone(__polybasic_config['root_mode_default']);
             }
+
+
+                if (tokens[2] === "private") {
+                    is_private = true;
+                    tokens.splice(2, 1);
+                }
 
     //  Is this a block or a line?
     //
@@ -181,6 +190,8 @@
 
                 obj_line = __process_mode(proc, tokens, obj_line);
 
+                obj_line['mode']['private'] = is_private;
+
                 if (tokens.length < 3) {
                     return __helpers.err_object(
                         `Error in ${tokens[0]} on line ${tokens[1]}: Block identifier expected`
@@ -197,7 +208,7 @@
                 if (response.status !== "success") {
                     return response;
                 }
-
+                
                 obj_line['line_id'] = tokens[2];
             }
             else {
@@ -244,7 +255,6 @@
                     obj_line['line_id'] = __line_id[process_path];
                 }
 
-              
                 if (proc.id === __polybasic_config['root_node_id'] && proc.parent === false) {
                     obj_line['mode'] = structuredClone(__polybasic_config['root_mode_default']);
                 }
@@ -259,10 +269,9 @@
                 }
                 
                 obj_line = __process_mode(proc, tokens, obj_line);
+                obj_line['mode']['private'] = is_private;
 
             }
-
-            // console.log(JSON.stringify(obj_line, null, 3))
 
             return obj_line;
 
@@ -282,8 +291,6 @@
             if (! __line_id.hasOwnProperty(process_path)) {
                 __line_id[process_path] = 0;
             }
-
-            // __helpers.log(`>>> Processing block: ${process_path}`);
 
             for (; __line_no < _lines.length; __line_no++) {
 
@@ -308,23 +315,31 @@
                         };
                     }
 
+                    response.line_id = `__${response.line_id}__`;
+
     //  Add a line of code to the current proc - if a line currently exists
     //  it will be overwritten.
     //
                     proc.name[response.line_id] = response.line_id;
-                    proc.code[response.line_id] = tokens;
-                    proc.mode[response.line_id] = response.mode;
 
-                    // __helpers.log(`>>> Wrote line ${response.line_id} to ${process_path}: ${JSON.stringify(tokens, null, 3)}`);
+                    // if (tokens.length > 2) {
+                    //     proc.code[response.line_id] = tokens;
+                    // }
+                    // else {
+                    //     if (proc.code[response.line_id] === undefined) {
+                            proc.code[response.line_id] = tokens;
+                    //     }
+                    // }
+
+                    proc.mode[response.line_id] = response.mode;
                 
                     continue;
                 }
 
                 if (proc.code[response.line_id] === undefined) {
+                    proc.mode[response.line_id] = response.mode;
                     proc.name[response.line_id] = response.line_id;
                     proc.code[response.line_id] = __process_new(_process_path(proc));
-                    proc.mode[response.line_id] = response.mode;
-                    
                     proc.code[response.line_id].id = response.line_id;
                     proc.code[response.line_id].parent = proc;
                 }
@@ -381,6 +396,7 @@
             let mode_str = "[";
 
             mode_str += (obj_mode.locked) ? "l" : "-";
+            mode_str += (obj_mode.private) ? "p" : "-";
             mode_str += (obj_mode.read) ? "r" : "-";
             mode_str += (obj_mode.write) ? "w" : "-";
             mode_str += (obj_mode.execute) ? "x" : "-";
@@ -412,15 +428,15 @@
             else {
                 mode = "";
             }
-
-            __helpers.log(`>>> ${_indent}${mode}${path_info}${proc.id}, ${proc.code.length} lines:`);
             
             let keys = Object.keys(proc.code);
+
+            __helpers.log(`>>> ${_indent}${mode}${path_info}${proc.id}, ${keys.length} lines:`);
 
             for (let line = 0; line < keys.length; line++) {
                 let tokens = proc.code[keys[line]];
                 let mode = __process_line_mode(proc.mode[keys[line]]);
-                let str = `${_indent}${" ".repeat(4)}${mode} Line ${keys[line]}: `;
+                let str = `${_indent}${" ".repeat(4)}${mode} Line ${keys[line].replaceAll('__', '')}: `;
                 
                 if (Array.isArray(tokens)) {
                     for (let token = 0; token < tokens.length; token++) {
@@ -439,7 +455,7 @@
 
                 __process_print(tokens, (indent + _indent_increment), mode);
             }
-        }
+        };
 
 
     /**************************************************************************

@@ -13,21 +13,24 @@
                 'read':             false,
                 'write':            false,
                 'execute':          true,
-                'locked':           true
+                'locked':           true,
+                'private':          false   // NOTE: This should always be false.
             },
 
             'line_mode_default':    {
                 'read':             true,
                 'write':            true,
                 'execute':          true,
-                'locked':           false
+                'locked':           false,
+                'private':          false
             },
 
             'block_mode_default':   {
                 'read':             true,
                 'write':            true,
                 'execute':          false,
-                'locked':           false
+                'locked':           false,
+                'private':          false
             },
 
             'root_node_id':         "root",
@@ -43,7 +46,11 @@
 
             'keywords':             [
                 'block',
-                'endblock'
+                'endblock',
+                'global',
+                'here',
+                'parent',
+                'private'
             ]
 
         }
