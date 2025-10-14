@@ -10,15 +10,23 @@
     ) => {
 
     
-    /**************************************************************************
-     *  _print()
-     * 
-     */
-        const _print = (
-            string
+        const test = (
+            obj_params
         ) => {
 
-            console.log(string);
+            return (obj_params['lval'] + obj_params['rval']);
+
+        };
+
+    /**************************************************************************
+     *  print()
+     * 
+     */
+        const print = (
+            obj_params = []
+        ) => {
+
+            console.log(obj_params['string']);
 
             return "OK";
 
@@ -26,13 +34,11 @@
 
 
     /**************************************************************************
-     *  _putchar()
+     *  putchar()
      * 
      */
-        const   _putchar = (
-            cell_row,
-            cell_column,
-            byte
+        const   putchar = (
+            obj_params = []
         ) => {
 
             return "OK";
@@ -41,13 +47,11 @@
 
 
     /**************************************************************************
-     *  _putstring()
+     *  putstring()
      * 
      */
-        const   _putstring = (
-            cell_row,
-            cell_column,
-            string
+        const   putstring = (
+            obj_params = []
         ) => {
 
             return "OK";
@@ -66,30 +70,34 @@
      *  
      */
         const   _methods =          {
-            'print':                {
-                'callback':         _print,
+            'test':                 {
+                'callback':         test,
                 'params':           [
-                    { 'type': 'string', 'name': 'string',       'info': "Print a string to the console" }
-                ],
-                'returns':  '"OK" on success or an error message on failure'
+                    { 'name': 'lval', 'default': false, 'type': 'number' },
+                    { 'name': 'rval', 'default': 10, 'type': 'number' }
+                ]
+            },
+            'print':                {
+                'callback':         print,
+                'params':           [
+                    { 'name': 'string', 'default': false, 'type': 'string' }
+                ]
             },
             'putchar':              {
-                'callback':         _putchar,
+                'callback':         putchar,
                 'params':           [
-                    { 'type': 'int',    'name': 'cell_row',     'info': 'Row/line position to begin output' },
-                    { 'type': 'int',    'name': 'cell_column',  'info': 'Column position to begin output' },
-                    { 'type': 'char',   'name': 'byte',         'info': 'Character to print at cell_row,cell_column' }
-                ],
-                'returns':  '"OK" on success or an error message on failure'
+                    { 'name': 'row', 'default': false, 'type': 'number' },
+                    { 'name': 'col', 'default': 10, 'type': 'number' },
+                    { 'name': 'string', 'default': false, 'type': 'string' }
+                ]
             },
             'putstring':            {
-                'callback':         _putstring,
+                'callback':         putstring,
                 'params':           [
-                    { 'type': 'int',    'name': 'cell_row',     'info': 'Row/line position to begin output' },
-                    { 'type': 'int',    'name': 'cell_column',  'info': 'Column position to begin output' },
-                    { 'type': 'char',   'name': 'string',       'info': 'String to print at cell_row,cell_column' }
-                ],
-                'returns':  '"OK" on success or an error message on failure'
+                    { 'name': 'row', 'default': false, 'type': 'number' },
+                    { 'name': 'col', 'default': 10, 'type': 'number' },
+                    { 'name': 'string', 'default': false, 'type': 'string' }
+                ]
             }
         };
 

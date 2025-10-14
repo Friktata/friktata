@@ -302,6 +302,12 @@
                 ) ? true : false;
             }
 
+            if (char === '!') {
+                return (
+                    next_byte === '='
+                ) ? true : false;
+            }
+
             return false;
 
         };
@@ -401,6 +407,10 @@
                 }
 
                 if (__is_single(next_byte)) {
+                    if (next_byte === ",") {
+                        continue;
+                    }
+                    
                     token_buffer = next_byte;
                     __add_token();
                     continue;

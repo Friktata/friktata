@@ -28,9 +28,160 @@
 		let		_scripts = [];
 		let		_lines = [];
 
+function __preprocess_function_signature(line) {
+    let result = '';
+    let stack = [];
+    let i = 0;
+
+    const isIdentifierChar = c => /[A-Za-z0-9_\->]/.test(c);
+
+    while (i < line.length) {
+        const char = line[i];
+
+        // Detect function call: identifier + optional space + '('
+        if (char === '(') {
+            // Look backwards to see if this is a function call
+            let j = i - 1;
+            while (j >= 0 && /\s/.test(line[j])) j--;
+            let idEnd = j;
+            while (j >= 0 && isIdentifierChar(line[j])) j--;
+            let identifier = line.slice(j + 1, idEnd + 1);
+
+            if (identifier && /[A-Za-z_]/.test(identifier[0])) {
+                // function call
+                result += '[';
+                stack.push(']');
+            } else {
+                // expression group
+                result += '(';
+                stack.push(')');
+            }
+            i++;
+            continue;
+        }
+
+        if (char === ')') {
+            if (stack.length > 0) {
+                result += stack.pop();
+            } else {
+                result += ')';
+            }
+            i++;
+            continue;
+        }
+
+        result += char;
+        i++;
+    }
+
+    return result;
+}
+
+	/**************************************************************************
+	 *	__preprocess_function_signature()
+	 *
+	 */
+		const __preprocess_function_signature__ = line => {
+
+			let result = '';
+			let i = 0;
+			let inString = false;
+			let stringChar = null;
+
+			while (i < line.length) {
+				let char = line[i];
+
+				if (!inString && (char === '"' || char === "'" || char === '`')) {
+					inString = true;
+					stringChar = char;
+					result += char;
+					i++;
+
+					continue;
+				}
+
+				if (inString) {
+					result += char;
+
+					if (char === stringChar && line[i - 1] !== '\\') {
+						inString = false;
+						stringChar = null;
+					}
+					i++;
+
+					continue;
+				}
+
+				let match = line.slice(i).match(/^([a-zA-Z_]\w*)\s*\(/);
+
+				if (match) {
+
+					let funcName = match[1];
+
+					result += funcName + '[';
+					i += match[0].length;
+
+					let depth = 1;
+					let inner = '';
+
+					while (i < line.length && depth > 0) {
+						let c = line[i];
+
+						if (c === '"' || c === "'" || c === '`') {
+							let quote = c;
+
+							inner += c;
+							i++;
+
+							while (i < line.length && (line[i] !== quote || line[i - 1] === '\\')) {
+								inner += line[i++];
+							}
+
+							if (i < line.length) {
+								inner += line[i];
+							}
+						}
+						else if (c === '(') {
+							depth++;
+							inner += c;
+						}
+						else if (c === ')') {
+							depth--;
+							if (depth > 0) inner += c;
+						}
+						else {
+							inner += c;
+						}
+
+						i++;
+					}
+
+					let processedInner = __preprocess_function_signature(inner.trim());
+
+					if (
+						/[+\-*/%<>=!&|]/.test(processedInner) &&
+						!/^\(.*\)$/.test(processedInner) &&
+						!/^["'`].*["'`]$/.test(processedInner) &&
+						!/->/.test(processedInner)
+					) {
+						processedInner = `(${processedInner})`;
+					}
+
+					result += processedInner + ']';
+				}
+				else {
+					result += char;
+					i++;
+				}
+			}
+
+			return result;
+		};
+
 
 	/**************************************************************************
 	 *	__directive_include()
+	 *
 	 */
 		const	__directive_include = async (
 			script_path,
@@ -160,6 +311,12 @@
 			const lines = result.lines;
 
 			for (let line = 0; line < lines.length; line++) {
+
+				let new_line = __preprocess_function_signature(lines[line]);
+
+				console.log(`>>>>>> TRANSLATED LINE: ${new_line}`);
+
+				lines[line] = new_line;
 
 	//	The get_rokens() method takes a line and returns an array
 	//	of tokens.

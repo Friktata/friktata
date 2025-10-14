@@ -7,13 +7,13 @@
     string = str = "A string";
     var = 20;
 
-    block [x] test;
+    block [x] __test;
         string = "A different string";
-        var = (self<-var * 10);
+        var = (10 * (10 + 1));
 
          block [x] inner;
             string = "Yet another string";
-            var = (self<-var * 10);
+            var = (100 * 10);
 
             print(`The root string is $parent<-string`);
             print(`The parent string is $parent->string`);
@@ -21,15 +21,24 @@
         endblock;
     endblock;
 
-    test [x];
+    test[20, 30];
 
     print(here->string);
     print(here->str);
     print(here->var);
 
-    print(here->test->string);
-    print(here->test->var);
+    print(here->__test->string);
+    print(here->__test->var);
 
-    print(here->test->inner->string);    //  These lines won't
-    print(here->test->inner->var);       //  work (private).
+    print((10 + 100), test(40, 50), here->__test->inner->string);    //  These lines won't
+    print(here->__test->inner->var);       //  work (private).
 
+
+    print(10 == 10);
+    print (10 < 20);
+    print (10 > 0);
+    print(10 == 20);
+    print (10 <= 20);
+    print (10 >= 10);
+    print (" a string((10 + 2))");  // return NaN 
+    print ((10 + test((20 + 40), 30)));    // causes error.
