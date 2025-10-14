@@ -28,54 +28,69 @@
 		let		_scripts = [];
 		let		_lines = [];
 
-function __preprocess_function_signature(line) {
-    let result = '';
-    let stack = [];
-    let i = 0;
+	
+	/**************************************************************************
+	 *	__preprocess_function_signature
+	 */
+		function __preprocess_function_signature(line) {
+			let result = '';
+			let stack = [];
+			let i = 0;
 
-    const isIdentifierChar = c => /[A-Za-z0-9_\->]/.test(c);
+			const isIdentifierChar = c => /[A-Za-z0-9_\->]/.test(c);
 
-    while (i < line.length) {
-        const char = line[i];
+			while (i < line.length) {
+				const char = line[i];
 
-        // Detect function call: identifier + optional space + '('
-        if (char === '(') {
-            // Look backwards to see if this is a function call
-            let j = i - 1;
-            while (j >= 0 && /\s/.test(line[j])) j--;
-            let idEnd = j;
-            while (j >= 0 && isIdentifierChar(line[j])) j--;
-            let identifier = line.slice(j + 1, idEnd + 1);
+				if (char === '(') {
+					let j = i - 1;
+					
+					while (j >= 0 && /\s/.test(line[j])) {
+						j--;
+					}
 
-            if (identifier && /[A-Za-z_]/.test(identifier[0])) {
-                // function call
-                result += '[';
-                stack.push(']');
-            } else {
-                // expression group
-                result += '(';
-                stack.push(')');
-            }
-            i++;
-            continue;
-        }
+					let idEnd = j;
+					
+					while (j >= 0 && isIdentifierChar(line[j])) {
+						j--;
+					}
 
-        if (char === ')') {
-            if (stack.length > 0) {
-                result += stack.pop();
-            } else {
-                result += ')';
-            }
-            i++;
-            continue;
-        }
+					let identifier = line.slice(j + 1, idEnd + 1);
 
-        result += char;
-        i++;
-    }
+					if (identifier && /[A-Za-z_]/.test(identifier[0])) {
+						result += '[';
+						stack.push(']');
+					} 
+					else {
+						result += '(';
+						stack.push(')');
+					}
 
-    return result;
-}
+					i++;
+
+					continue;
+				}
+
+				if (char === ')') {
+					if (stack.length > 0) {
+						result += stack.pop();
+					}
+					else {
+						result += ')';
+					}
+
+					i++;
+					
+					continue;
+				}
+
+				result += char;
+				i++;
+			}
+
+			return result;
+		};
+		
 
 	/**************************************************************************
 	 *	__preprocess_function_signature()
@@ -313,8 +328,6 @@ function __preprocess_function_signature(line) {
 			for (let line = 0; line < lines.length; line++) {
 
 				let new_line = __preprocess_function_signature(lines[line]);
-
-				console.log(`>>>>>> TRANSLATED LINE: ${new_line}`);
 
 				lines[line] = new_line;
 

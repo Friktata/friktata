@@ -9,8 +9,14 @@
 
             'builtins_path':    './builtins',
 
-            'builtins': [
+            'builtins':         [
                 'IO'
+            ],
+
+            'plugins_path':     './../../PolyBASIC_plugins',
+
+            'plugins':          [
+                'TerminalIO'
             ]
 
         };

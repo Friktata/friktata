@@ -50,7 +50,12 @@
                 'global',
                 'here',
                 'parent',
-                'private'
+                'private',
+                'if',
+                'elseif',
+                'else',
+                'goto',
+                'exec'
             ]
 
         }

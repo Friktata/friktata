@@ -4,41 +4,11 @@
 //  TT T T hiss was the-_-- [[firsS-t.
 //
 
-    string = str = "A string";
-    var = 20;
+    block [x] print_string;
 
-    block [x] __test;
-        string = "A different string";
-        var = (10 * (10 + 1));
+        putstring(10, 80, "This is a string abcdefghijklmnopqrstuvwxyz0123456789");
 
-         block [x] inner;
-            string = "Yet another string";
-            var = (100 * 10);
-
-            print(`The root string is $parent<-string`);
-            print(`The parent string is $parent->string`);
-            print(`The parent var is $global->var`);
-        endblock;
     endblock;
 
-    test[20, 30];
 
-    print(here->string);
-    print(here->str);
-    print(here->var);
-
-    print(here->__test->string);
-    print(here->__test->var);
-
-    print((10 + 100), test(40, 50), here->__test->inner->string);    //  These lines won't
-    print(here->__test->inner->var);       //  work (private).
-
-
-    print(10 == 10);
-    print (10 < 20);
-    print (10 > 0);
-    print(10 == 20);
-    print (10 <= 20);
-    print (10 >= 10);
-    print (" a string((10 + 2))");  // return NaN 
-    print ((10 + test((20 + 40), 30)));    // causes error.
+    if (10 != 10) putstring(10, 10, "YES!");

@@ -24,12 +24,24 @@
 
         __helpers.log(`>>> I am PolyBASIC`)
         __helpers.log(`>>>`);
-        __helpers.log(`>>> Initialising core modules...`)
-        __helpers.log(`>>>`)
+        __helpers.log(`>>> Initialising core modules from ${DepmanagerConfig['builtins_path']}...`);
+        __helpers.log(`>>>`);
 
         let     result = await __depmanager.modules_load(
             DepmanagerConfig['builtins_path'],
             DepmanagerConfig['builtins']
+        );
+
+        if (result.status !== "success") {
+            throw new Error(result.message);
+        }
+
+        __helpers.log(`>>> Initialising plugin modules from ${DepmanagerConfig['plugins_path']}...`);
+        __helpers.log(`>>>`);
+
+        result = await __depmanager.modules_load(
+            DepmanagerConfig['plugins_path'],
+            DepmanagerConfig['plugins']
         );
 
         if (result.status !== "success") {

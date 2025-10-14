@@ -109,7 +109,7 @@
                 for (let column = 0; column < _columns; column++) {
                     html_out += `
                         <div
-                            id="cell_${column}_${row}"
+                            id="cell_${row}_${column}"
                             class="cell"
                             style="
                                 top: ${((row * _column_height) + __top)}px;
@@ -121,7 +121,7 @@
                                 padding: 0;
                             "
                         >
-                            #
+                            &nbsp;
                         </div>
                     `
                 }

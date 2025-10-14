@@ -257,6 +257,9 @@
                         `Error in ${tokens[0]} on line ${tokens[1]}: Function '${function_name}' expects ${f_params.length} parameters`
                     );
                 }
+
+                tokens[(position + param)] = __helpers.strip_quotes(tokens[(position + param)]);
+
                 if (f_params[param]['type'] === 'number') {
                     params[f_params[param]['name']] = parseInt(tokens[(position + param)]);
                 }
@@ -299,7 +302,7 @@
             if (tokens[token] === 'here') {
                 result = __resolve_node_path(proc, tokens, token);
             }
-            else {
+            else if (tokens[token] === "global") {
                 result = __resolve_node_path(_proc, tokens, token);
             }
 
@@ -611,9 +614,9 @@
                         ! __is_expr(tokens[token]) &&
                         ! __is_grammatical(tokens[token])
                     ) {
-                    return __helpers.err_object(
-                        `Error in ${tokens[0]} on line ${tokens[1]}: Unexpected token '${tokens[token]}'`
-                    );
+                        return __helpers.err_object(
+                            `Error in ${tokens[0]} on line ${tokens[1]}: Unexpected token '${tokens[token]}'`
+                        );
                     }
                 }
 
@@ -624,6 +627,162 @@
                     `Error in ${tokens[0]} on line ${tokens[1]}: Expected '(' token`
                 )
             }
+
+            return {
+                'status': "success",
+                'tokens': tokens
+            };
+
+        };
+
+    /**************************************************************************
+     *  __parse_conditional_expression()
+     * 
+     */
+        const   __parse_conditional_expression = (
+            proc,
+            tokens,
+            token_start
+        ) => {
+
+            let parens = 0;
+            let blocks = 0;
+            
+            if (tokens[token_start] !== '[' && tokens[token_start] !== '(') {
+                return {
+                    'status': "success",
+                    'start': token_start,
+                    'enx': token_start,
+                    'tokens': tokens,
+                    'expr_tokens': tokens[token_start]
+                };
+            }
+
+            if (tokens[token_start] === '[') {
+                blocks++;
+            }
+            else {
+                parens++;
+            }
+
+            let expr_tokens = [
+                tokens[token_start]
+            ];
+
+            for (let token = (token_start + 1); token < tokens.length; token++) {
+
+                if (blocks === 0 && parens === 0) {
+                    if (expr_tokens[0] === '[') {
+                        expr_tokens[0] = '(';
+                    }
+                    if (expr_tokens[(expr_tokens.length - 1)] === ']') {
+                        expr_tokens[(expr_tokens.length - 1)] = ')';
+                    }
+
+                    return {
+                        'status': "success",
+                        'start': token_start,
+                        'end': token,
+                        'tokens': tokens,
+                        'expr_tokens': expr_tokens
+                    };
+                }
+
+                if (tokens[token] === '[') {
+                    blocks++;
+                }
+                else if (tokens[token] === ']') {
+                    blocks--;
+                }
+                else if (tokens[token] === '(') {
+                    parens++;
+                }
+                else if (tokens[token] === ')') {
+                    parens--;
+                }
+
+                expr_tokens.push(tokens[token]);
+
+            }
+
+            console.log(expr_tokens);
+
+            return __helpers.err_object(
+                `Error in ${tokens[0]} on line ${tokens[1]}: Maformed expression`
+            );
+
+        };
+
+
+    /**************************************************************************
+     *  __execute_conditional_line()
+     * 
+     */
+        const   __execute_conditional_line = (
+            proc,
+            tokens
+        ) => {
+
+            let obj_lines =     {
+                '__if':         [],
+                '__elseif':     [],
+                '__else':       []
+            };
+
+            let new_tokens = [];
+            let condition = '__if';
+
+            for (let token = 3; token < tokens.length; token++) {
+
+                if (tokens[token] === 'if') {
+                    return __helpers.err_object(
+                        `Error in ${tokens[0]} on line ${tokens[1]}: Unexpected 'if' token`
+                    );
+                }
+
+                if (tokens[token] === 'elseif') {
+                    if (obj_lines['__if'].length === 0) {
+                        return __helpers.err_object(
+                            `Error in ${tokens[0]} on line ${tokens[1]}: Missing expression for 'if'`
+                        );
+                    }
+                    if (obj_lines['__else'].length > 0) {
+                        return __helpers.err_object(
+                            `Error in ${tokens[0]} on line ${tokens[1]}: Unexpected 'elseif'`
+                        );
+                    }
+
+                    condition = '__elseif';
+                    token++;
+                }
+
+                if (tokens[token] === "else") {
+                    if (obj_lines['__if'].length === 0) {
+                        return __helpers.err_object(
+                            `Error in ${tokens[0]} on line ${tokens[1]}: Missing expression for 'if'`
+                        );
+                    }
+
+                    condition = '__else';
+                    token++;
+                }
+
+                let result = __parse_conditional_expression(proc, tokens, token);
+
+                if (result.status !== "success") {
+                    return result;
+                }
+
+                tokens = result.tokens;
+                let expr_tokens = result.expr_tokens;
+
+                console.log(`EXPR_TOKENS: ${expr_tokens}`);
+
+                obj_lines[condition].push(tokens[token]);
+
+            };
+
+            console.log(`>>> EXPANDED EXPRESSION: ${JSON.stringify(obj_lines, null, 3)}`);
 
             return {
                 'status': "success",
@@ -683,8 +842,20 @@
                     continue;
                 }
 
-    //  Now the line of code is processed and a new set of tokens are
-    //  generated.
+    //  If statements must be handled here - we check the 3rd
+    //  token (code[2])
+    // 
+                if (code[2] === 'if') {
+                    let result = __execute_conditional_line(proc, code);
+
+                    if (result.status !== "success") {
+                        return result;
+                    }
+
+                    continue;
+                }
+
+    //  Execute line.
     //
                 let result = __execute_line(proc, [ ... code ]);
 
