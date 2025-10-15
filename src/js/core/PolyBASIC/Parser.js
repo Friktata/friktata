@@ -491,10 +491,10 @@
                     if (line_buffer.trim() === "") {
                         line_start = line_number;
                     }
-                    if (! quoted_string && last_byte !== "\\") {
-                        __add_line();
-                        continue;
-                    }
+                    // if (! quoted_string && last_byte !== "\\") {
+                    //     __add_line();
+                    //     continue;
+                    // }
                 }
 
                 if (next_byte === ";" && ! quoted_string) {

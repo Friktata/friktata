@@ -11,4 +11,12 @@
     endblock;
 
 
-    if (10 != 10) putstring(10, 10, "YES!");
+    if (10 != 10)
+        putstring(10, 10, "YES!") 
+    elseif (10 == 2) 
+        putstring(10, 10, "NO! ")
+    elseif (20 == 200)
+        putstring(11, 10, "Ya!")
+    else 
+        putstring(11, 10, "Na!")
+    ;
