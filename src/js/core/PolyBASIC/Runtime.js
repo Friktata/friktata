@@ -224,9 +224,17 @@
             let function_name = tokens[token_start];
             let position = (token_start + 1);
 
+            // console.log(`\n\nFucntion: ${function_name}\n\n`);
+
             let token_end;
 
             for (token_end = position; token_end < tokens.length; token_end++) {
+                // if (window.__methods.hasOwnProperty(tokens[token_end])) {
+                //     let result = __execute_function(proc, tokens, token_end, operator);
+                //     if (result.status !== "success") {
+                //         return status;
+                //     }
+                // }
                 if (tokens[token_end] === ']') {
                     break;
                 }
@@ -285,6 +293,7 @@
                     );
                 }
 
+                // console.log(`>>> Pre splice: ${tokens}`);
                 tokens.splice((token_start + 1), (token_end - (token_start - 1)));
 
                 result = __handle_expression(proc, tokens, (token_start + 1));
@@ -292,8 +301,10 @@
                 if (result.status !== "success") {
                     return result;
                 }
+                // console.log(`>>> Post splice: ${tokens}`);
             }
             else {
+                console.log(`>>> Pre splice: ${tokens}`);
                 tokens.splice((token_start + 1), (token_end - (token_start)));
             }
 
@@ -303,6 +314,7 @@
             else {
                 tokens.splice(2, 1);
             }
+                console.log(`>>> Post splice: ${tokens}, result = ${result}`);
             
             return {
                 'status': "success",
@@ -558,7 +570,7 @@
                     break;
                 default:
                     return __helpers.err_object(
-                        `Error in ${tokens[0]} on line ${tokens[1]}: Unknown operator '${operator}'`
+                        `Error in ${tokens[0]} on line ${tokens[1]}: Unknown operator '${operator} ${tokens}'`
                     );
             }
 
@@ -630,6 +642,8 @@
                     continue;
                 }
 
+                console.log(`>>> Current l;ine === ${tokens},operator = ${operator}`)
+
                 // if (tokens[token] === "->" || tokens[token] === "<-") {
                 //     continue;
                 // }
@@ -643,7 +657,7 @@
     //
                 if (tokens[token] === 'here' || tokens[token] === 'global') {
 
-                    console.log(`>>> TRANSLATE VAR: ${tokens}, token=${token}, operator=${operator}`)
+                    // console.log(`>>> TRANSLATE VAR: ${tokens}, token=${token}, operator=${operator}`)
                     result = __translate_var(proc, tokens, token, operator);
 
                     if (result.status !== "success") {
@@ -651,7 +665,7 @@
                     }
 
                     tokens = result.tokens;
-                    token++;
+                    token = tokens.length;
 
                     operator = -1;
 
@@ -705,8 +719,6 @@
                         'token_position': token,
                         'tokens': tokens
                     };
-
-                    continue;
                 }
                 
     //  Open a new mathematical/logical expression.
@@ -729,6 +741,8 @@
                     tokens = result.tokens;
                     token = tokens.length;
 
+                    operator = -1;
+
                     continue;
                 }
 
@@ -747,6 +761,22 @@
                     operator = -1;
 
                     continue;
+                }
+
+                if (operator !== -1 && tokens[token] !== "<-" && tokens[token] !== "->") {
+                    console.log(`>>>>>> Tokens = ${tokens}, operator == ${operator}, token = ${token}`)
+                    if ((token - 1) >= 2 && (tokens[(token - 1)] !== "<-" && tokens[(token - 1)] !== "->")) {
+                        result = __handle_expression(proc, tokens, token);
+
+                        if (result.status !== "success") {
+                            return result;
+                        }
+
+                        tokens = result.tokens;
+                        token = tokens.length;
+
+                        operator = -1;
+                    }
                 }
 
     //  If we get here, it's an unknown token - it might be part of

@@ -8,17 +8,12 @@
     string = "abcdefgh";
 
     print(here->num);
+
     block [x] print_string;
-
         here<-num = (here<-num + 1);
-        // num = here<-num;
-
-        // print(10, 10 + here->num, substring(string, global->num, here->num));
-
-    print(here<-num);
-
+        putchar(10, (10 + here<-num), substring(here<-string, 0, 1));
     endblock;
 
     // if (here->num < 8) goto->print_string;
 
-    print(here->num);
+    // print(here->num);

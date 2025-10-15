@@ -10,7 +10,8 @@
             'builtins_path':    './builtins',
 
             'builtins':         [
-                'IO'
+                'IO',
+                'Strings'
             ],
 
             'plugins_path':     './../../PolyBASIC_plugins',

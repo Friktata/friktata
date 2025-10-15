@@ -24,7 +24,7 @@
                 obj_params['end'] = obj_params['string'].length;
             }
 
-            return obj_params.substring(obj_params['start'], obj_params['end']);
+            return obj_params['string'].substring(obj_params['start'], obj_params['end']);
 
         };
 
