@@ -4,19 +4,21 @@
 //  TT T T hiss was the-_-- [[firsS-t.
 //
 
+    num = 0;
+    string = "abcdefgh";
+
+    print(here->num);
     block [x] print_string;
 
-        putstring(10, 80, "This is a string abcdefghijklmnopqrstuvwxyz0123456789");
+        here<-num = (here<-num + 1);
+        // num = here<-num;
+
+        // print(10, 10 + here->num, substring(string, global->num, here->num));
+
+    print(here<-num);
 
     endblock;
 
+    // if (here->num < 8) goto->print_string;
 
-    if (10 != 10)
-        putstring(10, 10, "YES!") 
-    elseif (10 == 2) 
-        putstring(10, 10, "NO! ")
-    elseif (20 == 200)
-        putstring(11, 10, "Ya!")
-    else 
-        putstring(11, 10, "Na!")
-    ;
+    print(here->num);

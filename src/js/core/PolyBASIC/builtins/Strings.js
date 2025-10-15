@@ -1,21 +1,30 @@
 /******************************************************************************
- *  friktata/src/js/core/PolyBASIC/builtins/IO.js
+ *  friktata/src/js/core/PolyBASIC/builtins/Strings.js
  * 
  */
 
-    export const IO = () => {
+    export const Strings = () => {
 
     /**************************************************************************
      *  print()
      * 
      */
-        const   print = (
+        const substring = (
             obj_params = []
         ) => {
 
-            console.log(obj_params['string']);
+            if (! obj_params.hasOwnProperty('string')) {
+                return "Error in substring(): Expected 'string' parameter";
+            }
 
-            return "OK";
+            if (! obj_params.hasOwnProperty('start')) {
+                obj_params['start'] = 0;
+            }
+            if (! obj_params.hasOwnProperty('end')) {
+                obj_params['end'] = obj_params['string'].length;
+            }
+
+            return obj_params.substring(obj_params['start'], obj_params['end']);
 
         };
 
@@ -31,10 +40,12 @@
      */
         const   _methods =          {
             
-            'print':                {
-                'callback':         print,
+            'substring':            {
+                'callback':         substring,
                 'params':           [
-                    { 'name': 'string', 'type': 'string' }
+                    { 'name': 'string',     'type': 'string' },
+                    { 'name': 'start',      'type': 'number' },
+                    { 'name': 'end',        'type': 'number' }
                 ]
             }
             

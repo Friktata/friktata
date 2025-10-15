@@ -79,7 +79,7 @@
 
                 if (
                     (token + 1) >= tokens.length ||
-                    (tokens[(token + 2)] !== "<-" && tokens[(token + 2)] !== "->")
+                    (tokens[(token + 1)] !== "<-" && tokens[(token + 1)] !== "->")
                 ) {
                     result.tokens = tokens;
                     result.start = start_token;
@@ -121,7 +121,7 @@
             start_token
         ) => {
 
-            if (start_token <= 2) {
+            if (start_token < 2) {
                 return __helpers.err_object(
                     `Error in ${tokens[0]} on line ${tokens[1]}: Invalid token position`
                 );
@@ -176,6 +176,8 @@
                 return result;
             }
 
+            let base_end = result.end;
+
             result = __resolve_node_path(proc, tokens, result.start);
 
             if (result.status !== "success") {
@@ -188,10 +190,15 @@
                 proc.name[result.reference] = {};
             }
 
-            result.proc.data[result.reference] = tokens[result.end + 2];
+            result.proc.data[result.reference] = tokens[base_end + 1];
+            
 
-            tokens[result.start] = tokens[result.end + 2];
-            tokens.splice(result.start + 1, (result.end - (result.start - 1)));
+            // console.log(`[[[[[[[[[[[[[[[[[[[[    ${tokens}    ]]]]]]]]]]]]]]]]]]]] result.start=${result.start}, result.end=${base_end}`)
+            // console.log(`>>> SETVAR ${proc.id} - ${result.reference} = ${tokens[base_end + 1]}`)
+            tokens[result.start + 1] = tokens[base_end + 1];
+            tokens.splice(result.start + 1, (result.end - (base_end + 1)));
+
+            // console.log(`\n > > ${tokens} < < \n`);
             
             return {
                 'status': "success",
@@ -210,7 +217,8 @@
         const   __execute_function = (
             proc,
             tokens,
-            token_start
+            token_start,
+            operator = -1
         ) => {
 
             let function_name = tokens[token_start];
@@ -270,7 +278,24 @@
 
             let result = window.__methods[function_name]['callback'](params);
 
-            tokens.splice((token_start + 1), (token_end - (token_start)));
+            if (operator > 2) {
+                if ((operator + 1) >= tokens.length) {
+                    return __helpers.err_object(
+                        `Error in ${tokens[0]} on line ${tokens[1]}: Operand expected following '${tokens[operator]}' operator`
+                    );
+                }
+
+                tokens.splice((token_start + 1), (token_end - (token_start - 1)));
+
+                result = __handle_expression(proc, tokens, (token_start + 1));
+
+                if (result.status !== "success") {
+                    return result;
+                }
+            }
+            else {
+                tokens.splice((token_start + 1), (token_end - (token_start)));
+            }
 
             if (token_start > 2) {
                 tokens[token_start] = result;
@@ -294,7 +319,8 @@
         const   __translate_var = (
             proc,
             tokens,
-            token
+            token,
+            operator = -1
         ) => {
 
             let result;
@@ -320,7 +346,25 @@
             }
 
             tokens.splice(result.start + 1, (result.end - (result.start - 1)));
-            token = tokens.length;
+            token = tokens.length;            
+            
+            if (operator > 2) {
+                operator -= (result.end - (result.start - 1));
+
+                if ((operator + 1) >= tokens.length) {
+                    return __helpers.err_object(
+                        `Error in ${tokens[0]} on line ${tokens[1]}: Operand expected following '${tokens[operator]}' operator`
+                    );
+                }
+
+                // tokens.splice((token_start + 1), (token_end - (token_start)));
+
+                result = __handle_expression(proc, tokens, result.start, operator);
+
+                if (result.status !== "success") {
+                    return result;
+                }
+            }
 
             return {
                 'status': "success",
@@ -359,29 +403,113 @@
      *  __handle_expression()
      * 
      */
+        // const   __handle_expression = (
+        //     proc,
+        //     tokens,
+        //     token_start
+        // ) => {
+
+        //     let operator = tokens[token_start];
+
+        //     if ((token_start + 1) >= tokens) {
+        //         return __helpers.err_object(
+        //             `Error in ${tokens[0]} on line ${tokens[1]}: Expected r-value following '${operator}' operator`
+        //         );
+        //     }
+        //     if ((token_start - 1) >= tokens) {
+        //         return __helpers.err_object(
+        //             `Error in ${tokens[0]} on line ${tokens[1]}: Expected l-value before '${operator}' operator`
+        //         );
+        //     }
+
+        //     let result;
+
+        //     let l_value = tokens[(token_start - 1)];
+        //     let r_value = tokens[(token_start + 1)];
+
+        //     if (typeof l_value === "string") {
+        //         l_value = parseInt(l_value);
+        //     }
+        //     if (typeof r_value === "string") {
+        //         r_value = parseInt(r_value);
+        //     }
+
+        //     switch (operator) {
+
+        //         case '+':
+        //             result = (l_value + r_value);
+        //             break;
+        //         case '-':
+        //             result = (l_value - r_value);
+        //             break;
+        //         case '*':
+        //             result = (l_value * r_value);
+        //             break;
+        //         case '/':
+        //             result = (l_value / r_value);
+        //             break;
+        //         case '==':
+        //             result = (l_value == r_value);
+        //             break;
+        //         case '!=':
+        //             result = (l_value != r_value);
+        //             break;
+        //         case '<=':
+        //             result = (l_value <= r_value);
+        //             break;
+        //         case '>=':
+        //             result = (l_value >= r_value);
+        //             break;
+        //         case '<':
+        //             result = (l_value < r_value);
+        //             break;
+        //         case '>':
+        //             result = (l_value > r_value);
+        //             break;
+        //         case '&&':
+        //             result = (l_value && r_value);
+        //             break;
+        //         case '||':
+        //             result = (l_value || r_value);
+        //             break;
+        //         default:
+        //             return __helpers.err_object(
+        //                 `Error in ${tokens[0]} on line ${tokens[1]}: Unknown operator '${operator}'`
+        //             );
+        //     }
+
+        //     tokens[(token_start - 1)] = result.toString();
+        //     tokens.splice(token_start, 2);
+
+        //     return {
+        //         'status': "success",
+        //         'tokens': tokens
+        //     };
+
+        // };
         const   __handle_expression = (
             proc,
             tokens,
             token_start
         ) => {
 
-            let operator = tokens[token_start];
+            let operator = tokens[token_start + 1];
 
-            if ((token_start + 1) >= tokens) {
-                return __helpers.err_object(
-                    `Error in ${tokens[0]} on line ${tokens[1]}: Expected r-value following '${operator}' operator`
-                );
-            }
-            if ((token_start - 1) >= tokens) {
-                return __helpers.err_object(
-                    `Error in ${tokens[0]} on line ${tokens[1]}: Expected l-value before '${operator}' operator`
-                );
-            }
+            // if ((token_start + 1) >= tokens) {
+            //     return __helpers.err_object(
+            //         `Error in ${tokens[0]} on line ${tokens[1]}: Expected r-value following '${operator}' operator`
+            //     );
+            // }
+            // if ((token_start - 1) >= tokens) {
+            //     return __helpers.err_object(
+            //         `Error in ${tokens[0]} on line ${tokens[1]}: Expected l-value before '${operator}' operator`
+            //     );
+            // }
 
             let result;
 
-            let l_value = tokens[(token_start - 1)];
-            let r_value = tokens[(token_start + 1)];
+            let l_value = tokens[token_start];
+            let r_value = tokens[(token_start + 2)];
 
             if (typeof l_value === "string") {
                 l_value = parseInt(l_value);
@@ -434,8 +562,8 @@
                     );
             }
 
-            tokens[(token_start - 1)] = result.toString();
-            tokens.splice(token_start, 2);
+            tokens[token_start] = result.toString();
+            tokens.splice((token_start + 1), 2);
 
             return {
                 'status': "success",
@@ -487,6 +615,7 @@
         ) => {
 
             let token = token_start;
+            let operator = -1;
 
             if (token === false) {
                 token = (tokens.length - 1);
@@ -496,11 +625,26 @@
 
             for (; token >= 2; token--) {
 
+                if (__is_expr(tokens[token])) {
+                    operator = token;
+                    continue;
+                }
+
+                // if (tokens[token] === "->" || tokens[token] === "<-") {
+                //     continue;
+                // }
+
+                // if (tokens[token] === 'goto' || tokens[token] === 'run') {
+                //     result = __execute_jump
+                // }
+
     //  Is this a variable reference? If so it will start with either
     //  'here' or 'global'.
     //
                 if (tokens[token] === 'here' || tokens[token] === 'global') {
-                    result = __translate_var(proc, tokens, token);
+
+                    console.log(`>>> TRANSLATE VAR: ${tokens}, token=${token}, operator=${operator}`)
+                    result = __translate_var(proc, tokens, token, operator);
 
                     if (result.status !== "success") {
                         return result;
@@ -508,6 +652,8 @@
 
                     tokens = result.tokens;
                     token++;
+
+                    operator = -1;
 
                     continue;
                 }
@@ -530,18 +676,18 @@
 
     //  Expressions.
     //
-                if (__is_expr(tokens[token])) {
-                    result = __handle_expression(proc, tokens, token);
+                // if (__is_expr(tokens[token])) {
+                //     result = __handle_expression(proc, tokens, token);
 
-                    if (result.status !== "success") {
-                        return result;
-                    }
+                //     if (result.status !== "success") {
+                //         return result;
+                //     }
 
-                    tokens = result.tokens;
-                    // token++;
+                //     tokens = result.tokens;
+                //     // token++;
 
-                    continue;
-                }
+                //     continue;
+                // }
 
     //  Close a mathematical/logical expression.
     //
@@ -589,7 +735,7 @@
     //  Handle function calls.
     //
                 if (window.__methods.hasOwnProperty(tokens[token])) {
-                    result = __execute_function(proc, tokens, token);
+                    result = __execute_function(proc, tokens, token, operator);
 
                     if (result.status !== "success") {
                         return result;
@@ -598,27 +744,29 @@
                     tokens = result.tokens;
                     token = tokens.length;
 
+                    operator = -1;
+
                     continue;
                 }
 
     //  If we get here, it's an unknown token - it might be part of
     //  a reference->chain, though.
     //
-                if (
-                    (token - 1) < 2 ||
-                    (tokens[(token - 1)] !== "->" && tokens[(token - 1)] !== "<-")
-                ) {
-                    if (
-                        typeof tokens[token] !== 'number' && 
-                        ! __is_param_token(tokens[token]) &&
-                        ! __is_expr(tokens[token]) &&
-                        ! __is_grammatical(tokens[token])
-                    ) {
-                        return __helpers.err_object(
-                            `Error in ${tokens[0]} on line ${tokens[1]}: Unexpected token '${tokens[token]}'`
-                        );
-                    }
-                }
+                // if (
+                //     (token - 1) < 2 ||
+                //     (tokens[(token - 1)] !== "->" && tokens[(token - 1)] !== "<-")
+                // ) {
+                //     if (
+                //         typeof tokens[token] !== 'number' && 
+                //         ! __is_param_token(tokens[token]) &&
+                //         ! __is_expr(tokens[token]) &&
+                //         ! __is_grammatical(tokens[token])
+                //     ) {
+                //         return __helpers.err_object(
+                //             `Error in ${tokens[0]} on line ${tokens[1]}: Unexpected token '${tokens[token]}'`
+                //         );
+                //     }
+                // }
 
             }
 
@@ -956,7 +1104,7 @@
                     return result;
                 }
 
-                __helpers.log(`>>> ${" ".repeat(indent + __indent_increment)}Executed line: ${code}`);
+                __helpers.log(`>>> ${" ".repeat(indent + __indent_increment)}Executed line: ${code} -- ${result.tokens}`);
             }
 
             return {
