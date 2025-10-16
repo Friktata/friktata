@@ -11,6 +11,7 @@
 
             'builtins':         [
                 'IO',
+                'File',
                 'Strings'
             ],
 

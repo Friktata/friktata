@@ -59,6 +59,7 @@
             
             'substring':            {
                 'callback':         substring,
+                'async':            false,
                 'params':           [
                     { 'name': 'string',     'type': 'string' },
                     { 'name': 'start',      'type': 'number' },
@@ -67,6 +68,7 @@
             },
             'strlen':               {
                 'callback':         strlen,
+                'async':            false,
                 'params':           [
                     { 'name': 'string',     'type': 'string' }
                 ]

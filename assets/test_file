@@ -1,0 +1,13 @@
+This is just a test file with some text in it.
+
+I'm testing the File.js module, specifically the:
+
+    load()
+
+Method.
+
+See:
+
+    friktata/src/js/core/PolyBASIC/builtins/File.js
+
+For more info.

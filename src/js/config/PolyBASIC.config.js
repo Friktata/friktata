@@ -56,7 +56,9 @@
                 'else',
                 'goto',
                 'exec'
-            ]
+            ],
+
+            'file_path':            './../../assets'
 
         }
 

@@ -4,6 +4,10 @@
 //  TT T T hiss was the-_-- [[firsS-t.
 //
 
+    1 result = load("testfile");
+    2 if (here->result == 1) print("Error loading file")
+    else print(here->result);
+
     num = 0;
     row = 10;
     column = 10;
@@ -21,13 +25,13 @@
         here<-num = (here<-num + 1);
 
     //  Print the byte.
-    //
+    //c
         putchar(here<-row, here<-column, here->byte);
     endblock;
 
     90 print(strlen(here->string));
     91 print(here->num);
-    
+
     100 if (here->num >= strlen(here->string))
         goto->200
     else

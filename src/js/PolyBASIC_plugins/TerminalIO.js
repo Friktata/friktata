@@ -123,6 +123,7 @@
             
             'putchar':              {
                 'callback':         putchar,
+                'async':            false,
                 'params':           [
                     { 'name': 'row',        'type': 'number' },
                     { 'name': 'column',     'type': 'number' },
@@ -132,6 +133,7 @@
 
             'putstring':            {
                 'callback':         putstring,
+                'async':            false,
                 'params':           [
                     { 'name': 'row',        'type': 'number' },
                     { 'name': 'column',     'type': 'number' },
@@ -141,11 +143,13 @@
 
             'display_rows':         {
                 'callback':         display_rows,
+                'async':            false,
                 'params':           []
             },
 
             'display_columns':      {
                 'callback':         display_columns,
+                'async':            false,
                 'params':           []
             }
             

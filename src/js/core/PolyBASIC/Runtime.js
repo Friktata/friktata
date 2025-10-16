@@ -214,7 +214,7 @@
      *  __execute_function()
      * 
      */
-        const   __execute_function = (
+        const   __execute_function = async (
             proc,
             tokens,
             token_start,
@@ -278,7 +278,14 @@
                 }
             }
 
-            let result = window.__methods[function_name]['callback'](params);
+            let result;
+            
+            if (window.__methods[function_name]['async']) {
+                result = await window.__methods[function_name]['callback'](params);
+            }
+            else {
+                result = window.__methods[function_name]['callback'](params);
+            }
 
             if (operator > 2) {
                 if ((operator + 1) >= tokens.length) {
@@ -613,7 +620,7 @@
      *  __execute_line()
      * 
      */
-        const   __execute_line = (
+        const   __execute_line = async (
             proc,
             tokens,
             token_start = false
@@ -731,7 +738,7 @@
                         );
                     }
 
-                    result = __execute_line(proc, tokens, token);
+                    result = await __execute_line(proc, tokens, token);
 
                     if (result.status !== "success") {
                         return result;
@@ -748,7 +755,7 @@
     //  Handle function calls.
     //
                 if (window.__methods.hasOwnProperty(tokens[token])) {
-                    result = __execute_function(proc, tokens, token, operator);
+                    result = await __execute_function(proc, tokens, token, operator);
 
                     if (result.status !== "success") {
                         return result;
@@ -873,7 +880,7 @@
      *  __execute_conditional_line()
      * 
      */
-        const   __execute_conditional_line = (
+        const   __execute_conditional_line = async (
             proc,
             tokens,
             indent,
@@ -972,7 +979,7 @@
 
             };
 
-            let result = __execute_line(proc, obj_expr['__if']);
+            let result = await __execute_line(proc, obj_expr['__if']);
 
             if (result.status !== "success") {
                 return result;
@@ -981,7 +988,7 @@
             if (obj_expr['__if'][2] !== "false" && obj_expr['__if'][2] !== false && obj_expr['__if'][2] !== 0) {
                 is_true = true;
 
-                result = __execute_line(proc, obj_code['__if']);
+                result = await __execute_line(proc, obj_code['__if']);
 
                 if (result.status !== "success") {
                     return result;
@@ -989,7 +996,7 @@
             }
 
             for (let elseif = 0; elseif < obj_expr['__elseif'].length; elseif++) {
-                result = __execute_line(proc, obj_expr['__elseif'][elseif]);
+                result = await __execute_line(proc, obj_expr['__elseif'][elseif]);
 
                 if (result.status !== "success") {
                     return result;
@@ -1000,7 +1007,7 @@
                 if (obj_expr['__elseif'][elseif][2] !== "false" && obj_expr['__elseif'][elseif][2] !== false && obj_expr['__elseif'][elseif][2] !== 0) {
                     is_true = true;
 
-                    result = __execute_line(proc, obj_code['__elseif'][elseif]);
+                    result = await __execute_line(proc, obj_code['__elseif'][elseif]);
 
                     if (result.status !== "success") {
                         return result;
@@ -1009,7 +1016,7 @@
             }
 
             if (! is_true && obj_code['__else'].length > 0) {
-                result = __execute_line(proc, obj_expr['__else']);
+                result = await __execute_line(proc, obj_expr['__else']);
 
                 if (result.status !== "success") {
                     return result;
@@ -1018,7 +1025,7 @@
                 if (obj_expr['__if']) {
                     is_true = true;
 
-                    result = __execute_line(proc, obj_code['__else']);
+                    result = await __execute_line(proc, obj_code['__else']);
 
                     if (result.status !== "success") {
                         return result;
@@ -1038,7 +1045,7 @@
      *  _execute()
      * 
      */
-        const   _execute = (
+        const   _execute = async (
             proc,
             indent = 0,
             start_token = false
@@ -1073,18 +1080,15 @@
                 }
 
                 if (__goto !== false) {
-
-                console.log(`ALL DATA IN ${proc.id}`);
-                console.dir(proc, { depth: null });
                     if (__goto['next_line'] === false) {
                     __procs.push(proc);
-                    __lines.push(line);
+                        __lines.push(line);
 
-                    proc = __goto['proc'];
+                        proc = __goto['proc'];
 
-                    keys = Object.keys(proc.code);
-                    path = proc.id;
-                        console.log(`GOTO proc ${proc.path} ${proc.id}`)
+                        keys = Object.keys(proc.code);
+                        path = proc.id;
+
                         line = 0;
                     }
                     else {
@@ -1094,7 +1098,6 @@
                             );
                         }
 
-                        console.log(`GOTO line ${__goto['next_line']} in ${proc.path} ${proc.id}`)
                         line = (keys.indexOf(`__${__goto['next_line']}__`));
                     }
                     __goto = false;
@@ -1102,11 +1105,8 @@
 
                 let key = keys[line];
 
-                console.log(`Executing line ${key}`)
-
                 let code = proc.code[key];
                 let mode = proc.mode[key];
-                console.log(`Executing code ${code}`)
               
                 if (! mode.execute) {
                     continue;
@@ -1118,7 +1118,7 @@
                 if  (! /^[0-9_]+$/.test(key)) {
     //  Execute block.
     //
-                    let result = _execute(code, (indent + __indent_increment));
+                    let result = await _execute(code, (indent + __indent_increment));
 
                     if (result.status !== "success") {
                         return result;
@@ -1133,8 +1133,7 @@
     //  token (code[2])
     // 
                 if (code[2] === 'if') {
-            console.log(JSON.stringify(proc))
-                    let result = __execute_conditional_line(proc, [ ... code ], indent, __indent_increment);
+                    let result = await __execute_conditional_line(proc, [ ... code ], indent, __indent_increment);
 
                     if (result.status !== "success") {
                         return result;
@@ -1145,7 +1144,7 @@
 
     //  Execute line.
     //
-                let result = __execute_line(proc, [ ... code ]);
+                let result = await __execute_line(proc, [ ... code ]);
 
                 if (result.status !== "success") {
                     return result;
