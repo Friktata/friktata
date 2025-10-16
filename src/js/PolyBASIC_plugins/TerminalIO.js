@@ -10,7 +10,7 @@
      * 
      */
         const   putchar = (
-            obj_params
+            obj_params = []
         ) => {
 
             if (! obj_params.hasOwnProperty('row')) {
@@ -60,7 +60,7 @@
      * 
      */
         const   putstring = (
-            obj_params
+            obj_params = []
         ) => {
 
             if (! obj_params.hasOwnProperty('row')) {
@@ -132,7 +132,7 @@
      * 
      */
         const   foreground = (
-            obj_params
+            obj_params = []
         ) => {
 
             let fg = window.__display.display_info().foreground;
@@ -163,7 +163,7 @@
      * 
      */
         const   background = (
-            obj_params
+            obj_params = []
         ) => {
 
             let bg = window.__display.display_info().background;
@@ -194,7 +194,7 @@
      * 
      */
         const   setfg = (
-            obj_params
+            obj_params = []
         ) => {
 
             if (
@@ -225,7 +225,7 @@
      * 
      */
         const   setbg = (
-            obj_params
+            obj_params = []
         ) => {
 
             if (

@@ -7,7 +7,6 @@
 
     /**************************************************************************
      *  print()
-     * 
      */
         const   print = (
             obj_params = []
@@ -20,6 +19,9 @@
         };
 
 
+    /**************************************************************************
+     *  sleep()
+     */
         const   sleep = async (
             obj_params = []
         ) => {
@@ -36,6 +38,22 @@
             
             return new Promise(resolve => setTimeout(resolve, duration));
 
+        };
+
+
+    /**************************************************************************
+     *  getch()
+     */
+        const   getch = (
+            obj_params = []
+        ) => {
+            return new Promise(resolve => {
+                const handler = (event) => {
+                    document.removeEventListener('keydown', handler);
+                    resolve(event.key); // return the key pressed
+                };
+                document.addEventListener('keydown', handler);
+            });
         };
 
 
@@ -64,6 +82,12 @@
                 'params':           [
                     { 'name': 'duration',   'type': 'number' }
                 ]
+            },
+
+            'getch':                {
+                'callback':         getch,
+                'async':            true,
+                'params':           []
             }
             
         };

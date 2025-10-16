@@ -201,7 +201,11 @@
                 result.proc.name[result.reference] = {};
             }
 
-            result.proc.data[result.reference] = tokens[base_end + 1];
+            if (tokens[(base_end + 1)].trim() === "") {
+                tokens[(base_end + 1)] = `"${tokens[(base_end + 1)]}"`;
+            }
+
+            result.proc.data[result.reference] = tokens[(base_end + 1)];
             
             tokens.splice(result.start, (result.end - result.start));
             tokens[result.start] = tokens[base_end + 1];
@@ -656,7 +660,14 @@
                         let l_string = __helpers.strip_quotes(tokens[token]);
                         let r_string = __helpers.strip_quotes(tokens[(token + 2)]);
 
-                        tokens[token] = `${l_string}${r_string}`;
+                        // if (l_string.trim() === "") {
+                        //     l_string = `"${l_string}"`;
+                        // }
+                        // if (r_string.trim() === "") {
+                        //     r_string = `"${r_string}"`;
+                        // }
+
+                        tokens[token] = `"${l_string}${r_string}"`;
                         tokens.splice(token + 1, 2);
                         token = tokens.length;
 
@@ -864,6 +875,12 @@
                 }
                 else if (tokens[token] === ')') {
                     parens--;
+                }
+
+                tokens[token] = __helpers.strip_quotes(tokens[token]);
+
+                if (tokens[token].trim() === "") {
+                    tokens[token] = `"${tokens[token]}"`;
                 }
 
                 expr_tokens.push(tokens[token]);

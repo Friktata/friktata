@@ -12,6 +12,11 @@
     5 foreground("green", 0);
     6 foreground("blue", 127);
 
+    7 putstring(2, 10, "Press a key to continue");
+    8 ch = getch();
+
+    9 print("Pressed the '" . here->ch . "' key");
+
     num = 0;
     row = 10;
     column = 10;
@@ -19,7 +24,7 @@
     string = "Hello, world!";
     str = "";
 
-    delay = 100;
+    delay = 50;
 
     block print_string;
     //  Grab the next byte in the string.
@@ -34,6 +39,9 @@
     //  Print the byte.
     //
         putchar(here<-row, here<-column, here->byte);
+
+        if (here->byte == " ") here->byte = "&nbsp;";
+        print(here->byte);
 
         global->str = global->str . here->byte;
 
@@ -55,3 +63,4 @@
     setbg(255, 255, 255, 255);
 
     putstring(12, 0, global->result);
+    print(here->str);
