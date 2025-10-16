@@ -5,15 +5,34 @@
 //
 
     num = 0;
-    string = "abcdefgh";
+    row = 10;
+    column = 10;
 
-    print(here->num);
+    string = "Hello, world!";
 
-    block [x] print_string;
+    block print_string;
+    //  Grab the next byte in the string.
+    //
+        byte = substring(here<-string, here<-num, (here<-num + 1));
+
+    //  Increment the column position.
+    //
+        here<-column = (here<-column + 1);
         here<-num = (here<-num + 1);
-        putchar(10, (10 + here<-num), substring(here<-string, 0, 1));
+
+    //  Print the byte.
+    //
+        putchar(here<-row, here<-column, here->byte);
     endblock;
 
-    // if (here->num < 8) goto->print_string;
+    90 print(strlen(here->string));
+    91 print(here->num);
+    
+    100 if (here->num >= strlen(here->string))
+        goto->200
+    else
+        goto->print_string;
 
-    // print(here->num);
+    goto->90;
+
+    200 putstring(5, 5, "Done!");

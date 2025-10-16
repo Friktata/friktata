@@ -55,7 +55,6 @@
             obj_params
         ) => {
 
-            console.log(`A`);
             if (! obj_params.hasOwnProperty('row')) {
                 return "Error in putchar(): No 'row' specified";
             }
@@ -65,8 +64,6 @@
             if (! obj_params.hasOwnProperty('string')) {
                 return "Error in putchar(): No 'string' specified";
             }
-
-            console.log(`B`);
 
             let row = obj_params['row'];
             let column = obj_params['column'];

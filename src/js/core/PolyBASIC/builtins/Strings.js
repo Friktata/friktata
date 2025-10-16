@@ -30,6 +30,23 @@
 
 
     /**************************************************************************
+     *  strlen()
+     * 
+     */
+        const strlen = (
+            obj_params = []
+        ) => {
+
+            if (! obj_params.hasOwnProperty('string')) {
+                return "Error in strlen(): Expected 'string' parameter";
+            }
+
+            return obj_params['string'].length;
+
+        };
+
+
+    /**************************************************************************
      *  All builtin modules and plugins must follow this simple format.
      *
      *  This is required by the Depmanager.js code module to register
@@ -46,6 +63,12 @@
                     { 'name': 'string',     'type': 'string' },
                     { 'name': 'start',      'type': 'number' },
                     { 'name': 'end',        'type': 'number' }
+                ]
+            },
+            'strlen':               {
+                'callback':         strlen,
+                'params':           [
+                    { 'name': 'string',     'type': 'string' }
                 ]
             }
             
