@@ -83,8 +83,8 @@
                 }
 
                 if (
-                    (token + 1) >= tokens.length ||
-                    (tokens[(token + 1)] !== "<-" && tokens[(token + 1)] !== "->")
+                    (token + 2) >= tokens.length ||
+                    (tokens[(token + 2)] !== "<-" && tokens[(token + 2)] !== "->")
                 ) {
                     result.tokens = tokens;
                     result.start = start_token;
@@ -175,15 +175,21 @@
                 );
             }
 
-            let result = __resolve_node_base(tokens, token_start);
+            let response = __resolve_node_base(tokens, token_start);
 
-            if (result.status !== "success") {
+            if (response.status !== "success") {
                 return result;
             }
 
-            let base_end = result.end;
+            let base_end = response.end;
+            let result;
 
-            result = __resolve_node_path(proc, tokens, result.start);
+            if (tokens[response.start] === 'global') {
+                result = __resolve_node_path(_proc, tokens, response.start);
+            }
+            else {
+                result = __resolve_node_path(proc, tokens, response.start);
+            }
 
             if (result.status !== "success") {
                 return result;
@@ -191,15 +197,15 @@
 
             tokens = result.tokens;
 
-            if (proc.name[result.reference] === undefined) {
-                proc.name[result.reference] = {};
+            if (result.proc.name[result.reference] === undefined) {
+                result.proc.name[result.reference] = {};
             }
 
             result.proc.data[result.reference] = tokens[base_end + 1];
             
-            tokens[result.start + 1] = tokens[base_end + 1];
-            tokens.splice(result.start + 1, (result.end - (base_end + 1)));
-            
+            tokens.splice(result.start, (result.end - result.start));
+            tokens[result.start] = tokens[base_end + 1];
+
             return {
                 'status': "success",
                 'start': result.start,
@@ -486,127 +492,88 @@
 
 
     /**************************************************************************
-     *  __is_param_token()
+     *  __execute_goto()
      * 
      */
-        const   __is_param_token = (
-            token
-        ) => {
-
-            if (/^(['"`]).*\1$/.test(token) || /^[0-9]+$/.test(token)) {
-                return true;
-            }
-
-            return false;
-
-        };
-
-
         const   __execute_goto = (
             proc,
             tokens,
             token_start
         ) => {
 
-            console.log(JSON.stringify(proc, null, 2))
-
             let next_node = false;
             let next_proc = proc;
 
-            let result;
+            for (let token = token_start + 1; token <= tokens.length; token += 2) {
 
-        for (let token = token_start + 1; token <= tokens.length; token += 2) {
+                if (
+                    token >= tokens.length ||
+                    (tokens[token] !== "<-" && tokens[token] !== "->")
+                ) {
+                    token--;
 
-            if (
-                token >= tokens.length ||
-                (tokens[token] !== "<-" && tokens[token] !== "->")
-            ) {
-
-                token--;
-
-                console.log(`Executing ${tokens[token]} in ${proc.path} ${proc.id}`);
-
-                if (/^[0-9]+$/.test(tokens[token])) {
-                    // result = __execute_line(next_proc, [ ... next_proc.code[`__${tokens[token]}__`]]);
-                    // result = _execute(next_proc, 4, tokens[token]);
-
-                    __goto = {
-                        'next_line': `${tokens[token]}`,
-                        'proc': next_proc
-                    };
-
-                    return {
-                        'status': "success",
-                        'tokens': tokens
-                    };
-                }
-                else {
-
-                    __goto = {
-                        'next_line': false,
-                        'proc': next_proc
-                    };
-
-                    return {
-                        'status': "success",
-                        'tokens': tokens
-                    };
+                    if (/^[0-9]+$/.test(tokens[token])) {
+                        __goto = {
+                            'next_line': `${tokens[token]}`,
+                            'proc': next_proc
+                        };
+                        return {
+                            'status': "success",
+                            'tokens': tokens
+                        };
+                    }
+                    else {
+                        __goto = {
+                            'next_line': false,
+                            'proc': next_proc
+                        };
+                        return {
+                            'status': "success",
+                            'tokens': tokens
+                        };
+                    }
                 }
 
-                if (result.status !== "success") {
-                    return result;
-                }
-
-                break;
-
-            }
-
-            if (tokens[token] === "<-") {
-                if (next_proc.parent === false) {
-                    return __helpers.err_object(
-                        `Error in ${tokens[0]} on line ${tokens[1]}: Attempt to access parent node of "root"`
-                    );
-                }
-
-                // tokens.splice(token_start, 2);
-                next_proc = next_proc.parent;
-                token--;
-
-                continue;
-            }
-            else {
-
-                console.log(`ALL DATA IN ${next_proc.id}`);
-                console.dir(proc, { depth: null });
-
-                if (tokens[token] === "->") {
-                    if ((token + 1) >= tokens.length) {
+                if (tokens[token] === "<-") {
+                    if (next_proc.parent === false) {
                         return __helpers.err_object(
-                            `Error in ${tokens[0]} on line ${tokens[1]}: Expected identifier following 'goto->'`
+                            `Error in ${tokens[0]} on line ${tokens[1]}: Attempt to access parent node of "root"`
                         );
                     }
 
-                    next_node = tokens[(token + 1)];
+                    next_proc = next_proc.parent;
+                    token--;
 
-                    if (! /^[0-9]+$/.test(next_node)) {
-                        if (! next_proc.code.hasOwnProperty(next_node)) {
+                    continue;
+                }
+                else {
+                    if (tokens[token] === "->") {
+                        if ((token + 1) >= tokens.length) {
                             return __helpers.err_object(
-                                `Error in ${tokens[0]} on line ${tokens[1]}: Reference to undefined procedure '${next_node}' in '${proc.path}->${proc.id}'`
+                                `Error in ${tokens[0]} on line ${tokens[1]}: Expected identifier following 'goto->'`
                             );
                         }
 
-                        next_proc = next_proc.code[next_node];
-                        // tokens.splice(token_start, 3);
+                        next_node = tokens[(token + 1)];
+
+                        if (! /^[0-9]+$/.test(next_node)) {
+                            if (! next_proc.code.hasOwnProperty(next_node)) {
+                                return __helpers.err_object(
+                                    `Error in ${tokens[0]} on line ${tokens[1]}: Reference to undefined procedure '${next_node}' in '${proc.path}->${proc.id}'`
+                                );
+                            }
+
+                            next_proc = next_proc.code[next_node];
+                        }
+                    }
+                    else {
+                        return __helpers.err_object(
+                            `Error in ${tokens[0]} on line ${tokens[1]}: Expected identifier`
+                        );
                     }
                 }
-                else {
-                    return __helpers.err_object(
-                        `Error in ${tokens[0]} on line ${tokens[1]}: Expected identifier`
-                    );
-                }
+                
             }
-        
-        }
         
             return {
                 'status': "success",
@@ -660,6 +627,27 @@
                     continue;
                 }
 
+    //  Dot concatenation.
+    //
+                if ((token + 1) < tokens.length && tokens[(token + 1)] === ".") {
+                    if ((token + 2) >= tokens.length) {
+                        return __helpers.err_object(
+                            `Error in ${tokens[0]} on line ${tokens[1]}: Expected token following '.'`
+                        );
+                    }
+                    
+                    if (tokens[(token - 1)] !== "<-" && tokens[(token - 1)] !== "->") {  
+                        let l_string = __helpers.strip_quotes(tokens[token]);
+                        let r_string = __helpers.strip_quotes(tokens[(token + 2)]);
+
+                        tokens[token] = `${l_string}${r_string}`;
+                        tokens.splice(token + 1, 2);
+                        token = tokens.length;
+
+                        continue;
+                    }
+                }
+
     //  Is this a variable reference? If so it will start with either
     //  'here' or 'global'.
     //
@@ -680,10 +668,7 @@
                     }
 
                     if (tokens[token] === 'goto') {
-                        console.log(`Doing a goto`)
                         result = __execute_goto(proc, tokens, token);
-
-                        console.log(`<<<< HYOR >>>>`);
                     }
 
                     if (result.status !== "success") {
