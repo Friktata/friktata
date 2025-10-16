@@ -264,8 +264,13 @@
 
             let params = {};
             let f_params = window.__methods[function_name]['params'];
+            let last_param = false;
 
             for (let param = 0; param < f_params.length; param++) {
+                if (tokens[(position + param)] === "]") {
+                    last_param = true;
+                }
+
                 if ((position + param) >= tokens.length) {
                     return __helpers.err_object(
                         `Error in ${tokens[0]} on line ${tokens[1]}: Function '${function_name}' expects ${f_params.length} parameters`
@@ -274,6 +279,17 @@
 
                 if (typeof tokens[(position + param)] === 'string') {
                     tokens[(position + param)] = __helpers.strip_quotes(tokens[(position + param)]);
+                }
+
+                if (last_param === true) {
+                    if (! f_params[param].hasOwnProperty('default')) {
+                        return __helpers.err_object(
+                            `Error in ${tokens[0]} on line ${tokens[1]}, ${function_name}: The '${f_param[param]['name']}' parameter is required`
+                        );
+                    }
+
+                    params[f_params['name']] = f_params[param]['default'];
+                    continue;
                 }
 
                 if (f_params[param]['type'] === 'number') {

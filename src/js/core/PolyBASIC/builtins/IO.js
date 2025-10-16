@@ -20,6 +20,25 @@
         };
 
 
+        const   sleep = async (
+            obj_params = []
+        ) => {
+
+            if (! obj_params.hasOwnProperty('duration')) {
+                return "Error in sleep(): Function expects exactly 1 parameter"
+            }
+
+            let duration = obj_params['duration'];
+
+            if (duration <= 0) {
+                return;
+            }
+            
+            return new Promise(resolve => setTimeout(resolve, duration));
+
+        };
+
+
     /**************************************************************************
      *  All builtin modules and plugins must follow this simple format.
      *
@@ -35,7 +54,15 @@
                 'callback':         print,
                 'async':            false,
                 'params':           [
-                    { 'name': 'string', 'type': 'string' }
+                    { 'name': 'string',     'type': 'string' }
+                ]
+            },
+
+            'sleep':                {
+                'callback':         sleep,
+                'async':            true,
+                'params':           [
+                    { 'name': 'duration',   'type': 'number' }
                 ]
             }
             

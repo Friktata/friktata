@@ -25,6 +25,7 @@
         height: 100%;
         font-family: var(--font);
         font-size: 32px;
+        user-select: none;
     }
 
     .cell {
@@ -37,6 +38,7 @@
         display: inline-block;
         margin: 0;
         padding: 0;
+        border: none;
     }
 
     #testcell {

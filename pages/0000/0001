@@ -8,12 +8,18 @@
     2 if (here->result == 1) print("Error loading file")
     else print(here->result);
 
+    4 foreground("red", 255);
+    5 foreground("green", 0);
+    6 foreground("blue", 127);
+
     num = 0;
     row = 10;
     column = 10;
 
     string = "Hello, world!";
     str = "";
+
+    delay = 100;
 
     block print_string;
     //  Grab the next byte in the string.
@@ -31,6 +37,8 @@
 
         global->str = global->str . here->byte;
 
+        sleep(here<-delay);
+
     endblock;
 
     100 if (here->num >= strlen(here->string))
@@ -42,3 +50,8 @@
 
     200 putstring(5, 5, "Done!");
     putstring(6, 5, global->str);
+
+    setfg(32, 220, 80, 255);
+    setbg(255, 255, 255, 255);
+
+    putstring(12, 0, global->result);

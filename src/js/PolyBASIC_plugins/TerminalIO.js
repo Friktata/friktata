@@ -40,7 +40,15 @@
                 char = "&nbsp;";
             }
 
-            document.getElementById(`cell_${row.toString()}_${column.toString()}`).innerHTML = char;
+            let fg = window.__display.display_info().foreground;
+            let bg = window.__display.display_info().background;
+
+            let node = document.getElementById(`cell_${row.toString()}_${column.toString()}`);
+            
+            node.innerHTML = char;
+
+            node.style.color = `rgba(${fg['red']}, ${fg['green']}, ${fg['blue']}, ${fg['alpha']})`;
+            node.style.backgroundColor = `rgba(${bg['red']}, ${bg['green']}, ${bg['blue']}, ${bg['alpha']})`;
 
             return "OK";
 
@@ -119,6 +127,130 @@
         };
 
 
+    /**************************************************************************
+     *  foreground()
+     * 
+     */
+        const   foreground = (
+            obj_params
+        ) => {
+
+            let fg = window.__display.display_info().foreground;
+        
+            if (! obj_params.hasOwnProperty('color')) {
+
+                return `rgba(${fg['red']}, ${fg['green']}, ${fg['blue']}, ${fg['alpha']})`;
+                
+            }
+
+            let color = obj_params['color'];
+
+            if (color !== 'red' && color !== 'green' && color !== 'blue') {
+                return fg[color];
+            }
+
+            fg[color] = obj_params['value'];
+
+            window.__display.foreground(fg);
+
+            return 0;
+
+        };
+
+
+    /**************************************************************************
+     *  background()
+     * 
+     */
+        const   background = (
+            obj_params
+        ) => {
+
+            let bg = window.__display.display_info().background;
+        
+            if (! obj_params.hasOwnProperty('color')) {
+
+                return `rgba(${fg['red']}, ${fg['green']}, ${fg['blue']}, ${fg['alpha']})`;
+                
+            }
+
+            let color = obj_params['color'];
+
+            if (color !== 'red' && color !== 'green' && color !== 'blue') {
+                return bg[color];
+            }
+
+            bg[color] = obj_params['value'];
+
+            window.__display.foreground(bg);
+
+            return 0;
+
+        };
+
+
+    /**************************************************************************
+     *  setfg()
+     * 
+     */
+        const   setfg = (
+            obj_params
+        ) => {
+
+            if (
+                ! obj_params.hasOwnProperty('red') ||
+                ! obj_params.hasOwnProperty('green') ||
+                ! obj_params.hasOwnProperty('blue') ||
+                ! obj_params.hasOwnProperty('alpha')
+            ) {
+                return "Error in setfg(): Function expects exactly 4 parameters";
+            }
+
+            let fg = {
+                'red': obj_params['red'],
+                'green': obj_params['green'],
+                'blue': obj_params['blue'],
+                'alpha': obj_params['alpha'],
+            }
+
+            window.__display.foreground(fg);
+
+            return 
+
+        };
+
+
+    /**************************************************************************
+     *  setbg()
+     * 
+     */
+        const   setbg = (
+            obj_params
+        ) => {
+
+            if (
+                ! obj_params.hasOwnProperty('red') ||
+                ! obj_params.hasOwnProperty('green') ||
+                ! obj_params.hasOwnProperty('blue') ||
+                ! obj_params.hasOwnProperty('alpha')
+            ) {
+                return "Error in setbg(): Function expects exactly 4 parameters";
+            }
+
+            let bg = {
+                'red': obj_params['red'],
+                'green': obj_params['green'],
+                'blue': obj_params['blue'],
+                'alpha': obj_params['alpha'],
+            }
+
+            window.__display.background(bg);
+
+            return 
+
+        };
+
+
         const   _methods =          {
             
             'putchar':              {
@@ -151,6 +283,48 @@
                 'callback':         display_columns,
                 'async':            false,
                 'params':           []
+            },
+
+            'foreground':           {
+                'callback':         foreground,
+                'async':            false,
+                'params':           [
+                    { 'name': 'color',      'type': 'string' },
+                    { 'name': 'value',      'type': 'number',   'default': 255 },
+                ]
+            },
+
+            'background':           {
+                'callback':         background,
+                'async':            false,
+                'params':           [
+                    { 'name': 'color',      'type': 'string' },
+                    { 'name': 'value',      'type': 'number',   'default': 255 },
+                ]
+            },
+
+            'setfg':                {
+                'callback':         setfg,
+                'async':            false,
+                'params':           [
+                    { 'name': 'red',        'type': 'number' },
+                    { 'name': 'green',      'type': 'number' },
+                    { 'name': 'blue',       'type': 'number' },
+                    { 'name': 'alpha',      'type': 'number' }
+                ]
+
+            },
+
+            'setbg':                {
+                'callback':         setbg,
+                'async':            false,
+                'params':           [
+                    { 'name': 'red',        'type': 'number' },
+                    { 'name': 'green',      'type': 'number' },
+                    { 'name': 'blue',       'type': 'number' },
+                    { 'name': 'alpha',      'type': 'number' }
+                ]
+
             }
             
         };

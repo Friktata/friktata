@@ -24,6 +24,9 @@
 
         let     _font_size;
 
+        let     _foreground = structuredClone(__config['cell_style']['foreground']);
+        let     _background = structuredClone(__config['cell_style']['background']);
+
 
     /**************************************************************************
      *  __number_of_columns()
@@ -112,13 +115,17 @@
                             id="cell_${row}_${column}"
                             class="cell"
                             style="
-                                top: ${((row * _column_height) + __top)}px;
-                                left: ${((column * _column_width) + __left)}px;
+                                top: ${Math.floor(row * _column_height) + __top}px;
+                                left: ${Math.floor(column * _column_width) + __left}px;
+                                width: ${Math.ceil(_column_width) + 1}px;
+                                height: ${Math.ceil(_column_height) + 1}px;
                                 line-height: 0.8;
                                 font-size: ${_font_size}px;
                                 display: inline-block;
                                 margin: 0;
                                 padding: 0;
+                                color: rgba(${_foreground['red']}, ${_foreground['green']}, ${_foreground['blue']}, ${_foreground['alpha']});
+                                background-color: rgba(${_background['red']}, ${_background['green']}, ${_background['blue']}, ${_background['alpha']});
                             "
                         >
                             &nbsp;
@@ -173,8 +180,32 @@
                 'column_height': _column_height,
                 'columns': _columns,
                 'rows': _rows,
-                'font_size': _font_size
+                'font_size': _font_size,
+                'foreground': _foreground,
+                'background': _background
             };
+
+        };
+
+
+    /**************************************************************************
+     *  _display_foreground()
+     * 
+     */
+        const _display_foreground = obj_color => {
+
+            _foreground = structuredClone(obj_color);
+
+        };
+
+
+    /**************************************************************************
+     *  _display_background()
+     * 
+     */
+        const _display_background = obj_color => {
+
+            _background = structuredClone(obj_color);
 
         };
 
@@ -183,7 +214,9 @@
 
         return {
 
-            display_info: _display_info
+            display_info:   _display_info,
+            foreground:     _display_foreground,
+            background:     _display_background
 
         };
 
