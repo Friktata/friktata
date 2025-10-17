@@ -66,7 +66,7 @@
                 'exec'
             ],
 
-            'file_path':            './../../assets'
+            'file_path':            assets_path
 
         }
 
