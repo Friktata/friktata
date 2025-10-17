@@ -22,21 +22,30 @@
     /**************************************************************************
      *  __module_load()
      * 
-     */
-        const __module_load = async (script_name) => {
-            try {
-                const path = `./${script_name}.js`;
+     */const __module_load = async (script_name) => {
+  try {
+    let path = script_name;
 
-                const mod = await import(path);
+    // If not an absolute URL, treat it as a relative module
+    if (!/^https?:\/\//i.test(script_name)) {
+      path = `./${script_name}.js`;
+    } else if (!path.endsWith('.js')) {
+      // If it's a remote URL and missing .js, add it
+      path += '.js';
+    }
 
-                return {
-                    'status': "success",
-                    'module': mod
-                };
-            } catch (err) {
-                return __helpers.err_object(`Failed to load script "${script_name}": ${err}`);
-            }
-        };
+    console.log("Importing module from:", path);
+
+    const mod = await import(path);
+
+    return {
+      status: "success",
+      module: mod
+    };
+  } catch (err) {
+    return __helpers.err_object(`Failed to load script "${script_name}": ${err}`);
+  }
+};
 
 
     /**************************************************************************
