@@ -44,15 +44,42 @@
     /**************************************************************************
      *  getch()
      */
-        const   getch = (
+        const getch = (
             obj_params = []
         ) => {
+            
+            let delay = obj_params['delay'];
+
+            if (delay <= 0) {
+                return new Promise(resolve => {
+                    const handler = (event) => {
+                        document.removeEventListener('keydown', handler);
+                        resolve(event.key);
+                    }
+                });
+            }
+
             return new Promise(resolve => {
                 const handler = (event) => {
+                    clearTimeout(timeoutId);
                     document.removeEventListener('keydown', handler);
                     resolve(event.key); // return the key pressed
                 };
+
                 document.addEventListener('keydown', handler);
+
+                let timeoutId;
+
+                if (delay > 0) {
+                    timeoutId = setTimeout(() => {
+                        document.removeEventListener('keydown', handler);
+                        resolve(0);
+                    }, delay);
+                }
+                else {
+                    document.removeEventListener('keydown', handler);
+                    resolve(0);
+                }
             });
         };
 

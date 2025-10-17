@@ -47,21 +47,23 @@
                 return;
             }
 
-            string = string.trim();
+            if (typeof string === 'string') {
+                string = string.trim();
 
-            if (string.length < 2) {
-                return string;
-            }
+                if (string.length < 2) {
+                    return string;
+                }
 
-            let first_byte = string.substring(0, 1);
-            let last_byte = string.substring((string.length - 1));
+                let first_byte = string.substring(0, 1);
+                let last_byte = string.substring((string.length - 1));
 
-            if (first_byte !== last_byte) {
-                return string;
-            }
+                if (first_byte !== last_byte) {
+                    return string;
+                }
 
-            if (first_byte === '"' || first_byte === "`" || first_byte === `'`) {
-                return string.substring(1, (string.length - 1));
+                if (first_byte === '"' || first_byte === "`" || first_byte === `'`) {
+                    return string.substring(1, (string.length - 1));
+                }
             }
 
             return string;

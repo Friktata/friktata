@@ -9,7 +9,7 @@
      *  putchar()
      * 
      */
-        const   putchar = (
+        const   putchar = async (
             obj_params = []
         ) => {
 
@@ -36,7 +36,7 @@
                 return `Error in putchar(): Specified 'column' out of bounds (columns=${display_info.columns})`;
             }
 
-            if (char === " ") {
+            if (char.trim() === "") {
                 char = "&nbsp;";
             }
 
@@ -59,7 +59,7 @@
      *  putstring()
      * 
      */
-        const   putstring = (
+        const   putstring = async (
             obj_params = []
         ) => {
 
@@ -78,13 +78,15 @@
             let string = obj_params['string'];
 
             let display_info = window.__display.display_info();
+
+            console.log(obj_params['delay']);
             
             for (let byte = 0; byte < string.length; byte++) {
                 let char = string.substring(byte, (byte + 1));
 
-                if (column >= display_info.columns) {
+                if (column >= display_info.columns || char === "\n") {
                     row++;
-                    column = 0;
+                    column = obj_params['column'];
                 }
 
                 if (row >= display_info.rows) {
@@ -96,6 +98,28 @@
                     'column': column,
                     'char': char
                 });
+
+                if (obj_params['delay'] > 0) {
+                    if (obj_params['skip']) {
+                        let ch = await window.__methods['getch']['callback'](
+                            {
+                                'delay': obj_params['delay'],
+                                'skip': obj_params['skip']
+                            }
+                        );
+                        if (ch !== 0) {
+                            obj_params['delay'] = 0;
+                        }
+                    }
+                    else {
+                        await window.__methods['getch']['callback'](
+                            {
+                                'delay': obj_params['delay'],
+                                'skip': obj_params['skip']
+                            }
+                        );
+                    }
+                }
 
                 column++;
             }
@@ -111,7 +135,7 @@
      */
         const   display_rows = () => {
 
-            return window.__display.display_info().rows;
+            return `"${window.__display.display_info().rows}"`;
 
         };
 
@@ -122,7 +146,7 @@
      */
         const   display_columns = () => {
 
-            return window.__display.display_info().columns;
+            return `"${window.__display.display_info().columns}"`;
 
         };
 
@@ -265,11 +289,13 @@
 
             'putstring':            {
                 'callback':         putstring,
-                'async':            false,
+                'async':            true,
                 'params':           [
                     { 'name': 'row',        'type': 'number' },
                     { 'name': 'column',     'type': 'number' },
-                    { 'name': 'string',     'type': 'string' }
+                    { 'name': 'string',     'type': 'string' },
+                    { 'name': 'delay',      'type': 'number',   'default': 0 },
+                    { 'name': 'skip',       'type': 'boolean',  'default': false }
                 ]
             },
 

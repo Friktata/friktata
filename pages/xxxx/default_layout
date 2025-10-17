@@ -1,0 +1,71 @@
+////////////////////////////////////////////////////////////////////////////  /
+//  frikt_t_/ppppp-p-paa-ages/><><><></default_
+//  /   _layy..--y-out
+//  /   /
+//  /   /       /
+//
+
+    0 title_screen_included = true;
+
+    block title_screen;
+
+        display_width = display_columns();
+        display_height = display_rows();
+
+        title_path = "layout/title";
+        title_width = 52;
+        title_top = 6;
+
+        if (here->display_width < 60)
+            here->title_path = "layout/small_title"
+        elseif (here->display_width < 60)
+            here->title_width = 32
+        elseif (here->display_width < 60)
+            here->title_top = 3;
+
+        title_data = load(here->title_path);
+
+
+        block generate_horizontal;
+
+            1 setfg(255, 255, 255, 255);
+            
+            5 columns = (here<-display_width - 2);
+            6 bottom = (here<-display_height - 2);
+            7 string = "";
+
+            10 string = here->string . "_";
+            20 here->len = strlen(here->string);
+
+            30 if (here->len < here->columns)
+                goto->10
+            else
+                goto->50;
+
+            40 goto->30;
+
+            50 putstring(1, 1, here->string);
+            51 putstring(here->bottom, 1, here->string);
+
+        endblock;
+
+
+        block draw_screen;
+
+            1 setfg(32, 127, 220, 255);
+            2 col = (here<-display_width - here<-title_width);
+            3 subtitle_left = (here<-display_width - 25);
+
+            10 putstring(here<-title_top, (here->col / 2), here<-title_data);
+            
+            20 setfg(255, 255, 255, 255);
+            30 putstring(15, (here->subtitle_left / 2), "Press any key to continue", 50, true);
+
+        endblock;
+
+        goto->generate_horizontal;
+        goto->draw_screen;
+
+
+    endblock;
+

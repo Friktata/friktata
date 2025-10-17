@@ -201,8 +201,10 @@
                 result.proc.name[result.reference] = {};
             }
 
-            if (tokens[(base_end + 1)].trim() === "") {
-                tokens[(base_end + 1)] = `"${tokens[(base_end + 1)]}"`;
+            if (typeof tokens[(base_end + 1)] === 'string') {
+                if (tokens[(base_end + 1)].trim() === "") {
+                    tokens[(base_end + 1)] = `"${tokens[(base_end + 1)]}"`;
+                }
             }
 
             result.proc.data[result.reference] = tokens[(base_end + 1)];
@@ -275,11 +277,11 @@
                     last_param = true;
                 }
 
-                if ((position + param) >= tokens.length) {
-                    return __helpers.err_object(
-                        `Error in ${tokens[0]} on line ${tokens[1]}: Function '${function_name}' expects ${f_params.length} parameters`
-                    );
-                }
+                // if ((position + param) >= tokens.length) {
+                //     return __helpers.err_object(
+                //         `Error in ${tokens[0]} on line ${tokens[1]}: Function '${function_name}' expects ${f_params.length} parameters`
+                //     );
+                // }
 
                 if (typeof tokens[(position + param)] === 'string') {
                     tokens[(position + param)] = __helpers.strip_quotes(tokens[(position + param)]);
@@ -446,8 +448,8 @@
 
             let result;
 
-            let l_value = tokens[token_start];
-            let r_value = tokens[(token_start + 2)];
+            let l_value = __helpers.strip_quotes(tokens[token_start]);
+            let r_value = __helpers.strip_quotes(tokens[(token_start + 2)]);
 
             if (typeof l_value === "string") {
                 l_value = parseInt(l_value);
@@ -825,6 +827,8 @@
             let blocks = 0;
             
             if (tokens[token_start] !== '[' && tokens[token_start] !== '(') {
+
+            console.log(`CONDITIONAL LINE = ${tokens}`);
                 return {
                     'status': "success",
                     'start': token_start,
@@ -1005,7 +1009,6 @@
 
             if (obj_expr['__if'][2] !== "false" && obj_expr['__if'][2] !== false && obj_expr['__if'][2] !== 0) {
                 is_true = true;
-
                 result = await __execute_line(proc, obj_code['__if']);
 
                 if (result.status !== "success") {
@@ -1036,6 +1039,7 @@
             if (! is_true && obj_code['__else'].length > 0) {
                 result = await __execute_line(proc, obj_expr['__else']);
 
+console.log(`>>> OBJ CODE: ${obj_code['__else']}`)
                 if (result.status !== "success") {
                     return result;
                 }
