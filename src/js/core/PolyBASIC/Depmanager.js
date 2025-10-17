@@ -26,12 +26,11 @@
   try {
     let path = script_name;
 
-    // If not an absolute URL, treat it as a relative module
-    if (!/^https?:\/\//i.test(script_name)) {
+    // 🔍 If the path starts with http(s) or a leading slash, it's already absolute
+    if (!/^https?:\/\//i.test(script_name) && !script_name.startsWith("/")) {
       path = `./${script_name}.js`;
-    } else if (!path.endsWith('.js')) {
-      // If it's a remote URL and missing .js, add it
-      path += '.js';
+    } else if (!path.endsWith(".js")) {
+      path += ".js";
     }
 
     console.log("Importing module from:", path);
