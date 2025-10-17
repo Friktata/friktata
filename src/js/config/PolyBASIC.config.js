@@ -8,7 +8,7 @@
     console.log(`HOST = ${window.location.hostname}`)
 
     if (window.location.hostname !== "127.0.0.1" && window.location.hostname !== "localhost") {
-        assets_path = "https://raw.githubusercontent.com/Friktata/friktata/master/pages";
+        assets_path = "/friktata/assets";
     }
 
     export const PolyBASICConfig = (() => {

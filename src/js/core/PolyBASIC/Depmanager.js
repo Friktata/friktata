@@ -23,28 +23,29 @@
      *  __module_load()
      * 
      */const __module_load = async (script_name) => {
-  try {
-    let path = script_name;
+            try {
+                let path = script_name;
 
-    // 🔍 If the path starts with http(s) or a leading slash, it's already absolute
-    if (!/^https?:\/\//i.test(script_name) && !script_name.startsWith("/")) {
-      path = `./${script_name}.js`;
-    } else if (!path.endsWith(".js")) {
-      path += ".js";
-    }
+                if (!/^https?:\/\//i.test(script_name) && !script_name.startsWith("/")) {
+                    path = `./${script_name}.js`;
+                }
+                else if (!path.endsWith(".js")) {
+                    path += ".js";
+                }
 
-    console.log("Importing module from:", path);
+                console.log("Importing module from:", path);
 
-    const mod = await import(path);
+                const mod = await import(path);
 
-    return {
-      status: "success",
-      module: mod
-    };
-  } catch (err) {
-    return __helpers.err_object(`Failed to load script "${script_name}": ${err}`);
-  }
-};
+                return {
+                    status: "success",
+                    module: mod
+                };
+            }
+            catch (err) {
+                return __helpers.err_object(`Failed to load script "${script_name}": ${err}`);
+            }
+        };
 
 
     /**************************************************************************

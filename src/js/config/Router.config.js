@@ -8,7 +8,7 @@
     console.log(`HOST = ${window.location.hostname}`)
 
     if (window.location.hostname !== "127.0.0.1" && window.location.hostname !== "localhost") {
-        local_path = "https://raw.githubusercontent.com/Friktata/friktata/master/pages";
+        local_path = "/friktata/pages";
     }
 
     export const RouterConfig = (() => {
