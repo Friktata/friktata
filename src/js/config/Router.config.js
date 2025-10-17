@@ -3,12 +3,18 @@
  * 
  */
 
+    let local_path = "../../../pages";
+
+    if (window.location.host === "127.0.0.1" || window.location.host === "localhost") {
+        local_path = "https://friktata.github.io/friktata/pages";
+    }
+
     export const RouterConfig = (() => {
         
         return                  {
 
     //  Relative path to all pages.
-            'page_path':        '../../../pages',
+            'page_path':        local_path,
 
     //  Default page displayed if no specific page is requested.
             'default_page':     '0001',
