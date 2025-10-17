@@ -5,9 +5,9 @@
 
     let assets_path = "../../../assets";
 
-    console.log(`HOST = ${window.location.host}`)
+    console.log(`HOST = ${window.location.hostname}`)
 
-    if (window.location.host.substring(0, 9) === "127.0.0.1" || window.location.host.substring(0, 11) === "localhost") {
+    if (window.location.hostname !== "127.0.0.1" && window.location.hostname !== "localhost") {
         assets_path = "https://github.com/Friktata/friktata/tree/master/pages";
     }
 
