@@ -294,7 +294,7 @@
                         );
                     }
 
-                    params[f_params['name']] = f_params[param]['default'];
+                    params[f_params[param]['name']] = f_params[param]['default'];
                     continue;
                 }
 
@@ -308,11 +308,15 @@
 
             let result;
             
-            if (window.__methods[function_name]['async']) {
+            if (window.__methods[function_name]['async'] === true) {
                 result = await window.__methods[function_name]['callback'](params);
             }
             else {
                 result = window.__methods[function_name]['callback'](params);
+            }
+
+            if (result === "undefined" || typeof result === "undefined") {
+                result = 0;
             }
 
             if (operator > 2) {
@@ -451,13 +455,14 @@
             let l_value = __helpers.strip_quotes(tokens[token_start]);
             let r_value = __helpers.strip_quotes(tokens[(token_start + 2)]);
 
-            if (typeof l_value === "string") {
+            if (typeof l_value === "string" && typeof r_value !== "string") {
                 l_value = parseInt(l_value);
             }
-            if (typeof r_value === "string") {
+            if (typeof r_value === "string" && typeof l_value !== "string") {
                 r_value = parseInt(r_value);
             }
 
+            console.log(`Comparing ${typeof l_value} ${l_value} ${operator} ${typeof r_value} ${r_value}`)
             switch (operator) {
 
                 case '+':

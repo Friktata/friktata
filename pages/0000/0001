@@ -4,68 +4,38 @@
 //  TT T T hiss was the-_-- [[firsS-t.
 //
 
-    // 1 result = load("test_file");
-    // 2 if (here->result == 1) print("Error loading file")
-    // else print(here->result);
-
-    // 4 foreground("red", 255);
-    // 5 foreground("green", 0);
-    // 6 foreground("blue", 127);
-
-    // 7 putstring(2, 10, "Press a key to continue");
-    // 8 ch = getch();
-
-    // 9 print("Pressed the '" . here->ch . "' key");
-
-    // num = 0;
-    // row = 10;
-    // column = 10;
-
-    // string = "Hello, world!";
-    // str = "";
-
-    // delay = 50;
-
-    // block print_string;
-    // //  Grab the next byte in the string.
-    // //
-    //     byte = substring(here<-string, here<-num, (here<-num + 1));
-
-    // //  Increment the column position.
-    // //
-    //     here<-column = (here<-column + 1);
-    //     here<-num = (here<-num + 1);
-
-    // //  Print the byte.
-    // //
-    //     putchar(here<-row, here<-column, here->byte);
-
-    //     if (here->byte == " ") here->byte = "&nbsp;";
-    //     print(here->byte);
-
-    //     global->str = global->str . here->byte;
-
-    //     sleep(here<-delay);
-
-    // endblock;
-
-    // 100 if (here->num >= strlen(here->string))
-    //     goto->200
-    // else
-    //     goto->print_string;
-
-    // goto->100;
-
-    // 200 putstring(5, 5, "Done!");
-    // putstring(6, 5, global->str);
-
-    // setfg(32, 220, 80, 255);
-    // setbg(255, 255, 255, 255);
-
-    // putstring(12, 0, global->result);
-    // print(here->str);
-
     @include "default_layout";
     
     0 goto->title_screen;
 
+
+    setfg(255, 255, 255, 255);
+
+    horizontal_string = global->title_screen->string;
+    horizontal_bottom = global->title_screen->bottom;
+
+    page_delay = 1;
+    return_val = putstring(1, 1, here->horizontal_string, here->page_delay, true);
+
+    if (here->return_val != "")
+        here->page_delay = 0;
+
+    putstring(here->horizontal_bottom, 1, here->horizontal_string, here->page_delay, true);
+
+    setbg(32, 127, 220, 255);
+
+    putcolumn(
+        3,
+        1,
+        32,
+        (global->title_screen->display_height - 5),
+        " "
+    );
+
+    putcolumn(
+        4,
+        2,
+        30,
+        (global->title_screen->display_height - 6),
+        load("pages/0000/0001")
+    );

@@ -3,6 +3,55 @@
  * 
  */
 
+    const __largest_word_size = str => {
+
+        const words = str.split(/\s+/);
+        
+        let max_length = 0;
+
+        for (const word of words) {
+            if (word.length > max_length) {
+                max_length = word.length;
+            }
+        }
+
+        return max_length;
+
+    };
+
+
+    const __next_word_length = (
+        str, 
+        position
+    ) => {
+
+        let pos;
+
+        for (pos = position; pos < str.length; pos++) {
+            let ch = str.substring(pos, (pos + 1));
+
+            if (ch === "\n") {
+                return (pos - position);
+            }
+
+            if (ch !== " " && ch !== "\t") {
+                break;
+            }
+        }
+
+        for (; pos < str.length; pos++) {
+            let ch = str.substring(pos, (pos + 1));
+
+            if (ch === "\n"|| ch === " " || ch === "\t") {
+                break;
+            }
+        }
+
+        return (pos - position);
+
+    };
+
+
     export const TerminalIO = () => {
 
     /**************************************************************************
@@ -79,6 +128,8 @@
 
             let display_info = window.__display.display_info();
 
+            let __return_val = "";
+
             console.log(obj_params['delay']);
             
             for (let byte = 0; byte < string.length; byte++) {
@@ -107,9 +158,11 @@
                                 'skip': obj_params['skip']
                             }
                         );
-                        if (ch !== 0) {
+                        if (ch !== "") {
                             obj_params['delay'] = 0;
                         }
+
+                        __return_val = ch;
                     }
                     else {
                         await window.__methods['getch']['callback'](
@@ -124,7 +177,7 @@
                 column++;
             }
 
-            return "OK";
+            return __return_val;
 
         };
 
@@ -135,7 +188,7 @@
      */
         const   display_rows = () => {
 
-            return `"${window.__display.display_info().rows}"`;
+            return window.__display.display_info().rows;
 
         };
 
@@ -146,7 +199,7 @@
      */
         const   display_columns = () => {
 
-            return `"${window.__display.display_info().columns}"`;
+            return window.__display.display_info().columns;
 
         };
 
@@ -275,6 +328,119 @@
         };
 
 
+    /**************************************************************************
+     *  setbg()
+     * 
+     */
+        const   clear = (
+            obj_params = []
+        ) => {
+
+            $(`.cell`).html("&nbsp;");
+
+        };
+
+
+    /**************************************************************************
+     *  putcolumn()
+     * 
+     */
+        const   putcolumn = async (
+            obj_params = []
+        ) => {
+
+            let     row = obj_params['row'];
+            let     column = obj_params['column'];
+            let     width = obj_params['width'];
+            let     height = obj_params['height'];
+
+            let     wrap = obj_params['wrap'];
+            let     start = obj_params['start'];
+            let     end = obj_params['end'];
+
+            let     str = obj_params['string'];
+
+            let     largest_word_size = __largest_word_size(str);
+
+            if (end <= start) {
+                end = (str.length - 1);
+            }
+
+            console.log(`Largest word size of:\n${str}\n${largest_word_size}\n`);
+            console.log(`>>> START: ${start}, END; ${end}`)
+            console.log(`>>> WIDTH: ${width}, HEIGHT; ${height}`)
+
+            while (true) {
+
+                let ch = " ";
+
+                if (row >= (obj_params['row'] + obj_params['height'])) {
+                    if (column > (obj_params['column'] + obj_params['width'])) {
+                        break;
+                    }
+                }
+                
+                if (start < str.length) {
+                    ch = str.substring(start, (start + 1));
+
+                    if (ch === " " || ch === "\t") {
+                        if (column === obj_params['column']) {
+                            start++;
+                            continue;
+                        }
+                    }
+                }
+
+                start++;
+
+                console.log(`>>> Dumping byte: ${ch}`);
+
+                let next_word_end = __next_word_length(str, start);
+
+                if (
+                    (wrap &&
+                        (ch === " "  || ch === "\t") && 
+                        (
+                            ((column + largest_word_size) >= obj_params['width']) && 
+                            ((next_word_end + column) >= (obj_params['column'] + obj_params['width']))
+                        )
+                    ) ||
+                    ch === "\n"
+                ) {
+                    for ( ; column < (obj_params['column'] + width); column++) {
+                        putchar({
+                            'row': row,
+                            'column': column,
+                            'char': " "
+                        });
+                    }
+
+                    column = obj_params['column'];
+                    row++;
+
+                    continue;
+                }
+
+                putchar({
+                    'row': row,
+                    'column': column++,
+                    'char': ch
+                });
+
+                if (column >= (obj_params['column'] + width)) {
+                    column = obj_params['column'];
+                    row++;
+                }
+
+                if (row >= (obj_params['row'] + height)) {
+                    break;
+                }
+
+            }
+
+        };
+
+
         const   _methods =          {
             
             'putchar':              {
@@ -351,6 +517,27 @@
                     { 'name': 'alpha',      'type': 'number' }
                 ]
 
+            },
+
+            'clear':                {
+                'callback':         clear,
+                'async':            false,
+                'params':           []
+            },
+
+            'putcolumn':            {
+                'callback':         putcolumn,
+                'async':            true,
+                'params':           [
+                    { 'name': 'row',        'type': 'number' },
+                    { 'name': 'column',     'type': 'number' },
+                    { 'name': 'width',      'type': 'number' },
+                    { 'name': 'height',     'type': 'number' },
+                    { 'name': 'string',     'type': 'string' },
+                    { 'name': 'wrap',       'type': 'boolean',  'default': true },
+                    { 'name': 'start',      'type': 'number',   'default': 0 },
+                    { 'name': 'end',        'type': 'number',   'default': 0 }
+                ]
             }
             
         };

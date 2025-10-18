@@ -44,11 +44,13 @@
     /**************************************************************************
      *  getch()
      */
-        const getch = (
+        const getch = async (
             obj_params = []
         ) => {
             
             let delay = obj_params['delay'];
+
+            console.log(`>>>>>>>>>>>>>>>>>>>>>>> DELAY: ${delay}`)
 
             if (delay <= 0) {
                 return new Promise(resolve => {
@@ -63,23 +65,17 @@
                 const handler = (event) => {
                     clearTimeout(timeoutId);
                     document.removeEventListener('keydown', handler);
-                    resolve(event.key); // return the key pressed
+                    resolve(event.key); 
                 };
 
                 document.addEventListener('keydown', handler);
 
                 let timeoutId;
 
-                if (delay > 0) {
-                    timeoutId = setTimeout(() => {
-                        document.removeEventListener('keydown', handler);
-                        resolve(0);
-                    }, delay);
-                }
-                else {
+                timeoutId = setTimeout(() => {
                     document.removeEventListener('keydown', handler);
-                    resolve(0);
-                }
+                    resolve("");
+                }, delay);
             });
         };
 
@@ -114,7 +110,9 @@
             'getch':                {
                 'callback':         getch,
                 'async':            true,
-                'params':           []
+                'params':           [
+                    { 'name': 'delay',      'type': 'number',   'default': 0 }
+                ]
             }
             
         };

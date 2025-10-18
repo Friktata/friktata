@@ -16,6 +16,7 @@
         title_width = 52;
         title_top = 6;
 
+        print("Display width: " . here->display_width);
         if (here->display_width < 60)
             here->title_path = "layout/small_title"
         elseif (here->display_width < 60)
@@ -25,27 +26,27 @@
 
         title_data = load(here->title_path);
 
+        
+        columns = (here->display_width - 2);
+        bottom = (here->display_height - 2);
+        string = "";
 
         block generate_horizontal;
 
             1 setfg(255, 255, 255, 255);
-            
-            5 columns = (here<-display_width - 2);
-            6 bottom = (here<-display_height - 2);
-            7 string = "";
 
-            10 string = here->string . "_";
-            20 here->len = strlen(here->string);
+            10 here<-string = here<-string . "_";
+            20 here->len = strlen(here<-string);
 
-            30 if (here->len < here->columns)
+            30 if (here->len < here<-columns)
                 goto->10
             else
                 goto->50;
 
             40 goto->30;
 
-            50 putstring(1, 1, here->string);
-            51 putstring(here->bottom, 1, here->string);
+            50 putstring(1, 1, here<-string);
+            51 putstring(here<-bottom, 1, here<-string);
 
         endblock;
 
@@ -60,12 +61,55 @@
             
             20 setfg(255, 255, 255, 255);
             30 putstring(15, (here->subtitle_left / 2), "Press any key to continue", 50, true);
+            31 sleep(500);
 
         endblock;
 
+        block wait_screen;
+
+            1 print("FLASH");
+            2 state_on = "on";
+            3 state_off = "off";
+            4 wait_screen_state = "on";
+            5 subtitle_left = (here<-display_width - 25);
+
+            10 if (here->wait_screen_state == "on")
+                setfg(0, 0, 0, 255)
+            else
+                setfg(255, 255, 255, 255);
+
+            30 putstring(15, (here->subtitle_left / 2), "Press any key to continue");
+
+            40 if (here->wait_screen_state == "on")
+                here->wait_screen_state = "off"
+            else
+                here->wait_screen_state = "on";
+
+            41 print ("state = " . here->wait_screen_state);
+            49 print (">>> CH <<<");
+
+            50 ch = getch(1000);
+
+            print("here->ch = " . here->ch);
+
+            100 if (here->ch == "")
+                goto->10
+            else
+                goto->120;
+
+            110 goto->100;
+            120 return;
+
+        endblock;
+
+
         goto->generate_horizontal;
         goto->draw_screen;
+        goto->wait_screen;
 
+        page_delay = 1;
+        sleep(500);
+        clear();
 
     endblock;
 
