@@ -158,73 +158,61 @@
             });
         };
         
-/**************************************************************************
- *  getinput()
- *  Waits for the first keyboard, scroll, or mouse click event.
- *  Returns:
- *    - key name (e.g. "a", "Enter")
- *    - "ScrollUp" / "ScrollDown"
- *    - "left" / "middle" / "right"
- *    - "" if timeout
- **************************************************************************/
-const getinput = async (
-    obj_params = {}
-) => {
-    const delay = obj_params['delay'] ?? 0;
+    /**************************************************************************
+     *  getinput()
+     * 
+     */
+        const getinput = async (
+            obj_params = {}
+        ) => {
+            const delay = obj_params['delay'] ?? 0;
 
-    const getButtonName = (button) => {
-        switch (button) {
-            case 0: return "left";
-            case 1: return "middle";
-            case 2: return "right";
-            default: return "unknown";
-        }
-    };
+            const getButtonName = (button) => {
+                switch (button) {
+                    case 0: return "left";
+                    case 1: return "middle";
+                    case 2: return "right";
+                    default: return "unknown";
+                }
+            };
 
-    return new Promise(resolve => {
-        let timeoutId;
+            return new Promise(resolve => {
+                let timeoutId;
 
-        // Shared cleanup to remove all event listeners
-        const cleanup = () => {
-            document.removeEventListener("keydown", onKey);
-            document.removeEventListener("wheel", onWheel);
-            document.removeEventListener("mousedown", onClick);
-            if (timeoutId) clearTimeout(timeoutId);
+                const cleanup = () => {
+                    document.removeEventListener("keydown", onKey);
+                    document.removeEventListener("wheel", onWheel);
+                    document.removeEventListener("mousedown", onClick);
+                    if (timeoutId) clearTimeout(timeoutId);
+                };
+
+                const onKey = (event) => {
+                    cleanup();
+                    resolve(event.key);
+                };
+
+                const onWheel = (event) => {
+                    cleanup();
+                    resolve(event.deltaY < 0 ? "ScrollUp" : "ScrollDown");
+                };
+
+                const onClick = (event) => {
+                    cleanup();
+                    resolve(getButtonName(event.button));
+                };
+
+                document.addEventListener("keydown", onKey);
+                document.addEventListener("wheel", onWheel, { passive: true });
+                document.addEventListener("mousedown", onClick);
+
+                if (delay > 0) {
+                    timeoutId = setTimeout(() => {
+                        cleanup();
+                        resolve("");
+                    }, delay);
+                }
+            });
         };
-
-        // Keyboard event handler
-        const onKey = (event) => {
-            cleanup();
-            resolve(event.key);
-        };
-
-        // Scroll event handler
-        const onWheel = (event) => {
-            cleanup();
-            resolve(event.deltaY < 0 ? "ScrollUp" : "ScrollDown");
-        };
-
-        // Mouse click event handler
-        const onClick = (event) => {
-            cleanup();
-            resolve(getButtonName(event.button));
-        };
-
-        // Attach all listeners
-        document.addEventListener("keydown", onKey);
-        document.addEventListener("wheel", onWheel, { passive: true });
-        document.addEventListener("mousedown", onClick);
-
-        // Handle optional delay
-        if (delay > 0) {
-            timeoutId = setTimeout(() => {
-                cleanup();
-                resolve("");
-            }, delay);
-        }
-    });
-};
-
 
 
     /**************************************************************************
