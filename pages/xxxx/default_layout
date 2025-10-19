@@ -88,7 +88,6 @@
             36 putstring(global->title_screen->draw_screen->subtitle_top, ((here->subtitle_left / 2) - 3), "**");
             37 putstring(global->title_screen->draw_screen->subtitle_top, ((here->subtitle_left / 2) + 26), "**");
 
-
             40 if (here->wait_screen_state == "on")
                 here->wait_screen_state = "off"
             else
@@ -105,7 +104,6 @@
             120 return;
 
         endblock;
-
 
         goto->generate_horizontal;
         goto->draw_screen;
