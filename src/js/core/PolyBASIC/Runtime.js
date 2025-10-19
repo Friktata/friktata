@@ -462,7 +462,14 @@
                 r_value = parseInt(r_value);
             }
 
-            console.log(`Comparing ${typeof l_value} ${l_value} ${operator} ${typeof r_value} ${r_value}`)
+            // if (operator === "+" || operator === "-" || operator === "/" || operator === "*") {
+            if (operator !== "==" && operator !== "!=") {
+                if (typeof l_value === 'string') l_value = parseInt(l_value);
+                if (typeof r_value === 'string') r_value = parseInt(r_value);
+            }
+
+            // console.log(`>>> TESTING ${l_value} (${typeof l_value}) ${operator} ${r_value} (${typeof r_value})`)
+
             switch (operator) {
 
                 case '+':
@@ -542,7 +549,8 @@
                     if (/^[0-9]+$/.test(tokens[token])) {
                         __goto = {
                             'next_line': `${tokens[token]}`,
-                            'proc': next_proc
+                            'proc': next_proc,
+                            'tokens': tokens
                         };
                         return {
                             'status': "success",
@@ -552,7 +560,8 @@
                     else {
                         __goto = {
                             'next_line': false,
-                            'proc': next_proc
+                            'proc': next_proc,
+                            'tokens': tokens
                         };
                         return {
                             'status': "success",
@@ -666,13 +675,6 @@
                     if (tokens[(token - 1)] !== "<-" && tokens[(token - 1)] !== "->") {  
                         let l_string = __helpers.strip_quotes(tokens[token]);
                         let r_string = __helpers.strip_quotes(tokens[(token + 2)]);
-
-                        // if (l_string.trim() === "") {
-                        //     l_string = `"${l_string}"`;
-                        // }
-                        // if (r_string.trim() === "") {
-                        //     r_string = `"${r_string}"`;
-                        // }
 
                         tokens[token] = `"${l_string}${r_string}"`;
                         tokens.splice(token + 1, 2);
@@ -832,8 +834,6 @@
             let blocks = 0;
             
             if (tokens[token_start] !== '[' && tokens[token_start] !== '(') {
-
-            console.log(`CONDITIONAL LINE = ${tokens}`);
                 return {
                     'status': "success",
                     'start': token_start,
@@ -1044,7 +1044,6 @@
             if (! is_true && obj_code['__else'].length > 0) {
                 result = await __execute_line(proc, obj_expr['__else']);
 
-console.log(`>>> OBJ CODE: ${obj_code['__else']}`)
                 if (result.status !== "success") {
                     return result;
                 }
@@ -1098,20 +1097,31 @@ console.log(`>>> OBJ CODE: ${obj_code['__else']}`)
                         proc = __procs.pop();
                         line = __lines.pop();
 
+                        console.log(`Dropped back into proc ${proc.path} ${proc.id}`);
+
                         keys = Object.keys(proc.code);
                         path = proc.id;
                     }
                     else {
-                        break;
+                        if (__goto === false) {
+                            break;
+                        }
                     }
+                }
+
+                if (__goto === false) {
+                    if (line >= keys.length)
+                        break;
                 }
 
                 if (__goto !== false) {
                     if (__goto['next_line'] === false) {
-                    __procs.push(proc);
+                        __procs.push(proc);
                         __lines.push(line);
 
                         proc = __goto['proc'];
+                        
+                        console.log(`Moved into proc ${proc.path} ${proc.id}`)
 
                         keys = Object.keys(proc.code);
                         path = proc.id;
@@ -1121,13 +1131,14 @@ console.log(`>>> OBJ CODE: ${obj_code['__else']}`)
                     else {
                         if (! keys.includes(`__${__goto['next_line']}__`)) {
                             return __helpers.err_object(
-                                `Error in ${tokens[0]} on line ${tokens[1]}: Reference to undefined line '${__goto['next_line']}' in '${proc.path} ${proc.id}'`
+                                `Error in ${__goto.tokens[0]} on line ${__goto.tokens[1]}: Reference to undefined line '${__goto['next_line']}' in '${proc.path} ${proc.id}'`
                             );
                         }
 
                         line = (keys.indexOf(`__${__goto['next_line']}__`));
                     }
                     __goto = false;
+                    // continue;
                 }
 
                 let key = keys[line];

@@ -19,13 +19,7 @@
             obj_params = []
         ) => {
 
-            console.log(obj_params['path']);
-
-            console.log(`Loading file ${obj_params['path']}`);
-
             const path = `${__config['file_path']}/${obj_params['path']}`;
-
-            console.log(path);
 
             const response = await fetch(path);
 

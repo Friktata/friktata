@@ -129,8 +129,6 @@
             let display_info = window.__display.display_info();
 
             let __return_val = "";
-
-            console.log(obj_params['delay']);
             
             for (let byte = 0; byte < string.length; byte++) {
                 let char = string.substring(byte, (byte + 1));
@@ -354,23 +352,35 @@
             let     width = obj_params['width'];
             let     height = obj_params['height'];
 
+            let     delay = obj_params['delay'];
             let     wrap = obj_params['wrap'];
-            let     start = obj_params['start'];
-            let     end = obj_params['end'];
+            let     start_line = obj_params['start_line'];
 
+            let     start = 0;
             let     str = obj_params['string'];
+            let     end = str.length;
 
             let     largest_word_size = __largest_word_size(str);
 
-            if (end <= start) {
-                end = (str.length - 1);
+            let     __return_val = "";
+            let     lines = 1;
+
+            if (typeof start_line === 'string') {
+                start_line = parseInt(start_line);
             }
 
-            console.log(`Largest word size of:\n${str}\n${largest_word_size}\n`);
-            console.log(`>>> START: ${start}, END; ${end}`)
-            console.log(`>>> WIDTH: ${width}, HEIGHT; ${height}`)
+            console.log(`>>>>>>>>>>>> START LINE ${start_line} <<<<<<<<<<<<<<<<<<<`)
+
+            // if (end <= start) {
+            //     end = (str.length - 1);
+            // }
 
             while (true) {
+
+                if (lines === start_line) {
+                    row = obj_params['row'] - 1;
+                    column = obj_params['column'];
+                }
 
                 let ch = " ";
 
@@ -382,18 +392,124 @@
                 
                 if (start < str.length) {
                     ch = str.substring(start, (start + 1));
-
-                    if (ch === " " || ch === "\t") {
-                        if (column === obj_params['column']) {
-                            start++;
-                            continue;
-                        }
-                    }
                 }
 
                 start++;
 
-                console.log(`>>> Dumping byte: ${ch}`);
+                let next_word_end = __next_word_length(str, start);
+
+                if (
+                    (wrap &&
+                        (ch === " "  || ch === "\t") && 
+                        (
+                            ((column + largest_word_size) >= obj_params['width']) && 
+                            ((next_word_end + column) >= (obj_params['column'] + obj_params['width']))
+                        )
+                    ) ||
+                    ch === "\n"
+                ) {
+                    for ( ; column < (obj_params['column'] + width); column++) {
+                    if (row < (obj_params['row'] + height) && column < (obj_params['column'] + width)) {
+
+                        putchar({
+                            'row': row,
+                            'column': column,
+                            'char': " "
+                        });
+                    }
+                    }
+
+                    ch = str.substring(start, (start + 1));
+
+                    if (ch === " " || str === "\t") {
+                        start++;
+                    }
+
+                    column = obj_params['column'];
+                    row++;
+                    lines++;
+
+                    continue;
+                }
+
+                if (column >= (obj_params['column'] + width)) {
+                    column = obj_params['column'];
+                    row++;
+                    lines++;
+                }
+
+                if (row >= (obj_params['row'] + height)) {
+                    if (lines >= start_line)
+                    break;
+                }
+
+                if (lines >= start_line) {
+                    if (row < (obj_params['row'] + height) && column < (obj_params['column'] + width)) {
+                        putchar({
+                            'row': row,
+                            'column': column,
+                            'char': ch
+                        });
+                    }
+                    column++;
+                }
+
+                if (obj_params['delay'] > 0) {
+                    if (obj_params['skip']) {
+                        let ch = await window.__methods['getch']['callback'](
+                            {
+                                'delay': obj_params['delay'],
+                                'skip': obj_params['skip']
+                            }
+                        );
+                        if (ch !== "") {
+                            obj_params['delay'] = 0;
+                        }
+
+                        __return_val = ch;
+                    }
+                    else {
+                        await window.__methods['getch']['callback'](
+                            {
+                                'delay': obj_params['delay'],
+                                'skip': obj_params['skip']
+                            }
+                        );
+                    }
+                }
+
+            }
+
+            return __return_val;
+
+        };
+
+
+    /**************************************************************************
+     *  countlines()
+     * 
+     */
+        const   countlines = (
+            obj_params = []
+        ) => {
+
+            let     row = 0;
+            let     column = 0;
+            let     width = obj_params['width'];
+
+            let     wrap = obj_params['wrap'];
+            let     str = obj_params['string'];
+
+            let     largest_word_size = __largest_word_size(str);
+
+            let     start = 0;
+            let     lines = 1;
+
+            while (start < str.length) {
+                
+                let ch = str.substring(start, (start + 1));
+
+                start++;
 
                 let next_word_end = __next_word_length(str, start);
 
@@ -415,28 +531,28 @@
                         });
                     }
 
+                    ch = str.substring(start, (start + 1));
+
+                    if (ch === " " || str === "\t") {
+                        start++;
+                    }
+
                     column = obj_params['column'];
                     row++;
+                    lines++;
 
                     continue;
                 }
 
-                putchar({
-                    'row': row,
-                    'column': column++,
-                    'char': ch
-                });
-
                 if (column >= (obj_params['column'] + width)) {
                     column = obj_params['column'];
                     row++;
-                }
-
-                if (row >= (obj_params['row'] + height)) {
-                    break;
+                    lines++;
                 }
 
             }
+
+            return lines;
 
         };
 
@@ -534,9 +650,21 @@
                     { 'name': 'width',      'type': 'number' },
                     { 'name': 'height',     'type': 'number' },
                     { 'name': 'string',     'type': 'string' },
+                    { 'name': 'delay',      'type': 'number',   'default': 0 },
+                    { 'name': 'skip',       'type': 'boolean',  'default': false },
                     { 'name': 'wrap',       'type': 'boolean',  'default': true },
-                    { 'name': 'start',      'type': 'number',   'default': 0 },
+                    { 'name': 'start_line', 'type': 'number',   'default': 0 },
                     { 'name': 'end',        'type': 'number',   'default': 0 }
+                ]
+            },
+
+            'countlines':           {
+                'callback':         countlines,
+                'async':            false,
+                'params':           [
+                    { 'name': 'width',      'type': 'number' },
+                    { 'name': 'string',     'type': 'string' },
+                    { 'name': 'wrap',       'type': 'boolean',  'default': true }
                 ]
             }
             

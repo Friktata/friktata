@@ -5,9 +5,9 @@
 //
 
     @include "default_layout";
+    @include "display_page";
     
-    0 goto->title_screen;
-
+    goto->title_screen;
 
     setfg(255, 255, 255, 255);
 
@@ -22,20 +22,20 @@
 
     putstring(here->horizontal_bottom, 1, here->horizontal_string, here->page_delay, true);
 
-    setbg(32, 127, 220, 255);
+    setbg(0, 0, 0, 255);
+    setfg(32, 220, 127, 255);
 
-    putcolumn(
-        3,
-        1,
-        32,
-        (global->title_screen->display_height - 5),
-        " "
+    page_data = load("pages/0000/0001");
+
+    page_lines = countlines(
+        (global->title_screen->display_width - 4),
+        here->page_data,
+        true
     );
 
-    putcolumn(
-        4,
-        2,
-        30,
-        (global->title_screen->display_height - 6),
-        load("pages/0000/0001")
-    );
+    // print("Total lines = " . here->lines);
+
+
+    goto->display_page;
+
+

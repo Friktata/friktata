@@ -1,0 +1,67 @@
+
+    0 display_page_included = true;
+
+    block display_page;
+
+        10 print("page data = " . here<-page_data);
+        11 print("Page lines = " . here<-page_lines);
+
+        20 page_height = (global->title_screen->display_height - 7);
+        21 page_width = (global->title_screen->display_width - 4);
+        22 max_top = (global->page_lines - here->page_height);
+        23 delay = 1;
+
+        24 print("Page height = " . here->page_height . ", page lines = " . global->page_lines);
+
+        25 if (global->page_lines < here->page_height)
+            here->max_top = 0
+        else
+            here->max_top = (here->max_top - 1);
+
+        30 current_line = 0;
+
+        // 40 print("Displaying from line " . here->current_line);
+
+        50 putcolumn(
+            3,
+            1,
+            (global->title_screen->display_width - 2),
+            (global->title_screen->display_height - 5),
+            " "
+        );
+
+        55 putcolumn(
+            4,
+            2,
+            here->page_width,
+            here->page_height,
+            global->page_data,
+            here->delay,
+            true,
+            true,
+            here->current_line
+        );
+
+        56 print("Max top = " . here->max_top);
+        100 ch = getch(50);
+
+        110 if (here->ch == "ArrowUp")
+            here->current_line = (here->current_line - 1)
+        elseif (here->ch == "ArrowDown")
+            here->current_line = (here->current_line + 1)
+        else
+            goto->100;
+
+        120 if (here->current_line > here->max_top)
+            here->current_line = here->max_top
+        elseif (here->current_line < 0)
+            here->current_line = 0;
+
+        125 print("Current line = " . here->current_line);
+        delay = 0;
+
+        130 goto->55;
+        print("DONE");
+
+        
+    endblock;

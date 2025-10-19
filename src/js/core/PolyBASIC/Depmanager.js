@@ -33,8 +33,6 @@
                     path += ".js";
                 }
 
-                console.log("Importing module from:", path);
-
                 const mod = await import(path);
 
                 return {

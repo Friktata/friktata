@@ -50,7 +50,7 @@
             
             let delay = obj_params['delay'];
 
-            console.log(`>>>>>>>>>>>>>>>>>>>>>>> DELAY: ${delay}`)
+            console.log(`Delay = ${delay}`)
 
             if (delay <= 0) {
                 return new Promise(resolve => {
@@ -58,6 +58,7 @@
                         document.removeEventListener('keydown', handler);
                         resolve(event.key);
                     }
+                    document.addEventListener("keydown", handler);
                 });
             }
 
