@@ -369,12 +369,6 @@
                 start_line = parseInt(start_line);
             }
 
-            console.log(`>>>>>>>>>>>> START LINE ${start_line} <<<<<<<<<<<<<<<<<<<`)
-
-            // if (end <= start) {
-            //     end = (str.length - 1);
-            // }
-
             while (true) {
 
                 if (lines === start_line) {

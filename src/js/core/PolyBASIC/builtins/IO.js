@@ -50,8 +50,6 @@
             
             let delay = obj_params['delay'];
 
-            console.log(`Delay = ${delay}`)
-
             if (delay <= 0) {
                 return new Promise(resolve => {
                     const handler = (event) => {
@@ -82,6 +80,41 @@
 
 
     /**************************************************************************
+     *  getmouse()
+     */
+        const scroll = async (
+            obj_params = {}
+        ) => {
+            let delay = obj_params['delay'] ?? 0;
+
+            if (delay <= 0) {
+                return new Promise(resolve => {
+                    const handler = (event) => {
+                        document.removeEventListener('wheel', handler);
+                        resolve(event.deltaY < 0 ? "up" : "down");
+                    };
+                    document.addEventListener("wheel", handler, { passive: true });
+                });
+            }
+
+            return new Promise(resolve => {
+                const handler = (event) => {
+                    clearTimeout(timeoutId);
+                    document.removeEventListener('wheel', handler);
+                    resolve(event.deltaY < 0 ? "up" : "down");
+                };
+
+                document.addEventListener('wheel', handler, { passive: true });
+
+                const timeoutId = setTimeout(() => {
+                    document.removeEventListener('wheel', handler);
+                    resolve("");
+                }, delay);
+            });
+        };
+
+        
+    /**************************************************************************
      *  All builtin modules and plugins must follow this simple format.
      *
      *  This is required by the Depmanager.js code module to register
@@ -110,6 +143,14 @@
 
             'getch':                {
                 'callback':         getch,
+                'async':            true,
+                'params':           [
+                    { 'name': 'delay',      'type': 'number',   'default': 0 }
+                ]
+            },
+
+            'scroll':               {
+                'callback':         scroll,
                 'async':            true,
                 'params':           [
                     { 'name': 'delay',      'type': 'number',   'default': 0 }

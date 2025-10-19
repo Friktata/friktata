@@ -14,9 +14,7 @@
 
         title_path = "layout/title";
         title_width = 52;
-        title_top = 6;
-
-        print("Display width: " . here->display_width);
+        title_top = (here->display_height / 3);
 
         if (here->display_width < 60)
             here->title_path = "layout/small_title"
@@ -56,16 +54,19 @@
             1 setfg(32, 127, 220, 255);
             2 col = (here<-display_width - here<-title_width);
             3 subtitle_left = (here<-display_width - 25);
+            4 subtitle_top = (here<-display_height - 3);
 
             10 putstring(here<-title_top, (here->col / 2), here<-title_data);
             
             20 setfg(255, 255, 255, 255);
-            30 putstring(15, (here->subtitle_left / 2), "Press any key to continue", 50, true);
+            30 putstring(here->subtitle_top, (here->subtitle_left / 2), "Press any key to continue", 50, true);
             31 sleep(500);
 
         endblock;
 
         block wait_screen;
+
+            0 print("here<-draw_screen->col = " . here<-draw_screen->col);
 
             2 state_on = "on";
             3 state_off = "off";
@@ -77,7 +78,7 @@
             else
                 setfg(255, 255, 255, 255);
 
-            30 putstring(15, (here->subtitle_left / 2), "Press any key to continue");
+            30 putstring(global->title_screen->draw_screen->subtitle_top, (here->subtitle_left / 2), "Press any key to continue");
 
             40 if (here->wait_screen_state == "on")
                 here->wait_screen_state = "off"

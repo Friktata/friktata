@@ -95,7 +95,7 @@
                     break;
                 }
 
-                if (operator === "->") {
+                // if (operator === "->") {
                     if (proc.code[identifier] === undefined) {
                         return __helpers.err_object(
                             `Error in ${tokens[0]} on line ${tokens[1]}: Reference to unknown block '${identifier}'`
@@ -103,7 +103,7 @@
                     }
 
                     proc = proc.code[identifier];
-                }
+                // }
 
                 token += 2;
 
@@ -514,6 +514,10 @@
                     );
             }
 
+            if (typeof result === "number") {
+                result = Math.floor(result);
+            }
+            
             tokens[token_start] = result.toString();
             tokens.splice((token_start + 1), 2);
 
@@ -1097,8 +1101,6 @@
                         proc = __procs.pop();
                         line = __lines.pop();
 
-                        console.log(`Dropped back into proc ${proc.path} ${proc.id}`);
-
                         keys = Object.keys(proc.code);
                         path = proc.id;
                     }
@@ -1121,8 +1123,6 @@
 
                         proc = __goto['proc'];
                         
-                        console.log(`Moved into proc ${proc.path} ${proc.id}`)
-
                         keys = Object.keys(proc.code);
                         path = proc.id;
 
@@ -1138,7 +1138,6 @@
                         line = (keys.indexOf(`__${__goto['next_line']}__`));
                     }
                     __goto = false;
-                    // continue;
                 }
 
                 let key = keys[line];

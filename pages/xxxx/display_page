@@ -48,6 +48,13 @@
         110 if (here->ch == "ArrowUp")
             here->current_line = (here->current_line - 1)
         elseif (here->ch == "ArrowDown")
+            here->current_line = (here->current_line + 1);
+
+        115 ch = scroll(50);
+
+        116 if (here->ch == "up")
+            here->current_line = (here->current_line - 1)
+        elseif (here->ch == "down")
             here->current_line = (here->current_line + 1)
         else
             goto->100;
@@ -57,8 +64,7 @@
         elseif (here->current_line < 0)
             here->current_line = 0;
 
-        125 print("Current line = " . here->current_line);
-        delay = 0;
+        125 delay = 0;
 
         130 goto->55;
         print("DONE");
