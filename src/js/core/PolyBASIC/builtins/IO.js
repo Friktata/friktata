@@ -43,8 +43,9 @@
 
     /**************************************************************************
      *  getch()
+     * 
      */
-        const getch = async (
+        const   getch = async (
             obj_params = []
         ) => {
             
@@ -80,9 +81,10 @@
 
 
     /**************************************************************************
-     *  getmouse()
+     *  getscroll()
+     * 
      */
-        const scroll = async (
+        const   getscroll = async (
             obj_params = {}
         ) => {
             let delay = obj_params['delay'] ?? 0;
@@ -101,7 +103,7 @@
                 const handler = (event) => {
                     clearTimeout(timeoutId);
                     document.removeEventListener('wheel', handler);
-                    resolve(event.deltaY < 0 ? "up" : "down");
+                    resolve(event.deltaY < 0 ? "ScrollUp" : "ScrollDown");
                 };
 
                 document.addEventListener('wheel', handler, { passive: true });
@@ -113,7 +115,118 @@
             });
         };
 
+
+    /**************************************************************************
+     *  getclick()
+     * 
+     */
+        const   getclick = async (obj_params = {}) => {
+            let delay = obj_params['delay'] ?? 0;
+
+            const getButtonName = (button) => {
+                switch (button) {
+                    case 0: return "left";
+                    case 1: return "middle";
+                    case 2: return "right";
+                    default: return "unknown";
+                }
+            };
+
+            if (delay <= 0) {
+                return new Promise(resolve => {
+                    const handler = (event) => {
+                        document.removeEventListener('mousedown', handler);
+                        resolve(getButtonName(event.button));
+                    };
+                    document.addEventListener("mousedown", handler);
+                });
+            }
+
+            return new Promise(resolve => {
+                const handler = (event) => {
+                    clearTimeout(timeoutId);
+                    document.removeEventListener('mousedown', handler);
+                    resolve(getButtonName(event.button));
+                };
+
+                document.addEventListener('mousedown', handler);
+
+                const timeoutId = setTimeout(() => {
+                    document.removeEventListener('mousedown', handler);
+                    resolve("");
+                }, delay);
+            });
+        };
         
+/**************************************************************************
+ *  getinput()
+ *  Waits for the first keyboard, scroll, or mouse click event.
+ *  Returns:
+ *    - key name (e.g. "a", "Enter")
+ *    - "ScrollUp" / "ScrollDown"
+ *    - "left" / "middle" / "right"
+ *    - "" if timeout
+ **************************************************************************/
+const getinput = async (
+    obj_params = {}
+) => {
+    const delay = obj_params['delay'] ?? 0;
+
+    const getButtonName = (button) => {
+        switch (button) {
+            case 0: return "left";
+            case 1: return "middle";
+            case 2: return "right";
+            default: return "unknown";
+        }
+    };
+
+    return new Promise(resolve => {
+        let timeoutId;
+
+        // Shared cleanup to remove all event listeners
+        const cleanup = () => {
+            document.removeEventListener("keydown", onKey);
+            document.removeEventListener("wheel", onWheel);
+            document.removeEventListener("mousedown", onClick);
+            if (timeoutId) clearTimeout(timeoutId);
+        };
+
+        // Keyboard event handler
+        const onKey = (event) => {
+            cleanup();
+            resolve(event.key);
+        };
+
+        // Scroll event handler
+        const onWheel = (event) => {
+            cleanup();
+            resolve(event.deltaY < 0 ? "ScrollUp" : "ScrollDown");
+        };
+
+        // Mouse click event handler
+        const onClick = (event) => {
+            cleanup();
+            resolve(getButtonName(event.button));
+        };
+
+        // Attach all listeners
+        document.addEventListener("keydown", onKey);
+        document.addEventListener("wheel", onWheel, { passive: true });
+        document.addEventListener("mousedown", onClick);
+
+        // Handle optional delay
+        if (delay > 0) {
+            timeoutId = setTimeout(() => {
+                cleanup();
+                resolve("");
+            }, delay);
+        }
+    });
+};
+
+
+
     /**************************************************************************
      *  All builtin modules and plugins must follow this simple format.
      *
@@ -149,8 +262,24 @@
                 ]
             },
 
-            'scroll':               {
-                'callback':         scroll,
+            'getscroll':            {
+                'callback':         getscroll,
+                'async':            true,
+                'params':           [
+                    { 'name': 'delay',      'type': 'number',   'default': 0 }
+                ]
+            },
+
+            'getclick':             {
+                'callback':         getclick,
+                'async':            true,
+                'params':           [
+                    { 'name': 'delay',      'type': 'number',   'default': 0 }
+                ]
+            },
+
+            'getinput':             {
+                'callback':         getinput,
                 'async':            true,
                 'params':           [
                     { 'name': 'delay',      'type': 'number',   'default': 0 }

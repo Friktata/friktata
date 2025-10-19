@@ -43,18 +43,17 @@
         );
 
         56 print("Max top = " . here->max_top);
-        100 ch = getch(50);
+        100 ch = getinput();
+
+        105 print ("CH === " . here->ch);
 
         110 if (here->ch == "ArrowUp")
             here->current_line = (here->current_line - 1)
-        elseif (here->ch == "ArrowDown")
-            here->current_line = (here->current_line + 1);
-
-        115 ch = scroll(50);
-
-        116 if (here->ch == "up")
+        elseif (here->ch == "ScrollUp")
             here->current_line = (here->current_line - 1)
-        elseif (here->ch == "down")
+        elseif (here->ch == "ArrowDown")
+            here->current_line = (here->current_line + 1)
+        elseif (here->ch == "ScrollDown")
             here->current_line = (here->current_line + 1)
         else
             goto->100;
@@ -67,7 +66,8 @@
         125 delay = 0;
 
         130 goto->55;
-        print("DONE");
+        
+        150 return;
 
         
     endblock;
