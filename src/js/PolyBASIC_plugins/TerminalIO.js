@@ -712,7 +712,7 @@
                 }
 
                 if (obj_params['delay'] > 0) {
-                    if (obj_params['skip']) {
+                    if (obj_params['skip'] === "true" || obj_params['skip'] === true) {
                         let ch = await window.__methods['getch']['callback'](
                             {
                                 'delay': obj_params['delay'],

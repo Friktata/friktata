@@ -216,6 +216,41 @@
 
 
     /**************************************************************************
+     *  regex_test()
+     * 
+     */
+        const regex_test = (
+            obj_params = {}
+        ) => {
+
+            let string = obj_params['string'];
+            let pattern = obj_params['pattern'];
+
+            if (typeof pattern === 'string') {
+                const match = pattern.match(/^\/(.*)\/([gimsuy]*)$/);
+                if (match) {
+                    pattern = new RegExp(match[1], match[2]);
+                } else {
+                    pattern = new RegExp(pattern);
+                }
+            }
+
+            if (!(pattern instanceof RegExp)) {
+                throw new TypeError(`Invalid regex pattern: ${pattern}`);
+            }
+
+            if (pattern.test(string)) {
+                return "true";
+            }
+            else {
+                return "false";
+            }
+
+        };
+
+
+
+    /**************************************************************************
      *  All builtin modules and plugins must follow this simple format.
      *
      *  This is required by the Depmanager.js code module to register
@@ -271,6 +306,15 @@
                 'async':            true,
                 'params':           [
                     { 'name': 'delay',      'type': 'number',   'default': 0 }
+                ]
+            },
+
+            'regex_test':           {
+                'callback':         regex_test,
+                'async':            false,
+                'params':           [
+                    { 'name': 'string',     'type': 'string' },
+                    { 'name': 'pattern',    'type': 'string' }
                 ]
             }
             

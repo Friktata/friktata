@@ -1,3 +1,11 @@
+///////////////////////////////////////////////////////////////////////////////
+//  friktata/xxxx/default_page
+//
+//  Thsi is used for, for, for...
+//  /   ///         /   -   -   
+
+//  Page|||\->
+//      /   ---
 
     0 display_page_included = true;
 
@@ -23,11 +31,11 @@
 
         endblock;
 
-
         20 page_height = (global->title_screen->display_height - 7);
         21 page_width = (global->title_screen->display_width - 4);
         22 max_top = (global->page_lines - here->page_height);
         23 delay = 1;
+        24 new_page = "";
 
         25 if (global->page_lines < here->page_height)
             here->max_top = 0
@@ -46,8 +54,7 @@
             " "
         );
 
-
-        55 putcolumn(
+        55 ch = putcolumn(
             4,
             2,
             here->page_width,
@@ -59,7 +66,16 @@
             here->current_line
         );
 
-        100 ch = getinput();
+        60 goto->104;
+
+        100 print ("Waiting for input...");
+        101 ch = getinput();
+
+        104 print("Ch == " . here->ch);
+        105 regex_isdigit = regex_test(here->ch, "/^[0-9]+$/");
+
+        106 print ("Regex is digit = " . here->regex_isdigit);
+        107 print ("new_page = " . here->new_page);
 
         110 if (here->ch == "ArrowUp")
             here->current_line = (here->current_line - 1)
@@ -69,6 +85,8 @@
             here->current_line = (here->current_line + 1)
         elseif (here->ch == "ScrollDown")
             here->current_line = (here->current_line + 1)
+        elseif (here->regex_isdigit == "true")
+            goto->500
         else
             goto->100;
 
@@ -81,7 +99,24 @@
 
         130 goto->55;
         
-        150 return;
+        150 stop();
 
+        500 print ("new_page = " . here->new_page . ", new_page_len = " . here->new_page_len);
+        501 new_page = here->new_page . here->ch;
+        502 new_page_len = strlen(here->new_page);
+
+        510 if (here->new_page_len >= 4)
+                goto->600;
+
+        525 putstring(0, (global->title_screen->display_width - 6), "    ");
+        530 putstring(0, (global->title_screen->display_width - 6), here->new_page);
+        
+        550 goto->100;
+        
+        600 print("Loading page: " . here->new_page);
+        605 clear();
+        610 exec(here->new_page);
+
+        1000 return;
         
     endblock;

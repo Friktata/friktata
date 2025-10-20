@@ -202,10 +202,7 @@
             if (page_data === false) {
                 page_data = await _load_page(__config['undefined_page']);
             }
-
-
-            console.log(`Page Name: ${_current_page}`);
-            console.log(`Page Data: ${page_data}`);
+            
         };
 
 

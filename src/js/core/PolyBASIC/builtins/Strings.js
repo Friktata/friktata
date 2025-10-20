@@ -31,9 +31,6 @@
                 obj_params['end'] = parseInt(obj_params['end']);
             }
 
-            console.log(`Substring start: ${obj_params['start']}`);
-            console.log(`Substring end: ${obj_params['end']}`);
-            console.log(`Substring: ${obj_params['string'].substring(obj_params['start'], obj_params['end'])}`);
             return `"${obj_params['string'].substring(obj_params['start'], obj_params['end'])}"`;
 
         };
