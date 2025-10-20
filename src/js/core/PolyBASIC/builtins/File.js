@@ -19,6 +19,7 @@
             obj_params = []
         ) => {
 
+            const __load = async () => {
             const path = `${__config['file_path']}/${obj_params['path']}`;
 
             const response = await fetch(path);
@@ -28,6 +29,17 @@
             }
 
             return response.text();
+
+            }
+
+            let string = await __load();
+
+            if (obj_params['unquoted'] === false) {
+                return `"${string}"`;
+            }
+            else {
+                return string;
+            }
 
         };
 
@@ -73,7 +85,8 @@
                 'callback':         load,
                 'async':            true,
                 'params':           [
-                    { 'name': 'path', 'type': 'string' }
+                    { 'name': 'path',       'type': 'string' },
+                    { 'name': 'unquoted',   'type': 'boolean',  'default': false }
                 ]
             },
 

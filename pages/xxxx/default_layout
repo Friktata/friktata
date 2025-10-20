@@ -23,7 +23,7 @@
         elseif (here->display_width < 60)
             here->title_top = 3;
 
-        title_data = load(here->title_path);
+        title_data = load(here->title_path, true);
 
         columns = (here->display_width - 2);
         bottom = (here->display_height - 2);

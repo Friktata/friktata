@@ -133,7 +133,6 @@
      * 
      */
         const   __disable_pair = (
-            tokens
         ) => {
 
             let color_pairs = Object.keys(__color_stack);
@@ -615,6 +614,14 @@
                 start_line = parseInt(start_line);
             }
 
+            console.log(`>>>\nSTRING\n${str}`)
+
+            __attributes['bold'] = __attributes['italic'] = __attributes['underline'] = false;
+
+            while (Object.keys(__color_stack).length > 0) {
+                __disable_pair();
+            }
+
             while (true) {
 
                 if (lines === start_line) {
@@ -649,6 +656,8 @@
 
                         commands += ch;
                     }
+
+                    console.log(`>>>>> COMMAND = ${commands}`);
 
                     __execute_commands(commands);
                     continue;

@@ -1,38 +1,36 @@
 `
-  setpair test_pair
-          255 0 0 255
+  setpair highlight
+          255 255 255 255
           0 0 0 255;
   setpair 2_pair
           0 255 0 255
           0 0 0 255;
-  enablepair test_pair;
-  enablepair 2_pair
   `  Rules:
 
-   `disablepair 2_pair`- Thou shalt press any key to dump text quickly.
+   - Thou shalt `enablepair highlight`press any key`disablepair` to dump text quickly.
 
-   `disablepair test_pair`- Thou shalt useth the up and down arrow
+   - Thou shalt useth the up and down arrow
      keys to scrolleth pages.
 
-   `bold true`- Thou shalt type any four digits to view`bold`
+   - Thou shalt `enablepair highlight`type any four digits`disablepair` to view
      pages.
 
-   `underline on`- Thou shalt not break anything lest there`underline`
+   - Thou `enablepair highlight`shalt not breaketh anything`disablepair` lest there
      be helleth to pay...helleth on earth, I 
      tell thee.
 
-   `italic true`- Thou shalt not shit the place up.`italic`
+   - Thou shalt not `enablepair highlight`shit the place up`disablepair`.
 
-   - Thou shalt leaveth everything as one
-     foundeth everything - open gate, through
-     gate, close gate!
+   - Thou shalt `enablepair highlight`leaveth everything as one
+     foundeth everything`disablepair` - open gate, through
+     gate, close gate.
 
    - Here's a quick list of index pages one
      may view to assist with navigation:
 
     
-  Index        Description
+  `enablepair highlight`Index        Description`disablepair`
 
-    0001       Main site index.
+    0001       `bold;underline`Main site index`bold;underline`.
 
-    1000       The Korova Milkpage
+    1000       `bold;underline`The Korova Milkpage`bold;underline`
