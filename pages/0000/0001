@@ -6,6 +6,8 @@
 
     @include "default_layout";
     @include "display_page";
+
+    print("Some garbage");
     
     goto->title_screen;
 
@@ -35,6 +37,11 @@
 
     // print("Total lines = " . here->lines);
 
+    page_title = "Friktata - main index";
+    page_name = pagename();
+    page_path = pagepath();
+
+    exec("1234");
 
     goto->display_page;
 

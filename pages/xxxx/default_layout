@@ -43,18 +43,26 @@
 
             40 goto->30;
 
+            if (global->skip_title_sequence == "true")
+                goto->60;
+
             50 putstring(1, 1, here<-string);
             51 putstring(here<-bottom, 1, here<-string);
+
+            60 return;
 
         endblock;
 
 
         block draw_screen;
+                    
+            1 if (global->skip_title_sequence == "true")
+                goto->40;
 
-            1 setfg(32, 127, 220, 255);
-            2 col = (here<-display_width - here<-title_width);
-            3 subtitle_left = (here<-display_width - 25);
-            4 subtitle_top = (here<-display_height - 3);
+            5 setfg(32, 127, 220, 255);
+            6 col = (here<-display_width - here<-title_width);
+            7 subtitle_left = (here<-display_width - 25);
+            8 subtitle_top = (here<-display_height - 3);
 
             10 putstring(here<-title_top, (here->col / 2), here<-title_data);
             
@@ -62,11 +70,14 @@
             30 putstring(here->subtitle_top, (here->subtitle_left / 2), "Press any key to continue", 50, true);
             31 sleep(500);
 
+            40 return;
+
         endblock;
 
         block wait_screen;
-
-            0 print("here<-draw_screen->col = " . here<-draw_screen->col);
+                    
+            0 if (global->skip_title_sequence == "true")
+                goto->120;
 
             2 state_on = "on";
             3 state_off = "off";
@@ -108,11 +119,16 @@
         goto->generate_horizontal;
         goto->draw_screen;
         goto->wait_screen;
+        // goto->draw_header;
 
         page_delay = 1;
 
         sleep(500);
-        clear();
+
+        if (global->skip_title_sequence != "true")
+            clear();
+
+        500 return;
 
     endblock;
 

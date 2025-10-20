@@ -412,6 +412,11 @@
 			
 			get_proc:			function () {
 				return _proc
+			},
+
+			flush:				function() {
+				_scripts = [];
+				_lines = [];
 			}
 
 		};

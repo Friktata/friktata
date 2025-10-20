@@ -48,24 +48,32 @@
             throw new Error(result.message);
         }
 
+        window.__router = __router;
         window.__display = __display;
         window.__modules = __depmanager.modules;
         window.__methods = __depmanager.methods;
+        window.__helpers = __helpers;
 
-        const   __polybasic = await PolyBASIC();
+        const   __initialise = async () => {
+            const   __polybasic = await PolyBASIC();
 
-        const   __script_path = __router.get_page_path();
-        const   __script_data = await __router.get_page_data();
+            window.__polybasic = __polybasic;
 
-        result = await __polybasic.exec_script(__script_path, __script_data);
+            const   __script_path = window.__router.get_page_path();
+            const   __script_data = await window.__router.get_page_data();
 
-        if (result.status === "success") {
-            __helpers.log(`>>>`);
-            __helpers.log(`>>> That is a nice, clean exit|`);
-        }
-        else {
-            throw new Error(result.message);
-        }
+            result = await window.__polybasic.exec_script(__script_path, __script_data);
+
+            if (result.status === "success") {
+                window.__helpers.log(`>>>`);
+                window.__helpers.log(`>>> That is a nice, clean exit|`);
+            }
+            else {
+                throw new Error(result.message);
+            }
+        };
+
+        await __initialise();
 
         return result;
 

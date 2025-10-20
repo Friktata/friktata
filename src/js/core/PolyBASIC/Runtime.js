@@ -691,7 +691,7 @@
     //  Is this a variable reference? If so it will start with either
     //  'here' or 'global'.
     //
-                if (tokens[token] === 'goto' || tokens[token] === 'exec') {
+                if (tokens[token] === 'goto') {
                     if (
                         (token + 1) >= tokens.length || 
                         (tokens[(token + 1)] !== "->" && tokens[(token + 1)] !== "<-")
@@ -1093,8 +1093,18 @@
             }
 
             __helpers.log(`>>> ${" ".repeat(indent)}Executing block: ${path}`);
+            window.__methods['setproc']['callback'](_proc);
 
             for (let line = 0; line <= keys.length; line++) {
+
+
+                if (_proc.hasOwnProperty('status')) {
+                    if (_proc['status'] == 'stop') {
+                        return {
+                            'status': "success"
+                        };
+                    }
+                }
 
                 if (line >= keys.length) {
                     if (__procs.length > 0) {
@@ -1196,10 +1206,26 @@
 
         };
 
+    
+    /**************************************************************************
+     *  _reset()
+     * 
+     */
+        const   _reset = () => {
+
+            __goto = false;
+            _proc = false;
+
+            __procs = [];
+            __lines = [];
+
+        };
+
 
         return {
         
-            execute:        _execute
+            execute:        _execute,
+            reset:          _reset
 
         };
 

@@ -118,7 +118,7 @@
                                 top: ${Math.floor(row * _column_height) + __top}px;
                                 left: ${Math.floor(column * _column_width) + __left}px;
                                 width: ${Math.ceil(_column_width) + 1}px;
-                                height: ${Math.ceil(_column_height) + 1}px;
+                                height: ${Math.ceil(_column_height)}px;
                                 line-height: 0.8;
                                 font-size: ${_font_size}px;
                                 display: inline-block;
@@ -135,6 +135,10 @@
             }
 
             $(`#${__config['terminal']}`).html(html_out);
+            
+            document.querySelectorAll('.cell').forEach(c =>
+                c.style.setProperty('--rand', Math.random())
+            );
 
         };
 

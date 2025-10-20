@@ -3,24 +3,40 @@
 
     block display_page;
 
-        10 print("page data = " . here<-page_data);
-        11 print("Page lines = " . here<-page_lines);
+        block draw_header;
+
+            page_name = global->page_name;
+            page_path = global->page_path;
+            path_len = strlen(here->page_path);
+            page_base = substring(here->page_path, (here->path_len - 9), (here->path_len - 5));
+
+            print("Page name = " . here->page_name);
+            print("Page base = " . here->page_base);
+
+            putstring(0, 2, here->page_base);
+            putstring(0, (global->title_screen->display_width - 6), here->page_name);
+
+            page_title_width = strlen(global->page_title);
+            page_title_left = (global->title_screen->display_width - here->page_title_width);
+            
+            putstring(0, (here->page_title_left / 2), global->page_title);
+
+        endblock;
+
 
         20 page_height = (global->title_screen->display_height - 7);
         21 page_width = (global->title_screen->display_width - 4);
         22 max_top = (global->page_lines - here->page_height);
         23 delay = 1;
 
-        24 print("Page height = " . here->page_height . ", page lines = " . global->page_lines);
-
         25 if (global->page_lines < here->page_height)
             here->max_top = 0
         else
-            here->max_top = (here->max_top - 1);
+            here->max_top = here->max_top;
 
         30 current_line = 0;
 
-        // 40 print("Displaying from line " . here->current_line);
+        31 goto->draw_header;
 
         50 putcolumn(
             3,
@@ -29,6 +45,7 @@
             (global->title_screen->display_height - 5),
             " "
         );
+
 
         55 putcolumn(
             4,
@@ -42,10 +59,7 @@
             here->current_line
         );
 
-        56 print("Max top = " . here->max_top);
         100 ch = getinput();
-
-        105 print ("CH === " . here->ch);
 
         110 if (here->ch == "ArrowUp")
             here->current_line = (here->current_line - 1)

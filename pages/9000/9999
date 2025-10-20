@@ -1,3 +1,29 @@
 
-    Undefined page
+    ///////////////////////////////////////////////////////////////////////////////
+//  frikt/\t^/p465s/0000/0001
+//
+//  TT T T hiss was the-_-- [[firsS-t.
+//
+
+    @include "default_layout";
+    @include "display_page";
     
+    skip_title_sequence = true;
+
+    goto->title_screen;
+
+    setfg(255, 255, 255, 255);
+
+    setbg(0, 0, 0, 255);
+    setfg(32, 220, 127, 255);
+
+    page_lines = 1;
+    page_title = "Page under construction";
+    page_data = "Page under construction";
+
+    page_name = pagename();
+    page_path = pagepath();
+
+    print("Page path = " . here->page_path);
+    
+    goto->display_page;

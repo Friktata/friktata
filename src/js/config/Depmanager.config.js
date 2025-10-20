@@ -21,7 +21,8 @@
             'builtins':         [
                 'IO',
                 'File',
-                'Strings'
+                'Strings',
+                'System'
             ],
 
             'plugins_path':     plugins_path,

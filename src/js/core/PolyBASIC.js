@@ -31,6 +31,7 @@
 			__helpers.log(`>>> Preprocessing scripts...`);
 			__helpers.log(`>>>`);
 
+			__preprocess.flush();
 			let result = await __preprocess.preprocess(script_name, script_data);
 
 			if (result.status !== "success") {
@@ -48,6 +49,9 @@
 			__helpers.log(`>>>`);
             __helpers.log(`>>> Environment prepared and ready for execution:`);
 			__helpers.log(`>>>`);
+
+			__runtime.reset();
+			window.__runtime = __runtime;
 
 			return __runtime.execute(result.proc, 4);
 

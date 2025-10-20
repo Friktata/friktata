@@ -33,6 +33,32 @@
 
 
     /**************************************************************************
+     *  pagename()
+     * 
+     */
+        const   pagename = async (
+            obj_params = {}
+        ) => {
+
+            return await window.__router.get_page_name();
+
+        };
+
+
+    /**************************************************************************
+     *  pagepath()
+     * 
+     */
+        const   pagepath = async (
+            obj_params = {}
+        ) => {
+
+            return await window.__router.get_page_path();
+
+        };
+
+
+    /**************************************************************************
      *  All builtin modules and plugins must follow this simple format.
      *
      *  This is required by the Depmanager.js code module to register
@@ -49,6 +75,18 @@
                 'params':           [
                     { 'name': 'path', 'type': 'string' }
                 ]
+            },
+
+            'pagename':             {
+                'callback':         pagename,
+                'async':            true,
+                'params':           []
+            },
+
+            'pagepath':             {
+                'callback':         pagepath,
+                'async':            true,
+                'params':           []
             }
             
         };

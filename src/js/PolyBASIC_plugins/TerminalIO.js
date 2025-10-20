@@ -54,12 +54,189 @@
 
     export const TerminalIO = () => {
 
+
+        let     __color_pairs = {
+        };
+
+        let     __color_stack = [];
+
+        let     __attributes =  {
+            'bold':             false,
+            'italic':           false,
+            'underline':        false
+        }
+
+
+    /**************************************************************************
+     *  __setpair()
+     * 
+     */
+        const   __setpair = (
+            tokens
+        ) => {
+
+            if (tokens.length != 10) {
+                return "Error in setpair - command expects exactly 9 arguments";
+            }
+
+            __color_pairs[tokens[1]] = {
+                'foreground':   {
+                    'red':      parseInt(tokens[2]),
+                    'green':    parseInt(tokens[3]),
+                    'blue':     parseInt(tokens[4]),
+                    'alpha':    parseInt(tokens[5])
+                },
+                'background':   {
+                    'red':      parseInt(tokens[6]),
+                    'green':    parseInt(tokens[7]),
+                    'blue':     parseInt(tokens[8]),
+                    'alpha':    parseInt(tokens[9])
+                },
+            };
+
+            return "";
+
+        };
+
+
+    /**************************************************************************
+     *  __enable_pair()
+     * 
+     */
+        const   __enable_pair = (
+            tokens
+        ) => {
+
+            if (tokens.length != 2) {
+                return "Error in enablepair - command expects exactly 1 argument";
+            }
+
+            if (! __color_pairs.hasOwnProperty(tokens[1])) {
+                return `Error in enablepair - pair '${tokens[1]}' not found`;
+            }
+
+            __color_stack.push({
+                'foreground': structuredClone(window.__display.display_info().foreground),
+                'background': structuredClone(window.__display.display_info().background)
+            });
+
+            setfg(__color_pairs[tokens[1]]['foreground']);
+            setbg(__color_pairs[tokens[1]]['background']);
+
+            return "";
+
+        };
+
+
+    /**************************************************************************
+     *  __enable_pair()
+     * 
+     */
+        const   __disable_pair = (
+            tokens
+        ) => {
+
+            let color_pairs = Object.keys(__color_stack);
+
+            if (color_pairs.length < 1) {
+                return "";
+            }
+            
+            let color_pair = __color_stack.pop();
+
+            setfg(color_pair['foreground']);
+            setbg(color_pair['background']);
+
+            return "";
+
+        };
+
+
+    /**************************************************************************
+     *  __set_attribute()
+     * 
+     */
+        const   __set_attribute = (
+            tokens,
+            attribute
+        ) => {
+
+            if (tokens.length > 1) {
+                if (tokens[1] === "on" || tokens[1] === "true") {
+                    __attributes[attribute] = true;
+                }
+                else if (tokens[1] === "off" || tokens[1] === "false") {
+                    __attributes[attribute] = false;
+                }
+                else {
+                    return "Error in bold - parameter should be either 'on' or 'off'";
+                }
+            }
+            else {
+                __attributes[attribute] = ! __attributes[attribute];
+            }
+
+            return "";
+
+        };
+
+
+    /**************************************************************************
+     *  __bold_attribute()
+     * 
+     */
+        const   __bold_attribute = (
+            tokens
+        ) => {
+
+            return __set_attribute(tokens, 'bold');
+
+        };
+
+
+    /**************************************************************************
+     *  __italic_attribute()
+     * 
+     */
+        const   __italic_attribute = (
+            tokens
+        ) => {
+
+            return __set_attribute(tokens, 'italic');
+
+        };
+
+
+    /**************************************************************************
+     *  __underline_attribute()
+     * 
+     */
+        const   __underline_attribute = (
+            tokens
+        ) => {
+
+            return __set_attribute(tokens, 'underline');
+
+        };
+
+
+        const   __commands =    {
+            'setpair':          __setpair,
+            'enablepair':       __enable_pair,
+            'disablepair':      __disable_pair,
+            'bold':             __bold_attribute,
+            'italic':           __italic_attribute,
+            'underline':        __underline_attribute
+        };
+
+
     /**************************************************************************
      *  putchar()
      * 
      */
         const   putchar = async (
-            obj_params = []
+            obj_params = [],
+            z_index = 1
         ) => {
 
             if (! obj_params.hasOwnProperty('row')) {
@@ -98,6 +275,29 @@
 
             node.style.color = `rgba(${fg['red']}, ${fg['green']}, ${fg['blue']}, ${fg['alpha']})`;
             node.style.backgroundColor = `rgba(${bg['red']}, ${bg['green']}, ${bg['blue']}, ${bg['alpha']})`;
+
+            if (__attributes['bold'] === true) {
+                node.style.fontWeight = 'bold';
+            }
+            else {
+                node.style.fontWeight = 'normal';
+            }
+
+            if (__attributes['italic'] === true) {
+                node.style.fontStyle = 'italic';
+            }
+            else {
+                node.style.fontStyle = 'normal';
+            }
+
+            if (__attributes['underline'] === true) {
+                node.style.textDecoration = 'underline';
+            }
+            else {
+                node.style.textDecoration = 'none';
+            }
+
+            node.style.zIndex = z_index;
 
             return "OK";
 
@@ -245,7 +445,7 @@
         
             if (! obj_params.hasOwnProperty('color')) {
 
-                return `rgba(${fg['red']}, ${fg['green']}, ${fg['blue']}, ${fg['alpha']})`;
+                return `rgba(${bg['red']}, ${bg['green']}, ${bg['blue']}, ${bg['alpha']})`;
                 
             }
 
@@ -340,6 +540,52 @@
 
 
     /**************************************************************************
+     *  __execute_commands()
+     * 
+     */
+        const   __execute_commands = (
+            commands
+        ) => {
+
+            let _commands = commands.split(";");
+            let __return_val = "";
+
+            for (let index = 0; index < _commands.length; index++) {
+
+                let command = _commands[index];
+                
+                if (command.trim() === "") {
+                    continue;
+                }
+
+                let tokens = command.trim().split(/\s+/);
+
+                if (tokens.length < 1) {
+                    continue;
+                }
+
+                if (! __commands.hasOwnProperty(tokens[0])) {
+                    return `Error - style command '${tokens[0]}' not found`;
+                }
+
+                __return_val = __commands[tokens[0]](tokens);
+
+                if (__return_val.trim() !== "") {
+                    console.error(__return_val);
+                }
+
+                if (__return_val !== "") {
+                    break;
+                }
+
+            }
+
+            return __return_val;
+
+        };
+
+
+    /**************************************************************************
      *  putcolumn()
      * 
      */
@@ -390,6 +636,24 @@
 
                 start++;
 
+                if (ch === "`") {
+                    let commands = "";
+
+                    while (start < str.length) {
+                        ch = str.substring(start, (start + 1));
+                        start++;
+                        
+                        if (ch === "`") {
+                            break;
+                        }
+
+                        commands += ch;
+                    }
+
+                    __execute_commands(commands);
+                    continue;
+                }
+
                 let next_word_end = __next_word_length(str, start);
 
                 if (
@@ -403,14 +667,13 @@
                     ch === "\n"
                 ) {
                     for ( ; column < (obj_params['column'] + width); column++) {
-                    if (row < (obj_params['row'] + height) && column < (obj_params['column'] + width)) {
-
-                        putchar({
-                            'row': row,
-                            'column': column,
-                            'char': " "
-                        });
-                    }
+                        if (row < (obj_params['row'] + height) && column < (obj_params['column'] + width)) {
+                            putchar({
+                                'row': row,
+                                'column': column,
+                                'char': " "
+                            }, (999999 - start));
+                        }
                     }
 
                     ch = str.substring(start, (start + 1));
@@ -443,7 +706,7 @@
                             'row': row,
                             'column': column,
                             'char': ch
-                        });
+                        }, (999999 - start));
                     }
                     column++;
                 }
@@ -504,6 +767,19 @@
                 let ch = str.substring(start, (start + 1));
 
                 start++;
+
+                if (ch === "`") {
+                    while (start < str.length) {
+                        ch = str.substring(start, (start + 1));
+                        start++;
+
+                        if (ch === "`") {
+                            break;
+                        }
+                    }
+
+                    continue;
+                }
 
                 let next_word_end = __next_word_length(str, start);
 

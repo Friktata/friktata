@@ -26,6 +26,10 @@
         font-family: var(--font);
         font-size: 32px;
         user-select: none;
+        animation: __animate_flicker;
+        animation-duration: .15s;
+        animation-direction: forwards;
+        animation-iteration-count: infinite;
     }
 
     .cell {
@@ -39,10 +43,24 @@
         margin: 0;
         padding: 0;
         border: none;
-    }
 
+        text-shadow: 0 0 1px currentColor, 0 0 2px currentColor;
+    }
+    
     #testcell {
         top: -200%;
         left: -200%;
     }
     
+
+    @keyframes __animate_flicker {
+        0% {
+            opacity: 0.99;
+        }
+        97% {
+            opacity: 0.975;
+        }
+        99% {
+            opacity: 0.99;
+        }
+    }

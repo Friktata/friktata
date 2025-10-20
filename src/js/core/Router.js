@@ -77,7 +77,6 @@
             }
 
             if (hash === "" || hash === "#") {
-                console.log("A");
                 hash = __config['default_page'];
             }
 
@@ -86,7 +85,6 @@
             }
 
             if (! __validate_page_name(hash)) {
-                console.log("B");
                 hash = __config['not_found_page'];
             }
 
@@ -169,6 +167,25 @@
 
         };
 
+    
+    /**************************************************************************
+     *  _get_page_name()
+     * 
+     */
+        const   _get_page_name = async (
+            page_name = false
+        ) => {
+
+            let hash = window.location.hash;
+
+            if (hash.substring(0, 1) === "#") {
+                hash = hash.substring(1);
+            }
+
+            return hash;
+
+        };
+
 
     /**************************************************************************
      *  __initialise()
@@ -186,6 +203,16 @@
                 page_data = await _load_page(__config['undefined_page']);
             }
 
+
+            console.log(`Page Name: ${_current_page}`);
+            console.log(`Page Data: ${page_data}`);
+        };
+
+
+        const   _reset = async () => {
+
+            await __initialise();
+
         };
 
 
@@ -197,7 +224,9 @@
             fetch_page:     _fetch_page,
             load_page:      _load_page,
             get_page_path:  _get_page_path,
-            get_page_data:  _get_page_data
+            get_page_data:  _get_page_data,
+            get_page_name:  _get_page_name,
+            reset:          _reset
 
         };
 

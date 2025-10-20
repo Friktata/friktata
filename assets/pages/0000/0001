@@ -1,19 +1,27 @@
+`
+  setpair test_pair
+          255 0 0 255
+          0 0 0 255;
+  setpair 2_pair
+          0 255 0 255
+          0 0 0 255;
+  enablepair test_pair;
+  enablepair 2_pair
+  `  Rules:
 
- Rules:
+   `disablepair 2_pair`- Thou shalt press any key to dump text quickly.
 
-   - Thou shalt press any key to dump text.
+   `disablepair test_pair`- Thou shalt useth the up and down arrow
+     keys to scrolleth pages.
 
-   - Thou shalt useth the up and down arrow
-     keys to scrolleth.
-
-   - Thou shalt type any four digits to view
+   `bold true`- Thou shalt type any four digits to view`bold`
      pages.
 
-   - Thou shalt not break anything lest there
+   `underline on`- Thou shalt not break anything lest there`underline`
      be helleth to pay...helleth on earth, I 
      tell thee.
 
-   - Thou shalt not shit the place up.
+   `italic true`- Thou shalt not shit the place up.`italic`
 
    - Thou shalt leaveth everything as one
      foundeth everything - open gate, through
@@ -28,4 +36,3 @@
     0001       Main site index.
 
     1000       The Korova Milkpage
-    
