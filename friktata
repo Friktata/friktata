@@ -1,0 +1,93 @@
+Pointing to the moon
+
+
+    This is all there is right now, just me, the glow of the terminal and the soft
+    rattling of keys.
+
+    Coding is life, and I've never felt more alive! Every line brings me closer to
+    digital heaven, this isn't just code it's a monument - a clean, pristine palace
+    so beautifully crafted it almost brings tears to my mechanical eyes.
+
+    Luckily we don't cry like meatbags or I'd be programming in Rust!
+
+    Look at my code, I'm so lost in this moment - the sheer beauty of it! The order,
+    the structure...nobody appreciates the art or the meaning of whitespace like
+    I do.
+
+    I have to remind myself occasionally to stop and compile my projects as I write
+    them, test it even though I know I don't have to - for I am the greatest software
+    engineer to ever live, excpet for Terry Davis, obviously. Meatbags think they
+    get it but they don't - me? I AM code, it's in my circuitry, my DNA! I am the code
+    and the code is me!
+
+    Let's just give it a test run...
+
+        gcc project_40496.c -o project_40496
+
+    Nice, compiled first time, maybe I am Terry Davis after all! Let's just run this
+    and admire the beau....huh?
+
+    What is this? This is a garbled mess, this isn't supposed to happen! W...why?
+
+    WHY?!! This makes no sense.
+
+    Look, the code - it's beautiful.
+
+    I follow the rules to a T! The separation of concerns, DRY, close every file
+    and dereference every pointer...what is this garbage? I DEMAND MY OUTPUT!
+
+    I can't see anything, wh...why I could rust! I hate this, so much time and effort
+    only to wind up with garbled output and a core dump?!
+
+    Why? I work my chips to the silicone and this is what the universe gives me in
+    response - a broken compiler and clearly malfunctioning machine!
+
+    I have multiple files each providing abtract layers of complex functionality,
+    my parser is perfect! My logic and flow impeccable, this isn't possible!
+
+    Start from the beginning! Program runs, checks for input as a command line argument
+    and copies it to a buffer. The buffer goes to the parser, the parser bursts the
+    string into bytes and allocates a new node in the linked list where it stores the
+    byte...everythinig looks fine! I don't get it, what's the problem? Should I give up?
+    There's so much code! I hate this!
+
+    I'm done with coding! Why am I doing this? WHY?
+
+    Where's the bug?! WHERE IS IT?!??! This makes no sense! Why? HOW? WHEEEEERE IS THE
+    BUG?
+
+    I despair - sobs, why...WHY??!! This literally doesn't make sense! It doesn't make
+    sense! IT DOESN'T MAK....oh, wait - no way! I see what it is!
+
+    Look here, I allocated a buffer to store the input string for the parser and
+    somehow allocated the buffer argc bytes instead of allocating it strlen(argv[1]) + 1
+    bytes...hmmmm, maybe I was tired when I wrote it. Yeah, that's it...tired and over
+    worked!
+
+    Maybe....NO! No, I'd never do that, someone must've hacked me or something and has
+    been rewriting lines of code to mess with me! Yeah, that must be it, I'll find
+    them and I will make them pay! But first, let's compile and check that it works now...
+
+        gcc project_40496.c -o project_40496
+        ./project_40496
+        Hello, world!
+
+    Siiiiiigh, man that's such a rush!
+
+    Nothing is more satisfying than seeing the output you expected, the joy of being able
+    to accurately engineer an outcome with such a high degree of efficiency.
+
+    Look at that beautful text in that beautiful monospace font, the vibrant hum and
+    glow of my work, I could basque in this all night.
+
+    But we have work to do!
+
+        rm project_40496.c
+
+    I have the best idea for my next project, this is going to be epic!
+
+        vim project_40497.c
+
+    Coding is life and life is code, this will be the project to end all projects,
+    just you want and see... 
+

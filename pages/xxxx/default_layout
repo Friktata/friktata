@@ -60,11 +60,14 @@
                 goto->40;
 
             5 setfg(32, 127, 220, 255);
-            6 col = (here<-display_width - here<-title_width);
-            7 subtitle_left = (here<-display_width - 25);
-            8 subtitle_top = (here<-display_height - 3);
+            6 setbg(0, 0, 0, 255);
 
-            10 putstring(here<-title_top, (here->col / 2), here<-title_data);
+            7 col = (here<-display_width - here<-title_width);
+            8 subtitle_left = (here<-display_width - 25);
+            9 subtitle_top = (here<-display_height - 3);
+
+            10 putcolumn(2, 1, (here<-display_width - 2), (here<-display_height - 4), " ", 0);
+            15 putstring(here<-title_top, (here->col / 2), here<-title_data);
             
             20 setfg(255, 255, 255, 255);
             30 putstring(here->subtitle_top, (here->subtitle_left / 2), "Press any key to continue", 50, true);

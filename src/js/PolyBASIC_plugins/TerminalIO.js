@@ -264,6 +264,15 @@
             if (char.trim() === "") {
                 char = "&nbsp;";
             }
+            if (char.trim() === "'") {
+                char = "&#39;";
+            }
+            if (char.trim() === "\"") {
+                char = "&quot;";
+            }
+            if (char.trim() === "&") {
+                char = "&amp;";
+            }
 
             let fg = window.__display.display_info().foreground;
             let bg = window.__display.display_info().background;
@@ -412,22 +421,24 @@
             let fg = window.__display.display_info().foreground;
         
             if (! obj_params.hasOwnProperty('color')) {
-
                 return `rgba(${fg['red']}, ${fg['green']}, ${fg['blue']}, ${fg['alpha']})`;
-                
             }
 
             let color = obj_params['color'];
 
-            if (color !== 'red' && color !== 'green' && color !== 'blue') {
+            if (color !== 'red' && color !== 'green' && color !== 'blue' && color !== 'alpha') {
+                return `Error in foreground(): '${color}' is not a valid parameter`;
+            }
+
+            if (obj_params.value !== false) {
+                fg[color] = obj_params['value'];
+                window.__display.foreground(fg);
+            }
+            else {
                 return fg[color];
             }
 
-            fg[color] = obj_params['value'];
-
-            window.__display.foreground(fg);
-
-            return 0;
+            return "";
 
         };
 
@@ -443,22 +454,24 @@
             let bg = window.__display.display_info().background;
         
             if (! obj_params.hasOwnProperty('color')) {
-
                 return `rgba(${bg['red']}, ${bg['green']}, ${bg['blue']}, ${bg['alpha']})`;
-                
             }
 
             let color = obj_params['color'];
 
-            if (color !== 'red' && color !== 'green' && color !== 'blue') {
+            if (color !== 'red' && color !== 'green' && color !== 'blue' && color !== 'alpha') {
+                return `Error in background(): '${color}' is not a valid parameter`;
+            }
+
+            if (obj_params['value'] != false) {
+                bg[color] = obj_params['value'];
+                window.__display.foreground(bg);
+            }
+            else {
                 return bg[color];
             }
 
-            bg[color] = obj_params['value'];
-
-            window.__display.foreground(bg);
-
-            return 0;
+            return "";
 
         };
 
@@ -618,9 +631,6 @@
 
             __attributes['bold'] = __attributes['italic'] = __attributes['underline'] = false;
 
-            while (Object.keys(__color_stack).length > 0) {
-                __disable_pair();
-            }
 
             while (true) {
 
@@ -716,36 +726,41 @@
                             'column': column,
                             'char': ch
                         }, (999999 - start));
-                    }
+
                     column++;
-                }
 
-                if (obj_params['delay'] > 0) {
-                    if (obj_params['skip'] === "true" || obj_params['skip'] === true) {
-                        let ch = await window.__methods['getch']['callback'](
-                            {
-                                'delay': obj_params['delay'],
-                                'skip': obj_params['skip']
+                    if (obj_params['delay'] > 0) {
+                        if (obj_params['skip'] === "true" || obj_params['skip'] === true) {
+                            let ch = await window.__methods['getch']['callback'](
+                                {
+                                    'delay': obj_params['delay'],
+                                    'skip': obj_params['skip']
+                                }
+                            );
+                            if (ch !== "") {
+                                obj_params['delay'] = 0;
                             }
-                        );
-                        if (ch !== "") {
-                            obj_params['delay'] = 0;
+
+                            __return_val = ch;
                         }
-
-                        __return_val = ch;
+                        else {
+                            await window.__methods['getch']['callback'](
+                                {
+                                    'delay': obj_params['delay'],
+                                    'skip': obj_params['skip']
+                                }
+                            );
+                        }
                     }
-                    else {
-                        await window.__methods['getch']['callback'](
-                            {
-                                'delay': obj_params['delay'],
-                                'skip': obj_params['skip']
-                            }
-                        );
                     }
                 }
 
             }
 
+            while (Object.keys(__color_stack).length > 0) {
+                console.log(`Popping pair ${Object.keys(__color_stack)}`);
+                __disable_pair();
+            }
             return __return_val;
 
         };
@@ -831,7 +846,7 @@
 
             }
 
-            return lines;
+            return lines + 4;
 
         };
 

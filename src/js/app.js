@@ -7,7 +7,9 @@
 
     (async function Main() {
 
-        const   __controller = await Controller();
+        document.fonts.ready.then(async () => {
+            const   __controller = await Controller();
+        });
 
     })();
     

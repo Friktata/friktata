@@ -6,6 +6,10 @@
 
     @include "default_layout";
     @include "display_page";
+
+    dlear();
+
+    setbg(0, 0, 0, 255);
     
     goto->title_screen;
 
@@ -36,5 +40,15 @@
     page_title = "Friktata - main index";
     page_name = pagename();
     page_path = pagepath();
+
+    border_red = 0;
+    border_green = 0;
+    border_blue = 0;
+    border_alpha = 255;
+
+    default_red = 0;
+    default_green = 0;
+    default_blue = 0;
+    default_alpha = 255;
 
     goto->display_page;

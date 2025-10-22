@@ -1,13 +1,15 @@
 
-    ///////////////////////////////////////////////////////////////////////////////
-//  frikt/\t^/p465s/9000/9999
+// // ///  ////////////////// /////   // ////////// / // / ////////////   /// /
+//   .  ,,, . [ - ]
 //
 
-//  Contruction.
-//  /
+//  Nothing.
+//
 
     @include "default_layout";
     @include "display_page";
+
+    clear();
     
     skip_title_sequence = true;
 
@@ -19,8 +21,8 @@
     setfg(32, 220, 127, 255);
 
     page_lines = 1;
-    page_title = "Page under construction";
-    page_data = "Page under construction";
+    page_title = "Out of bounds error";
+    page_data = load("pages/0000/0000");
 
     page_name = pagename();
     page_path = pagepath();
@@ -30,7 +32,7 @@
     border_red = 0;
     border_green = 0;
     border_blue = 0;
-    border_alpha = 0;
+    border_alpha = 255;
 
     default_red = 0;
     default_green = 0;

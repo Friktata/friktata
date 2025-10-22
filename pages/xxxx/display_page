@@ -11,6 +11,15 @@
 
     block display_page;
 
+        // block [x] set_border_color;
+
+        //     if (global->border_red == "(null)")
+        //         goto->200;
+
+        //     200 return;
+
+        // endblock;
+
         block draw_header;
 
             page_name = global->page_name;
@@ -37,7 +46,7 @@
         23 delay = 1;
         24 new_page = "";
 
-        25 if (global->page_lines < here->page_height)
+        25 if (global->page_lines <= here->page_height)
             here->max_top = 0
         else
             here->max_top = here->max_top;
@@ -46,12 +55,26 @@
 
         31 goto->draw_header;
 
+        40 setbg(
+            global->border_red,
+            global->border_green,
+            global->border_blue,
+            global->border_alpha
+        );
+
         50 putcolumn(
             3,
             1,
             (global->title_screen->display_width - 2),
             (global->title_screen->display_height - 5),
             " "
+        );
+
+        51 setbg(
+            global->default_red,
+            global->defailt_green,
+            global->default_blue,
+            global->default_alpha
         );
 
         55 ch = putcolumn(
@@ -68,8 +91,9 @@
 
         60 goto->104;
 
-        100 print ("Waiting for input...");
-        101 ch = getinput();
+        100 print ("Waiting for input...max_top = " . here->max_top);
+        101 print ("Page height: " . here->page_height . " page lines = " . global->page_lines);
+        103 ch = getinput();
 
         104 print("Ch == " . here->ch);
         105 regex_isdigit = regex_test(here->ch, "/^[0-9]+$/");
@@ -114,7 +138,9 @@
         550 goto->100;
         
         600 print("Loading page: " . here->new_page);
-        605 clear();
+
+        608 setbg(0, 0, 0, 255);
+        609 clear();
         610 exec(here->new_page);
 
         1000 return;
