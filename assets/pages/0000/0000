@@ -3,10 +3,9 @@
             255 255 255 255
             0 0 0 255;
     enablepair danger;
-`
- This is not a page!
+`This is `bold;underline`not`bold;underline` a page!
 
- How did you get here? I am `bold`furious`bold` right now! This is no place for you and you have no business here, there is nothing for you here!
+ How did you get here? I am `bold`furious`bold`! This is no place for you and you have no business here, there is nothing for you here!
 
  I suggest you leave, the main index is on page `bold`0001`bold`, there is no page `bold`0000`bold` and there never was! You really shouldn't be here!
 
@@ -15,3 +14,5 @@
  I need to know, tell me!
 
  ANSWER MEEE!
+
+

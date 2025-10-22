@@ -13,7 +13,13 @@
 
     page_lines = 1;
     page_title = "Projects";
-    page_data = load("pages/1000/1000");
+    page_data = load("pages/1000/1000");    
+    
+    page_lines = countlines(
+        (global->title_screen->display_width - 4),
+        here->page_data,
+        true
+    );
 
     page_name = pagename();
     page_path = pagepath();

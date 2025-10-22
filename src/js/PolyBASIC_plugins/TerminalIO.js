@@ -631,7 +631,6 @@
 
             __attributes['bold'] = __attributes['italic'] = __attributes['underline'] = false;
 
-
             while (true) {
 
                 if (lines === start_line) {
@@ -758,9 +757,9 @@
             }
 
             while (Object.keys(__color_stack).length > 0) {
-                console.log(`Popping pair ${Object.keys(__color_stack)}`);
                 __disable_pair();
             }
+
             return __return_val;
 
         };

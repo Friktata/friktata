@@ -24,6 +24,12 @@
     page_title = "Out of bounds error";
     page_data = load("pages/0000/0000");
 
+    page_lines = countlines(
+        (global->title_screen->display_width - 4),
+        here->page_data,
+        true
+    );
+    
     page_name = pagename();
     page_path = pagepath();
 
