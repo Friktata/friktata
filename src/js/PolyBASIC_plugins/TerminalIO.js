@@ -341,6 +341,7 @@
                 $(`#cell_${row.toString()}_${column.toString()}`).css('cursor', 'pointer');
             }
             else {
+                $(`#cell_${row.toString()}_${column.toString()}`).off();
                 $(`#cell_${row.toString()}_${column.toString()}`).attr('title', '');
                 $(`#cell_${row.toString()}_${column.toString()}`).css('cursor', 'default');
             }

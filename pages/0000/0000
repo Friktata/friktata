@@ -15,8 +15,6 @@
 
     goto->title_screen;
 
-    setfg(255, 255, 255, 255);
-
     setbg(0, 0, 0, 255);
     setfg(32, 220, 127, 255);
 
