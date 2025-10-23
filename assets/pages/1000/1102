@@ -1,0 +1,153 @@
+`
+   setpair link
+            16 128 220 255
+            0 0 0 255;
+    setpair page
+            220 255 32 255
+            0 0 0 255;
+   setpair bullet
+            255 127 255 255
+            0 0 0 255;
+    setpair text
+            220 220 220 255
+            0 0 0 255;
+    setpair highlight
+            32 220 128 255
+            0 0 0 255;
+    setpair command
+            255 255 255 255
+            32 32 32 255;
+    setpair fn
+            64 220 255 255
+            32 32 32 255;
+    setpair num
+            220 220 32 255
+            32 32 32 255;
+    setpair str
+            255 64 64 255
+            32 32 32 255;
+    setpair comment
+            32 160 96 255
+            32 32 32 255;
+    setpair var
+            220 32 220 255
+            32 32 32 255;
+    setpair op
+            180 180 180 255
+            32 32 32 255;
+    setpair nil
+            255 180 180 255
+            32 32 32 255;
+bold; enablepair link; site https://github.com/Friktata/sdlua;`SDLua`bold; disablepair; site; enablepair text;`
+
+
+`enablepair highlight`How to run it`disablepair;`
+
+SDLua has a fairly flexible system for running scripts. If you ran the `enablepair highlight`demo`disablepair` script then you know that SDLua can run multiple scripts, I cal-cal-callllllLL__- this `enablepair highlight;`ch-chaining`disablepair`.
+
+Scripts can be chained together and run in the same environment, this allows them to share data and functionality which is fairly standard stuff.
+
+For example:
+
+`enablepair command;`
+    ./sdlua script_one script_two
+
+`disablepair`
+Will first ex-Ecute_ `enablepair highlight;'`script_one`disablepair;` _then-n-n executE `enablepair highlight;`script_two`disablepair` in that order.
+
+Both scripts will share the same `enablepair highlight;`environment`disablepair`, in this case the default `enablepair highlight; bold;`env`disablepair;bold;` environment - this means that script_one can define a bunch of stuff that script_two can utilise such as _(f-functions and vV_ariaBLe5ss.
+
+
+`enablepair highlight;`Environments`disablepair;`
+
+We can, if we wish, create new environments, take this example: Example: Take this eeeeeex^/\/\\Ple:
+
+`enablepair command;`
+    ./sdlua script_one --env new_env script_two
+
+`disablepair;`
+In this instance we run two scripts but in separate environ_ments, script_one will run in the default `enablepair highlight;`env`disablepair;` environment, then after script_one finishes running script_two will run in the `enablepair highlight;`new_env`disablepair;` environment-ent.
+
+This means script_two may no longer access anything defined in script_one, since both run in their own private _Nvir0nm3n7.
+
+However, script_one may still return a value that script_two may access with using `enablepair fn;`status`disablepair` function:
+
+`enablepair command;`
+    `enablepair comment;`// script_one
+    //
+    // Return a status message to script_two...
+    //
+        `disablepair; enablepair fn;`status`disablepair;`(`enablepair str;`'All okay!'`disablepair;`)
+
+`disablepair;`
+This message will be accessible via the `enablepair var;`__return_status`disablepair` global variable:
+
+`enablepair command;`
+    `enablepair comment;`// script_two
+    //
+    // Check return status from script_one...
+    //`disablepair;`
+        `enablepair fn;`if `disablepair;`(`enablepair var;`__return_status`disablepair;` `enablepair op;`~=`disablepair;` `enablepair str;`'All okay!'`disablepair`) `enablepair fn;`then
+            print`disablepair;`(`enablepair str;`'There was a problem!'`disablepair;`)
+            `enablepair var;`os`disablepair;`.`enablepair fn;`exit`disablepair;`(`enablepair num;`1`disablepair;`)
+        `enablepair fn;`end`disablepair;`
+
+`disablepair;`
+We can run as many scripts as we like in each environment and create as many environments as we want using the `enablepair highlight;`--env`disablepair;` option, ex-ex-xxxXample:
+
+`enablepair command;`
+    ./sdlua script_one script_two --env new_env script_three script_four
+
+`disablepair;`
+Each environment will be executed in sequence, the scripts in each environment will also run in the sequence they are specified, so script_one will run first, then script_two, then script_three and finananaNA...nally script_four.
+
+
+`enablepair highlight;`The chain of s-ILENcE`disablepair;`
+
+The `enablepair highlight;`--env-noexec`disablepair;` option allows us to create an environment that isn't automatically executed, but we can use the `enablepair fn;`execenv`disablepair;` and `enablepair fn;`execscript`disablepair;` functions to execute any environment or script, for example:
+
+`enablepair command;`
+    ./sdlua --env-noexec quiet script_one script_two --env new_env script_three
+
+`disablepair;`
+So script_one and script_two will be loaded and added to the environment named `enablepair highlight;`quiet`disablepair` but they will not be executed. However, script_three is part of the `enablepair highlight;`new_env`disablepair;` environment which is executable...script_three can now do things, do thiii, we can do th-thinggggs like:
+
+`enablepair command;`
+    `enablepair comment;`// Execute all scripts in the quiet environment.
+    //
+    `disablepair; enablepair fn;`execenv`disablepair;`(`enablepair str;`'quiet'`disablepair;`)
+
+    `enablepair comment;`// Execute specific scripts in the quiet environment.
+    //
+    `disablepair; enablepair fn;`execscript`disablepair;`(`enablepair str;`'quiet'`disablepair;`, `enablepair str;`'script_one'`disablepair;`)
+    `enablepair fn;`execscript`disablepair;`(`enablepair str;`'quiet'`disablepair;`, `enablepair str;`'script_two'`disablepair;`)
+
+`disablepair;`
+
+`enablepair highlight`Wrapping up`disablepair;`
+
+There are some other command-line options that are fairly self-explanitory - self-expla... they are _self.X(planitor_)yY:
+
+`enablepair command;`
+    --run           Execute all scripts immediately
+    --exitifnil     Exit if a `enablepair fn;`status`disablepair;` of `enablepair nil;`nil`disablepair;`
+                    is returned by a script.
+    --exitifnotnil  Exit if a `enablepair fn;`status`disablepair;` of `enablepair nil;`nil`disablepair;`
+                    is not returned by a script.
+    --log           Enable logging to an output file, use
+                    `enablepair comment;`--stdout`disablepair;` to write to `bold; underline;`stdout`bold; underline`
+    --err           Redirect error messages to an output file
+
+`disablepair;`
+For example, we can do something like:
+
+`enablepair command;`
+    ./sdlua script_one --run --exitifnil --env new_env script_two
+
+`disablepair;`
+In this example, the `enablepair highlight;`--run`disablepair;` option tells sdlua to execute any scripts that have been added to any environment up to this point, so script_one will be executed before the `enablepair highlight;`new_env`disablepair;` has been created. #__$
+
+The `enablepair highlight;`--exitifnil`disablepair` option is then used, this tells sdlua to exit immediately if script_one returns a `enablepair var;`__return_status`disablepair;` of `enablepair nil;`nil`disablepair;`
+
+If you want to learn how to build an app with `enablepair link; site https://github.io/Friktata/sdlua;`SDLua`disablepair; site;` then move on to the next/following/__INCREMENT__--__ page `enablepair page; page 1103;`1103`disablepair; page;`.
+
