@@ -41,8 +41,8 @@ I like stuff, do you like stuff? This page - _THIS___ _self(this) page is all ab
     `enablepair fn;`__env_init`disablepair;`(`enablepair var;`__gGod_`disablepair`, `enablepair str;`'__JEFF_BECK__'`disablepair`)
 
     - I like `enablepair fn;`MyCountry`disablepair;`(`enablepair str;`'\tI am Scottish\n'`disablepair;`) `enablepair comment;`// Where I am from.`disablepair;`
-    - I love `enablepair fn;`MyGuitars`disablepair;`(`enablepair var;`__gGod_`disablepair;`)             `enablepair comment;`// ReligiousBeliefs_ss__. 
-    - I code `enablepair fn;`Therefore`disablepair;`(`enablepair str;`'\tI am code\n'`dsiablepair;`)     `enablepair comment;`// Dietary require()_ment5.
+    - I love `enablepair fn;`MyGuitars`disablepair;`(`enablepair var;`__gGod_`disablepair;`)             `enablepair comment;`// ReligiousBeliefs_ss__. `disablepair;`
+    - I code `enablepair fn;`Therefore`disablepair;`(`enablepair str;`'\tI am code\n'`disablepair;`)     `enablepair comment;`// Dietary require()_ment5.`disablepair;`
 
 
 Would you like to know `enablepair page; page 0101;`__MORE__`disablepair; page;`? <<_CLICK_TO_KNOW_MORE_<<
