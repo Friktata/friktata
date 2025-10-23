@@ -54,6 +54,7 @@
 
     export const TerminalIO = () => {
 
+        let     __current_link = false;
 
         let     __color_pairs = {
         };
@@ -219,13 +220,35 @@
         };
 
 
+    /**************************************************************************
+     *  __external_link()
+     * 
+     */
+        const   __external_link = (
+            tokens
+        ) => {
+
+            if (tokens.length === 1) {
+                __current_link = false;
+            }
+            else {
+                __current_link = tokens[1];
+            }
+
+            console.log(`>>> LINK ${__current_link}`)
+            return "";
+
+        };
+
+
         const   __commands =    {
             'setpair':          __setpair,
             'enablepair':       __enable_pair,
             'disablepair':      __disable_pair,
             'bold':             __bold_attribute,
             'italic':           __italic_attribute,
-            'underline':        __underline_attribute
+            'underline':        __underline_attribute,
+            'site':             __external_link
         };
 
 
@@ -306,6 +329,21 @@
             }
 
             node.style.zIndex = z_index;
+
+            if (__current_link !== false) {
+                let __link = __current_link;
+
+                $(`#cell_${row.toString()}_${column.toString()}`).off();
+                $(`#cell_${row.toString()}_${column.toString()}`).on("click", () => {
+                    window.open(__link, "_blank");
+                });
+                $(`#cell_${row.toString()}_${column.toString()}`).attr('title', `Go to ${__link} (opens in new tab)`)
+                $(`#cell_${row.toString()}_${column.toString()}`).css('cursor', 'pointer');
+            }
+            else {
+                $(`#cell_${row.toString()}_${column.toString()}`).attr('title', '');
+                $(`#cell_${row.toString()}_${column.toString()}`).css('cursor', 'default');
+            }
 
             return "OK";
 

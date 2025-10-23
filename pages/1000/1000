@@ -26,9 +26,9 @@
 
     print("Page path = " . here->page_path);
 
-    border_red = 220;
-    border_green = 128;
-    border_blue = 16;
+    border_red = 0;
+    border_green = 0;
+    border_blue = 0;
     border_alpha = 255;
 
     default_red = 0;
