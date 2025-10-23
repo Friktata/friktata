@@ -44,7 +44,8 @@ The rules`bold;`:
     
        `enablepair highlight;`Index        Description`disablepair;`
 
-       `enablepair page; bold;`0001`disablepair;`         Main site index`bold; page;`.
+       `enablepair page; bold;`0001`disablepair;`         Main site index`bold;`.
+       `enablepair page; page 0100; bold;`0100`disablepair;`         Rrr-ra//\nd___()om stuff`bold; page;`.
        `enablepair page; page 1000; bold;`1000`disablepair;`         Projects`bold; page;`
 
 

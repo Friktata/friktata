@@ -1,0 +1,48 @@
+`  
+  setpair link
+            16 128 220 255
+            32 64 220 255;
+  setpair highlight
+            32 220 128 255
+            32 64 220 255;
+  setpair page
+            220 255 32 255
+            32 64 220 255;
+ setpair text
+            220 220 220 255
+            32 64 220 255;
+    setpair fn
+            64 220 255 255
+            32 64 220 255;
+    setpair num
+            220 220 32 255
+            32 64 220 255;
+    setpair str
+            255 32 255 255
+            32 64 220 255;
+    setpair comment
+            255 255 255 255
+            32 64 220 255;
+    setpair var
+            220 220 32 255
+            32 64 220 255;
+    setpair op
+            180 180 180 255
+            32 64 220 255;
+    setpair nil
+            255 180 180 255
+            32 64 220 255;
+  enablepair text;
+  bold;``enablepair highlight;`This is the page`disablepair;`
+
+I like stuff, do you like stuff? This page - _THIS___ _self(this) page is all about the stuff`italic;` AEIOU `bold;italic;`like.`bold`
+
+
+    `enablepair fn;`__env_init`disablepair;`(`enablepair var;`__gGod_`disablepair`, `enablepair str;`'__JEFF_BECK__'`disablepair`)
+
+    - I like `enablepair fn;`MyCountry`disablepair;`(`enablepair str;`'\tI am Scottish\n'`disablepair;`) `enablepair comment;`// Where I am from.`disablepair;`
+    - I love `enablepair fn;`MyGuitars`disablepair;`(`enablepair var;`__gGod_`disablepair;`)             `enablepair comment;`// ReligiousBeliefs_ss__. 
+    - I code `enablepair fn;`Therefore`disablepair;`(`enablepair str;`'\tI am code\n'`dsiablepair;`)     `enablepair comment;`// Dietary require()_ment5.
+
+
+Would you like to know `enablepair page; page 0101;`__MORE__`disablepair; page;`? <<_CLICK_TO_KNOW_MORE_<<
