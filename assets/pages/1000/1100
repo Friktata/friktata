@@ -19,6 +19,7 @@
             32 32 32 255;
 bold; enablepair link; site https://github.com/Friktata/sdlua;`SDLua`bold; disablepair; site; enablepair text;`
 
+
 `enablepair highlight;`SDLua`disablepair` let's you build a GUI quickly and easily using the `enablepair highlight;`Lua`disablepair` scripting language and `enablepair highlight;`SDL3`disablepair`.
 
 Written in `enablepair highlight;`c`disablepair;`, SDLua is more than just a simple wrapper, it has some useful features that can be used to build functional applications fairly quickly.
@@ -57,34 +58,37 @@ Inside the repo you will see a `enablepair highlight`demo/`disablepair` director
 The demo is actually a `enablepair highlight`chain`disablepair` of scripts - SDLua works in a specific way, I won't go into the details here but the command you need to run from within the `enablepair highlight;`sdlua/`disablepair;` directory is:
 
 `enablepair command;`
-    ./sdlua \
-       --log --stdout
-       SDLua_demo.lua \
-       SDLua_audio.lua \
-       SDLua_events.lua \
-       SDLua_icon.lua \
-       SDLua_surface.lua \
-       SDLua_font.lua \
-       SDLua_loop.lua \
+    ./sdlua               \
+       --log --stdout     \
+       SDLua_demo.lua     \
+       SDLua_audio.lua    \
+       SDLua_events.lua   \
+       SDLua_icon.lua     \
+       SDLua_surface.lua  \
+       SDLua_font.lua     \
+       SDLua_loop.lua     \
        SDLua_quit.lua
 
 `disablepair`
 This will run the demo with verbose logging enabled, to disable logging:
 
 `enablepair command;`
-    ./sdlua \
-       SDLua_demo.lua \
-       SDLua_audio.lua \
-       SDLua_events.lua \
-       SDLua_icon.lua \
-       SDLua_surface.lua \
-       SDLua_font.lua \
-       SDLua_loop.lua \
+    ./sdlua               \
+       SDLua_demo.lua     \
+       SDLua_audio.lua    \
+       SDLua_events.lua   \
+       SDLua_icon.lua     \
+       SDLua_surface.lua  \
+       SDLua_font.lua     \
+       SDLua_loop.lua     \
        SDLua_quit.lua
 
 `disablepair`
-If you run the demo you should see some text bouncing around, an image of me (`enablepair highlight`Friktata`disablepair`) and you should hear some music. You can also press the `enablepair highlight`q`disablepair` ket to quit and `enablepair highlight`f`disablepair` key to toggle between fullscreen and windowed modes.
+If you run the demo you should see some text bouncing around, an image of me (`enablepair highlight`Friktata`disablepair`) and you should hear some music. You can also press the `enablepair highlight`q`disablepair` key to `italic`quit`italic` and `enablepair highlight`f`disablepair` key to toggle between `italic`fullscreen`italic` and `italic`windowed`italic` modes.
 
 SDLua is still in development, still some slight issues to work out and more features to add. If you find it fun, interesting or useful - give me a star!
+
+If you want to know more, continue on to page `enablepair page; page 1101;`1101`disablepair; page;`.
+
 
   -- `enablepair highlight`|=r1|<+/\T^`disablepair` --

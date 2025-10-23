@@ -92,6 +92,7 @@
             if (delay <= 0) {
                 return new Promise(resolve => {
                     const handler = (event) => {
+                        event.stopPropagation();
                         document.removeEventListener('wheel', handler);
                         resolve(event.deltaY < 0 ? "up" : "down");
                     };
@@ -101,6 +102,7 @@
 
             return new Promise(resolve => {
                 const handler = (event) => {
+                    event.stopPropagation();
                     clearTimeout(timeoutId);
                     document.removeEventListener('wheel', handler);
                     resolve(event.deltaY < 0 ? "ScrollUp" : "ScrollDown");
@@ -178,6 +180,7 @@
 
             return new Promise(resolve => {
                 let timeoutId;
+                let scroll_timer = false;
 
                 const cleanup = () => {
                     document.removeEventListener("keydown", onKey);
@@ -192,9 +195,19 @@
                 };
 
                 const onWheel = (event) => {
-                    cleanup();
-                    resolve(event.deltaY < 0 ? "ScrollUp" : "ScrollDown");
-                };
+                    if (scroll_timer !== false) {
+                        clearTimeout(scroll_timer);
+                        scroll_timer = false;
+                    }
+                    // else {
+                        scroll_timer = setTimeout(() => {
+                            event.stopPropagation();
+                            cleanup();
+                            resolve(event.deltaY < 0 ? "ScrollUp" : "ScrollDown");
+                            scroll_timer = false;
+                        }, 10);
+                    // }
+                }
 
                 const onClick = (event) => {
                     cleanup();

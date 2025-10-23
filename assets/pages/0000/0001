@@ -1,4 +1,7 @@
-`
+`  
+  setpair link
+            16 128 220 255
+            0 0 0 255;
   setpair highlight
           32 220 128 255
           0 0 0 255;
@@ -10,7 +13,12 @@
           0 0 0 255;
   enablepair text;
   bold;`
-  Rules`bold;`:
+
+Hi, I am `enablepair highlight;`Fri_i-ik-tata_ta`disablepair; site`. It was nice of you to drop by, I'm so `italic`th-thrilled`italic`!
+
+Follow me on `enablepair link; site https://x.com/friktata;`X`disablepair; site;` and `enablepair link; site https://github.com/Friktata;`github`disablepair; site;`. I'm g-g-goo`italic;`oood peop`bold;`___..-eeee-e.. `bold;italic;`the rules!
+  
+The rules`bold;`:
 
    - Thou shalt `enablepair highlight;`press any key`disablepair;` to dump text quickly.
 

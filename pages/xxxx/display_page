@@ -85,17 +85,19 @@
             here->page_width,
             here->page_height,
             global->page_data,
-            0,
+            here->delay,
             true,
             true,
             here->current_line
         );
 
+        56 here->delay = 0;
+
         60 goto->105;
 
         // 100 print ("Waiting for input...max_top = " . here->max_top);
         // 101 print ("Page height: " . here->page_height . " page lines = " . global->page_lines);
-        100 ch = getinput();
+        100 ch = getinput(0);
 
         // 104 print("Ch == " . here->ch);
         105 regex_isdigit = regex_test(here->ch, "/^[0-9]+$/");
@@ -106,11 +108,15 @@
         110 if (here->ch == "ArrowUp")
             here->current_line = (here->current_line - 1)
         elseif (here->ch == "ScrollUp")
-            here->current_line = (here->current_line - 1)
+            here->current_line = (here->current_line - 5)
+        elseif (here->ch == "ArrowLeft")
+            here->current_line = (here->current_line - here->page_height - 5)
         elseif (here->ch == "ArrowDown")
             here->current_line = (here->current_line + 1)
         elseif (here->ch == "ScrollDown")
-            here->current_line = (here->current_line + 1)
+            here->current_line = (here->current_line + 5)
+        elseif (here->ch == "ArrowRight")
+            here->current_line = (here->current_line + here->page_height - 5)
         elseif (here->regex_isdigit == "true")
             goto->500
         else
@@ -120,8 +126,6 @@
             here->current_line = here->max_top
         elseif (here->current_line < 0)
             here->current_line = 0;
-
-        125 delay = 0;
 
         130 goto->55;
         

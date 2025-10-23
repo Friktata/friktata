@@ -1,0 +1,36 @@
+`
+   setpair link
+            16 128 220 255
+            0 0 0 255;
+    setpair page
+            220 255 32 255
+            0 0 0 255;
+   setpair bullet
+            255 127 255 255
+            0 0 0 255;
+    setpair text
+            220 220 220 255
+            0 0 0 255;
+    setpair highlight
+            32 220 128 255
+            0 0 0 255;
+    setpair command
+            255 255 255 255
+            32 32 32 255;
+bold; enablepair link; site https://github.com/Friktata/sdlua;`SDLua`bold; disablepair; site; enablepair text;`
+
+
+So you want to know more? `italic`Niiiiice`italic`, that issss `italic`n-niiiiiiccccce`italic`!
+
+Here's a list of avaiable pages that will assist you as you embark on this new adventure - feel free to consume at your leisure...but don't `enablepair highlight;`break`disablepair;` or `enablepair highlight;`steal`disablepair` anything!
+
+
+    Page         Content
+
+    `enablepair page; page 1102;`1102`disablepair; site;`         Running `enablepair highlight; page 1001;`SDLua`disablepair; page;`
+
+
+If you build something fun, hit me up on `enablepair link; site https://x.com/friktata;`X`disablepair; site;` and show me, I wanna see!
+
+
+  -- `enablepair highlight;`Frrr-i-k-k_k,t_t,ta-ta_ta-ta_tat-tt-t_aa-A`disablepair;` --

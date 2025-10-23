@@ -11,8 +11,12 @@
    setpair text
             220 220 220 255
             0 0 0 255;
-enablepair text;`Here are a few projects I'm working on:
+enablepair highlight;`Projects`disablepair; enablepair text;`
 
-    `bold; enablepair highlight;`SDLua`bold; disablepair;`     `enablepair page; bold; page 1001;`1001`bold; page; disablepair;`
+
+    Project name           Page
+
+    `bold; enablepair link; site https://github.com/Friktata/sdlua;`SDLua`bold; disablepair; site;`                  `enablepair page; bold; page 1001;`1001`bold; page; disablepair;`
+
 
 Feel free to visit my `bold; enablepair link; site https://github.com/Friktata;`Github`site; disablepair; bold;` profile.
