@@ -13,8 +13,8 @@
 
     page_delay = 1;
     page_lines = 1;
-    page_title = "Projects";
-    page_data = load("pages/1000/1000");    
+    page_title = "Projects - SDLua";
+    page_data = load("pages/1000/1100");    
     
     page_lines = countlines(
         (global->title_screen->display_width - 4),

@@ -27,11 +27,13 @@
             path_len = strlen(here->page_path);
             page_base = substring(here->page_path, (here->path_len - 9), (here->path_len - 5));
 
-            print("Page name = " . here->page_name);
-            print("Page base = " . here->page_base);
+            // print("Page name = " . here->page_name);
+            // print("Page base = " . here->page_base);
 
+            setfg(220, 255, 32, 255);
             putstring(0, 2, here->page_base);
             putstring(0, (global->title_screen->display_width - 6), here->page_name);
+            setfg(32, 220, 128, 255);
 
             page_title_width = strlen(global->page_title);
             page_title_left = (global->title_screen->display_width - here->page_title_width);
@@ -83,23 +85,23 @@
             here->page_width,
             here->page_height,
             global->page_data,
-            here->delay,
+            0,
             true,
             true,
             here->current_line
         );
 
-        60 goto->104;
+        60 goto->105;
 
-        100 print ("Waiting for input...max_top = " . here->max_top);
-        101 print ("Page height: " . here->page_height . " page lines = " . global->page_lines);
-        103 ch = getinput();
+        // 100 print ("Waiting for input...max_top = " . here->max_top);
+        // 101 print ("Page height: " . here->page_height . " page lines = " . global->page_lines);
+        100 ch = getinput();
 
-        104 print("Ch == " . here->ch);
+        // 104 print("Ch == " . here->ch);
         105 regex_isdigit = regex_test(here->ch, "/^[0-9]+$/");
 
-        106 print ("Regex is digit = " . here->regex_isdigit);
-        107 print ("new_page = " . here->new_page);
+        // 106 print ("Regex is digit = " . here->regex_isdigit);
+        // 107 print ("new_page = " . here->new_page);
 
         110 if (here->ch == "ArrowUp")
             here->current_line = (here->current_line - 1)
@@ -125,21 +127,23 @@
         
         150 stop();
 
-        500 print ("new_page = " . here->new_page . ", new_page_len = " . here->new_page_len);
-        501 new_page = here->new_page . here->ch;
+        // 500 print ("new_page = " . here->new_page . ", new_page_len = " . here->new_page_len);
+        500 new_page = here->new_page . here->ch;
         502 new_page_len = strlen(here->new_page);
 
         510 if (here->new_page_len >= 4)
                 goto->600;
 
         525 putstring(0, (global->title_screen->display_width - 6), "    ");
+        526 setfg(220, 255, 32, 255);
         530 putstring(0, (global->title_screen->display_width - 6), here->new_page);
+        531 setfg(32, 220, 128, 255);
         
         550 goto->100;
         
-        600 print("Loading page: " . here->new_page);
+        // 600 print("Loading page: " . here->new_page);
 
-        608 setbg(0, 0, 0, 255);
+        600 setbg(0, 0, 0, 255);
         609 clear();
         610 exec(here->new_page);
 

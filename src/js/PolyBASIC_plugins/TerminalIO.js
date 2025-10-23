@@ -237,7 +237,6 @@
                 __current_link = tokens[1];
             }
 
-            console.log(`>>> LINK ${__current_link}`)
             return "";
 
         };
@@ -258,7 +257,6 @@
                 __current_page = tokens[1];
             }
 
-            console.log(`>>> PAGE ${__current_page}`)
             return "";
 
         };
@@ -358,7 +356,7 @@
             }
 
             node.style.zIndex = z_index;
-
+                
             if (__current_link !== false) {
                 let __link = __current_link;
 
@@ -369,6 +367,7 @@
                 $(`#cell_${row.toString()}_${column.toString()}`).attr('title', `Go to ${__link} (opens in new tab)`)
                 $(`#cell_${row.toString()}_${column.toString()}`).css('cursor', 'pointer');
             }
+            
             else if (__current_page !== false) {
                 let __page = __current_page;
 
@@ -380,11 +379,6 @@
                 });
                 $(`#cell_${row.toString()}_${column.toString()}`).attr('title', `Go to page ${__page}`)
                 $(`#cell_${row.toString()}_${column.toString()}`).css('cursor', 'pointer');
-            }
-            else {
-                $(`#cell_${row.toString()}_${column.toString()}`).off();
-                $(`#cell_${row.toString()}_${column.toString()}`).attr('title', '');
-                $(`#cell_${row.toString()}_${column.toString()}`).css('cursor', 'text');
             }
 
             return "OK";
@@ -627,6 +621,9 @@
         ) => {
 
             $(`.cell`).html("&nbsp;");
+            $(`.cell`).off();
+            $(`.cell`).css('cursor', "text");
+            $(`.cell`).attr('title', "");
 
         };
 
@@ -707,9 +704,12 @@
                 start_line = parseInt(start_line);
             }
 
-            console.log(`>>>\nSTRING\n${str}`)
-
             __attributes['bold'] = __attributes['italic'] = __attributes['underline'] = false;
+            __current_link = __current_page = false;
+
+            $(`.cell`).off();
+            $(`.cell`).css('cursor', "text");
+            $(`.cell`).attr('title', "");
 
             while (true) {
 
@@ -729,6 +729,9 @@
                 if (start < str.length) {
                     ch = str.substring(start, (start + 1));
                 }
+                // else {
+                //     ch = "";
+                // }
 
                 start++;
 
@@ -746,13 +749,15 @@
                         commands += ch;
                     }
 
-                    console.log(`>>>>> COMMAND = ${commands}`);
-
                     __execute_commands(commands);
                     continue;
                 }
 
-                let next_word_end = __next_word_length(str, start);
+                let next_word_end;
+                
+                if (start < str.length) {
+                    next_word_end = __next_word_length(str, start);
+                }
 
                 if (
                     (wrap &&
@@ -774,7 +779,11 @@
                         }
                     }
 
-                    ch = str.substring(start, (start + 1));
+                    ch = "";
+
+                    if (start < str.length) {
+                        ch = str.substring(start, (start + 1));
+                    }
 
                     if (ch === " " || str === "\t") {
                         start++;
@@ -800,6 +809,10 @@
 
                 if (lines >= start_line) {
                     if (row < (obj_params['row'] + height) && column < (obj_params['column'] + width)) {
+                        if (ch === "") {
+                            ch = " ";
+                        }
+
                         putchar({
                             'row': row,
                             'column': column,

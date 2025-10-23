@@ -18,6 +18,8 @@
     setbg(0, 0, 0, 255);
     setfg(32, 220, 127, 255);
 
+
+    page_delay = 1;
     page_lines = 1;
     page_title = "Out of bounds error";
     page_data = load("pages/0000/0000");

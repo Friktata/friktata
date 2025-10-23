@@ -7,7 +7,7 @@
     @include "default_layout";
     @include "display_page";
 
-    dlear();
+    clear();
 
     setbg(0, 0, 0, 255);
     

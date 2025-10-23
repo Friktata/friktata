@@ -1,37 +1,43 @@
 `
   setpair highlight
-          255 255 255 255
+          32 220 128 255
           0 0 0 255;
-  setpair 2_pair
-          0 255 0 255
+  setpair page
+          220 255 32 255
           0 0 0 255;
-  `  Rules:
+ setpair text
+          220 220 220 255
+          0 0 0 255;
+  enablepair text;
+  bold;`
+  Rules`bold;`:
 
-   - Thou shalt `enablepair highlight`press any key`disablepair` to dump text quickly.
+   - Thou shalt `enablepair highlight;`press any key`disablepair;` to dump text quickly.
 
    - Thou shalt useth the up and down arrow
      keys to scrolleth pages.
 
-   - Thou shalt `enablepair highlight`type any four digits`disablepair` to view
+   - Thou shalt `enablepair highlight;`type any four digits`disablepair;` to view
      pages.
 
-   - Thou `enablepair highlight`shalt not breaketh anything`disablepair` lest there
+   - Thou `enablepair highlight;`shalt not breaketh anything`disablepair;` lest there
      be helleth to pay...helleth on earth, I 
      tell thee.
 
-   - Thou shalt not `enablepair highlight`shit the place up`disablepair`.
+   - Thou shalt not `enablepair highlight;`shit the place up`disablepair;`.
 
-   - Thou shalt `enablepair highlight`leaveth everything as one
-     foundeth everything`disablepair` - open gate, through
+   - Thou shalt `enablepair highlight;`leaveth everything as one
+     foundeth everything`disablepair;` - open gate, through
      gate, close gate.
 
    - Here's a quick list of index pages one
      may view to assist with navigation:
 
     
-  `enablepair highlight`Index        Description`disablepair`
+       `enablepair highlight;`Index        Description`disablepair;`
 
-    0001       `bold;underline`Main site index`bold;underline`.
+       `enablepair page; bold;`0001`disablepair;`         Main site index`bold; page;`.
+       `enablepair page; page 1000; bold;`1000`disablepair;`         Projects`bold; page;`
 
-    1000       `bold;underline`Github projects`bold;underline`
-    
+
+Who knows what else you might find! Type `bold;`any `enablepair highlight; underline;`4 digits`disablepair; underline; bold;`...

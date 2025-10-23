@@ -16,7 +16,6 @@
         const   stop = () => {
 
             if (_proc !== false) {
-                console.log(`STOPPING...`);
                 _proc.status = "stop";
             }
 
@@ -34,6 +33,8 @@
         ) => {
 
             stop();
+            
+            const   __polybasic = await PolyBASIC();
 
             window.location.hash = obj_params['script_path'];
             window.__polybasic = __polybasic;

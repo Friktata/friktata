@@ -1,0 +1,39 @@
+`
+   setpair link
+            16 128 220 255
+            0 0 0 255;
+   setpair page
+            220 255 32 255
+            0 0 0 255;
+   setpair bullet
+            127 255 255 255
+            0 0 0 255;
+   setpair text
+            220 220 220 255
+            0 0 0 255;
+   setpair highlight
+            32 220 128 255
+            0 0 0 255;
+enablepair text;`Visit my `bold; enablepair link; site https://github.com/Friktata;`Github`site; disablepair; bold;` profile.
+
+
+I wanted to learn `enablepair highlight;`SDL3`disablepair;` but I also wanted to learn `enablepair highlight;`Lua`disablepair;`, so I built `enablepair highlight;`SDLua`disablepair;`.
+
+It's exactly what it sounds like - SDL bindings for the Lua scripting language, some features:
+
+   - `enablepair bullet;`Create surfaces and textures.`disablepair bullet;`
+   - `enablepair bullet;`Load/render images of various types.`disablepair bullet;`
+   - `enablepair bullet;`Load and play audio (.mp3, .wav, etc).`disablepair bullet;`
+   - `enablepair bullet;`Event handling for mouse, keyboard, etc.`disablepair bullet;`
+   - `enablepair bullet;`Font loading and rendering.`disablepair bullet;`
+
+There are a lot more features, SDLua is great for knocking up prototypes of building simple desktop applications, you can even build basic games with it.
+
+If you want to know more visit the repo at:
+
+   `bold; enablepair link; site https://github.com/Friktata/sdlua;`github.com/Friktata/sdlua`bold; disablepair; site;`
+
+You'll also find more detailed documentation on page `bold; enablepair page; page 1100;`1100`bold; disablepair page; page;`.
+
+ 
+  

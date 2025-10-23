@@ -1,0 +1,90 @@
+`
+   setpair link
+            16 128 220 255
+            0 0 0 255;
+    setpair page
+            220 255 32 255
+            0 0 0 255;
+   setpair bullet
+            255 127 255 255
+            0 0 0 255;
+    setpair text
+            220 220 220 255
+            0 0 0 255;
+    setpair highlight
+            32 220 128 255
+            0 0 0 255;
+    setpair command
+            255 255 255 255
+            32 32 32 255;
+bold; enablepair link; site https://github.com/Friktata/sdlua;`SDLua`bold; disablepair; site; enablepair text;`
+
+`enablepair highlight;`SDLua`disablepair` let's you build a GUI quickly and easily using the `enablepair highlight;`Lua`disablepair` scripting language and `enablepair highlight;`SDL3`disablepair`.
+
+Written in `enablepair highlight;`c`disablepair;`, SDLua is more than just a simple wrapper, it has some useful features that can be used to build functional applications fairly quickly.
+
+It's great for prototyping, building simple games or small desktop applications.
+
+
+`enablepair highlight;`Clone the source, Luke!`disablepair;`
+
+Before you do anything, you need to ensure you have the `enablepair highlight`SDL3`disablepair` libraries installed on your system. I don't know what platform you're using and it varies from system to system, if you're using `enablepair highlight`Linux`disablepair` you likely already have what you need, if not you'll need the following:
+
+   `enablepair highlight`SDL3`disablepair`         - `enablepair bullet;`Core SDL3 library`disablepair`
+   `enablepair highlight`SDL_ttf`disablepair`      - `enablepair bullet;`SDL3 TrueType font library`disablepair`
+   `enablepair highlight`SDL_image`disablepair`    - `enablepair bullet;`SDL3 Image library`disablepair`
+
+Audio is managed using the `enablepair highlight`miniaudio`disablepair` library - I chose this for various reasons, SDL3 is still under development and I was having some portability issues with it, miniaudio solved that headache.
+
+You can clone the repo:
+
+`enablepair command;`
+    git clone https://github.com/Friktata/sdlua
+
+`disablepair;`
+Build:
+
+`enablepair command;`
+    cd sdlua
+    make
+
+`disablepair`
+Inside the repo you will see a `enablepair highlight`demo/`disablepair` directory, this contains a set of scripts that you can run to test the installations, it's nothing fancy but demonstates a few of the things you can actually do with SDLua.
+
+
+`enablepair highlight;`Running the demo`disablepair;`
+
+The demo is actually a `enablepair highlight`chain`disablepair` of scripts - SDLua works in a specific way, I won't go into the details here but the command you need to run from within the `enablepair highlight;`sdlua/`disablepair;` directory is:
+
+`enablepair command;`
+    ./sdlua \
+       --log --stdout
+       SDLua_demo.lua \
+       SDLua_audio.lua \
+       SDLua_events.lua \
+       SDLua_icon.lua \
+       SDLua_surface.lua \
+       SDLua_font.lua \
+       SDLua_loop.lua \
+       SDLua_quit.lua
+
+`disablepair`
+This will run the demo with verbose logging enabled, to disable logging:
+
+`enablepair command;`
+    ./sdlua \
+       SDLua_demo.lua \
+       SDLua_audio.lua \
+       SDLua_events.lua \
+       SDLua_icon.lua \
+       SDLua_surface.lua \
+       SDLua_font.lua \
+       SDLua_loop.lua \
+       SDLua_quit.lua
+
+`disablepair`
+If you run the demo you should see some text bouncing around, an image of me (`enablepair highlight`Friktata`disablepair`) and you should hear some music. You can also press the `enablepair highlight`q`disablepair` ket to quit and `enablepair highlight`f`disablepair` key to toggle between fullscreen and windowed modes.
+
+SDLua is still in development, still some slight issues to work out and more features to add. If you find it fun, interesting or useful - give me a star!
+
+  -- `enablepair highlight`|=r1|<+/\T^`disablepair` --
