@@ -55,6 +55,7 @@
     export const TerminalIO = () => {
 
         let     __current_link = false;
+        let     __current_page = false;
 
         let     __color_pairs = {
         };
@@ -134,6 +135,7 @@
      * 
      */
         const   __disable_pair = (
+            tokens
         ) => {
 
             let color_pairs = Object.keys(__color_stack);
@@ -241,6 +243,32 @@
         };
 
 
+    /**************************************************************************
+     *  __internal_link()
+     * 
+     */
+        const   __internal_link = (
+            tokens
+        ) => {
+
+            if (tokens.length === 1) {
+                __current_page = false;
+            }
+            else {
+                __current_page = tokens[1];
+            }
+
+            console.log(`>>> PAGE ${__current_page}`)
+            return "";
+
+        };
+
+
+    /**************************************************************************
+     *  All of these commands can be `embedded` within a string passed to
+     *  the putcolumn() method.
+     * 
+     */
         const   __commands =    {
             'setpair':          __setpair,
             'enablepair':       __enable_pair,
@@ -248,7 +276,8 @@
             'bold':             __bold_attribute,
             'italic':           __italic_attribute,
             'underline':        __underline_attribute,
-            'site':             __external_link
+            'site':             __external_link,
+            'page':             __internal_link
         };
 
 
@@ -340,10 +369,22 @@
                 $(`#cell_${row.toString()}_${column.toString()}`).attr('title', `Go to ${__link} (opens in new tab)`)
                 $(`#cell_${row.toString()}_${column.toString()}`).css('cursor', 'pointer');
             }
+            else if (__current_page !== false) {
+                let __page = __current_page;
+
+                $(`#cell_${row.toString()}_${column.toString()}`).off();
+                $(`#cell_${row.toString()}_${column.toString()}`).on("click", () => {
+                    window.__methods['exec']['callback']({
+                        'script_path': __page
+                    });
+                });
+                $(`#cell_${row.toString()}_${column.toString()}`).attr('title', `Go to page ${__page}`)
+                $(`#cell_${row.toString()}_${column.toString()}`).css('cursor', 'pointer');
+            }
             else {
                 $(`#cell_${row.toString()}_${column.toString()}`).off();
                 $(`#cell_${row.toString()}_${column.toString()}`).attr('title', '');
-                $(`#cell_${row.toString()}_${column.toString()}`).css('cursor', 'default');
+                $(`#cell_${row.toString()}_${column.toString()}`).css('cursor', 'text');
             }
 
             return "OK";
