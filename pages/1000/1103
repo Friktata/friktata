@@ -1,0 +1,38 @@
+    
+    @include "default_layout";
+    @include "display_page";
+    
+    clear();
+    
+    skip_title_sequence = true;
+
+    goto->title_screen;
+
+    setbg(0, 0, 0, 255);
+    setfg(32, 220, 127, 255);
+
+    page_delay = 1;
+    page_lines = 1;
+    page_title = "SDLua - Bbuillld s-_mth11n6 -";
+    page_data = load("pages/1000/1103");    
+    
+    page_lines = countlines(
+        (global->title_screen->display_width - 4),
+        here->page_data,
+        true
+    );
+
+    page_name = pagename();
+    page_path = pagepath();
+
+    border_red = 0;
+    border_green = 0;
+    border_blue = 0;
+    border_alpha = 255;
+
+    default_red = 0;
+    default_green = 0;
+    default_blue = 0;
+    default_alpha = 255;
+    
+    goto->display_page;

@@ -58,30 +58,30 @@ Inside the repo you will see a `enablepair highlight`demo/`disablepair` director
 The demo is actually a `enablepair highlight`chain`disablepair` of scripts - SDLua works in a specific way, I won't go into the details here but the command you need to run from within the `enablepair highlight;`sdlua/`disablepair;` directory is:
 
 `enablepair command;`
-    ./sdlua               \
-       --log --stdout     \
-       SDLua_demo.lua     \
-       SDLua_audio.lua    \
-       SDLua_events.lua   \
-       SDLua_icon.lua     \
-       SDLua_surface.lua  \
-       SDLua_font.lua     \
-       SDLua_loop.lua     \
-       SDLua_quit.lua
+    ./sdlua                    \
+       --log --stdout          \
+       demo/SDLua_demo.lua     \
+       demo/SDLua_audio.lua    \
+       demo/SDLua_events.lua   \
+       demo/SDLua_icon.lua     \
+       demo/SDLua_surface.lua  \
+       demo/SDLua_font.lua     \
+       demo/SDLua_loop.lua     \
+       demo/SDLua_quit.lua
 
 `disablepair`
 This will run the demo with verbose logging enabled, to disable lo66@ging:
 
 `enablepair command;`
-    ./sdlua               \
-       SDLua_demo.lua     \
-       SDLua_audio.lua    \
-       SDLua_events.lua   \
-       SDLua_icon.lua     \
-       SDLua_surface.lua  \
-       SDLua_font.lua     \
-       SDLua_loop.lua     \
-       SDLua_quit.lua
+    ./sdlua                    \
+       demo/SDLua_demo.lua     \
+       demo/SDLua_audio.lua    \
+       demo/SDLua_events.lua   \
+       demo/SDLua_icon.lua     \
+       demo/SDLua_surface.lua  \
+       demo/SDLua_font.lua     \
+       demo/SDLua_loop.lua     \
+       demo/SDLua_quit.lua
 
 `disablepair`
 If you run the demo you should see some text bouncing around, an image of me (`enablepair highlight`Friktata`disablepair`) and you should hear some music. You can also press the `enablepair highlight`q`disablepair` key to `italic`quit`italic` and `enablepair highlight`f`disablepair` key to toggle between `italic`fullscreen`italic` and `italic`windowed`italic` modes.

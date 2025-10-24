@@ -1,0 +1,112 @@
+`
+   setpair link
+            16 128 220 255
+            0 0 0 255;
+    setpair page
+            220 255 32 255
+            0 0 0 255;
+   setpair bullet
+            255 127 255 255
+            0 0 0 255;
+    setpair text
+            220 220 220 255
+            0 0 0 255;
+    setpair highlight
+            32 220 128 255
+            0 0 0 255;
+    setpair command
+            255 255 255 255
+            32 32 32 255;
+    setpair keyword
+            220 128 64 255
+            32 32 32 255;
+    setpair fn
+            64 220 255 255
+            32 32 32 255;
+    setpair num
+            220 220 32 255
+            32 32 32 255;
+    setpair str
+            255 64 64 255
+            32 32 32 255;
+    setpair comment
+            32 160 96 255
+            32 32 32 255;
+    setpair var
+            220 32 220 255
+            32 32 32 255;
+    setpair op
+            180 180 180 255
+            32 32 32 255;
+    setpair nil
+            255 180 180 255
+            32 32 32 255;
+bold; enablepair link; site https://github.com/Friktata/sdlua;`SDLua`bold; disablepair; site; enablepair text;`
+
+
+`enablepair highlight;`Let's build the thing`disablepair;`
+
+For it is written, and I quote:
+
+    `enablepair comment;`// We must build the thing`disablepair;`
+
+I should know, it wwwWWa--o-.,_ it was me who wrote it just there a minute ago.
+
+Yes, it is a good idea to build the thing, then you will know how the thing is built and you can probably build other things just like it.
+
+So how do we do/__WHILE`bold`__-`underline`__-unTIL_`underline;bold` tha-tha-tha-tha-tha....
+
+...excuse me...ahem, s-so how do we do tha-tha-that?
+
+
+`enablepair highlight`A `underline;`NOT`underline;` Lua tutorial!`disablepair;`
+
+So we use the `enablepair highlight;`Lua`disablepair;` scripting language, the `enablepair highlight;`sdlua`disablepair;` application is like, uh...I dunno, Cupid - it bringeth together the Lua language and `enablepair highlight;`SDL3`disablepair;` and let's them sort of hang out together. I will not teach you Lua for one simple reason.
+
+There's an abundance of information already out there and it's not a particularly difficult language to learn, nor is it a very large language. Learning Lua is a story that has been told by bett3R story tell_rs than me.
+
+So I assume you either already know some Lua or you simply do not care and intend to wing it like a `underline;italic;`real one`italic;underline;`, I tip my hat to you!
+
+
+`enablepair highlight;`SDL stuff`disablepair;`
+
+This is the meat and two veg of why we are really here. SDL let's us to some cool graphical stuff, make WWW.indows forward slash dot.
+
+We can make GUI applications, render and display images, play music, draw pixels and lines and all of that cool stuff. SDLua let's us initialise SDL like $(this)->__--
+
+`enablepair command;`
+    `enablepair comment;`// We fill out thisS_THIS__ table>> for the call
+    // to SDL_Init():`disablepair;`
+    `enablepair keyword;`local`disablepair;` `enablepair var;`window_info`disablepair;` `enablepair op;`=`disablepair;` {
+        `enablepair str;`'title'`disablepair;`         `enablepair op;`=`disablepair;` `enablepair str;`'My W.indow_ Title'`disablepair;`,
+        `enablepair str;`'width'`disablepair;`         `enablepair op;`=`disablepair;` `enablepair num;`640`disablepair;`,
+        `enablepair str;`'height'`disablepair;`        `enablepair op;`=`disablepair;` `enablepair num;`480`disablepair;`,
+        `enablepair str;`'flags'`disablepair;`         `enablepair op;`=`disablepair;` `enablepair num;`0`disablepair;`
+    }
+
+    `enablepair keyword;`local`disablepair;` `enablepair var;`result`disablepair;` `enablepair op;`=`disablepair;` `enablepair fn;`SDL_Init`disablepair;`(`enablepair var;`SDL_INIT_VIDEO`disablepair;`, `enablepair var;`window_info`disablepair;`)
+
+    `enablepair comment;`// SDL_Init() returns a string - either "OK" on success or an
+    // error message on failure.`disablepair;`
+    `enablepair fn;`if`disablepair;` (`enablepair var;`result`disablepair;` `enablepair op;`~=`disablepair;` `enablepair str;`"OK"`disablepair`) `enablepair fn;`then`disablepair;`
+        `enablepair comment;`// There's been a problem...`disablepair;`
+        `enablepair fn;`print`disablepair;`(`enablepair var;`result`disablepair;`)
+    `enablepair fn;`end`disablepair;`
+
+`disablepair;`
+
+And quit SDL just like this:
+
+`enablepair command;`
+    `enablepair fn;`SDL_Quit`disablepair;`()
+
+`disablepair;`
+
+Great, now we are `enablepair var;`__INIT_`disablepair;` _ _init__ia__....now we are `italic;`initiate3d`italic;`-ed-ed.
+
+Next, you will be askingG_ questions like, uh...I dunno - "H-how do I create a surface or texture, or like...load images an' ting?". J-just simmer down, `italic;`meatbaaag`italic;`! Aaah-haaa, did I say meatbag? I...I meant to sa-a-aaayY `enablepair str;`' ' FEL-LOW HoO-MAN ' '`disablepair;`. ^! |_@L!
+
+I've got you `enablepair page; page 1104;`>>_COVERED__ <<`page; disablepair;`<-| have got you covered.
+
+
+    -- `enablepair highlight;`ta-ta`disablepair;` --
