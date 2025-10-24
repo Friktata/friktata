@@ -364,7 +364,7 @@
                 $(`#cell_${row.toString()}_${column.toString()}`).on("click", () => {
                     window.open(__link, "_blank");
                 });
-                $(`#cell_${row.toString()}_${column.toString()}`).attr('title', `Go to ${__link} (opens in new tab)`)
+                $(`#cell_${row.toString()}_${column.toString()}`).attr('title', `Goto ${__link} (opens in new tab)`)
                 $(`#cell_${row.toString()}_${column.toString()}`).css('cursor', 'pointer');
             }
             
@@ -377,7 +377,7 @@
                         'script_path': __page
                     });
                 });
-                $(`#cell_${row.toString()}_${column.toString()}`).attr('title', `Go to page ${__page}`)
+                $(`#cell_${row.toString()}_${column.toString()}`).attr('title', `Goto page ${__page}`)
                 $(`#cell_${row.toString()}_${column.toString()}`).css('cursor', 'pointer');
             }
 

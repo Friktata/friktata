@@ -195,17 +195,17 @@
                 };
 
                 const onWheel = (event) => {
-                    if (scroll_timer !== false) {
-                        clearTimeout(scroll_timer);
-                        scroll_timer = false;
-                    }
+                    // if (scroll_timer !== false) {
+                    //     clearTimeout(scroll_timer);
+                    //     scroll_timer = false;
+                    // }
                     // else {
-                        scroll_timer = setTimeout(() => {
+                        // scroll_timer = setTimeout(() => {
                             event.stopPropagation();
                             cleanup();
                             resolve(event.deltaY < 0 ? "ScrollUp" : "ScrollDown");
-                            scroll_timer = false;
-                        }, 10);
+                            // scroll_timer = false;
+                        // }, 10);
                     // }
                 }
 

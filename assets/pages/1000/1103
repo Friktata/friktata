@@ -104,6 +104,36 @@ And quit SDL just like this:
 
 Great, now we are `enablepair var;`__INIT_`disablepair;` _ _init__ia__....now we are `italic;`initiate3d`italic;`-ed-ed.
 
+
+`enablepair highlight;`Tell us about the __`bold;italic;`FL_ `bold;underline;italic;`AGs_`underline; disablepair;`!
+
+The what? Oh, the flags - well the keen-eyed among you might have noticed we're actually passing two sets of flags to the `enablepair fn;`SDL_Init`disablepair;` fun->fun->`enablepair fn;`function_`disablepair`(). TTtt-thaaaa_t that guy, I... __t-t-that g...I `enablepair keyword;`rem`disablepair;`-em-em-ember that g-guy!
+
+We pass two values to `enablepair fn;`SDL_Init`disablepair;` - the first set of flags allow us to initialise SDL subsystems such as `enablepair var;`SDL_INIT_VIDEO`disablepair;`. The second paramM3ter is a `enablepair highlight;`table`disablepair;` that allows us to set various window attributes, we can give it a title, specify the default width and height and pass yet another-er set of flags, here we can do things like:
+
+`enablepair command;`
+    `enablepair var;`SDL_WINDOW_FULLSCREEN`disablepair;` `enablepair op;`|`disablepair;` `enablepair var;`SDL_WINDOW_RESIZABLE`disablepair;`
+
+`disablepair;`
+This means that the window will be __full`italic;`Screen`italic;`__ (`bold`tm`bold;`) and resizable...which is hard to do in fullscreen, let's be honest.
+
+Anyway - there's loads of these flags, bloddy loads of 'em, I tell thee! For a full list I suggest you grep the source, specifically this one:
+
+    `enablepair link; site https://github.com/Friktata/sdlua/blob/master/src/sdl_lib.c`sdl_lib.c`disablepair; site;`
+
+If you scroll down to the bottom you'll find a bunch of functions that export some global values to the Lua environment, these are handy-dandy li'l things you can use in your Lua scripts. look specifically for the functions:
+
+`enablepair command;`
+    `enablepair fn;`reg_sdl_init_flags`disablepair;`   
+    `enablepair comment;`// And...`disablepair;`
+    `enablepair fn;`reg_sdl_win_flags`disablepair;`
+
+`disablepair;`
+In fact this file contains pretty much all of the SDL functionality, almost every function in this file can be called from a Lua script, the `enablepair link; site https://github.com/Friktata/sdlua/blob/master/include/sdl_lib.h`sdl_lib.h`disablepair; site;` might be a more useful, quick reference since the function names don't map exactly from `enablepair highlight;`c`disablepair;` to sdlua.
+
+
+`enablepair highlight;`SoWhat\'sNext(?)`disablepair;`
+
 Next, you will be askingG_ questions like, uh...I dunno - "H-how do I create a surface or texture, or like...load images an' ting?". J-just simmer down, `italic;`meatbaaag`italic;`! Aaah-haaa, did I say meatbag? I...I meant to sa-a-aaayY `enablepair str;`' ' FEL-LOW HoO-MAN ' '`disablepair;`. ^! |_@L!
 
 I've got you `enablepair page; page 1104;`>>_COVERED__ <<`page; disablepair;`<-| have got you covered.
