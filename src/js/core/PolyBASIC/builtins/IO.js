@@ -77,6 +77,7 @@
                     resolve("");
                 }, delay);
             });
+
         };
 
 
@@ -87,6 +88,7 @@
         const   getscroll = async (
             obj_params = {}
         ) => {
+
             let delay = obj_params['delay'] ?? 0;
 
             if (delay <= 0) {
@@ -115,6 +117,7 @@
                     resolve("");
                 }, delay);
             });
+
         };
 
 
@@ -122,7 +125,10 @@
      *  getclick()
      * 
      */
-        const   getclick = async (obj_params = {}) => {
+        const   getclick = async (
+            obj_params = {}
+        ) => {
+
             let delay = obj_params['delay'] ?? 0;
 
             const getButtonName = (button) => {
@@ -158,6 +164,7 @@
                     resolve("");
                 }, delay);
             });
+
         };
         
     /**************************************************************************
@@ -167,6 +174,7 @@
         const getinput = async (
             obj_params = {}
         ) => {
+
             const delay = obj_params['delay'] ?? 0;
 
             const getButtonName = (button) => {
@@ -180,7 +188,6 @@
 
             return new Promise(resolve => {
                 let timeoutId;
-                let scroll_timer = false;
 
                 const cleanup = () => {
                     document.removeEventListener("keydown", onKey);
@@ -195,18 +202,9 @@
                 };
 
                 const onWheel = (event) => {
-                    // if (scroll_timer !== false) {
-                    //     clearTimeout(scroll_timer);
-                    //     scroll_timer = false;
-                    // }
-                    // else {
-                        // scroll_timer = setTimeout(() => {
-                            event.stopPropagation();
-                            cleanup();
-                            resolve(event.deltaY < 0 ? "ScrollUp" : "ScrollDown");
-                            // scroll_timer = false;
-                        // }, 10);
-                    // }
+                    event.stopPropagation();
+                    cleanup();
+                    resolve(event.deltaY < 0 ? "ScrollUp" : "ScrollDown");
                 }
 
                 const onClick = (event) => {
@@ -225,6 +223,7 @@
                     }, delay);
                 }
             });
+            
         };
 
 
@@ -258,6 +257,21 @@
             else {
                 return "false";
             }
+
+        };
+
+
+    /**************************************************************************
+     *  randomnum()
+     * 
+     */
+        const randomnum = (
+            obj_param = {}
+        ) => {
+
+            let { lower_bound = 0, upper_bound = 1 } = obj_param;
+            
+            return `"${Math.floor(Math.random() * ((upper_bound - lower_bound)) + lower_bound)}"`;
 
         };
 
@@ -329,7 +343,16 @@
                     { 'name': 'string',     'type': 'string' },
                     { 'name': 'pattern',    'type': 'string' }
                 ]
-            }
+            },
+
+            'randomnum':            {
+                'callback':         randomnum,
+                'async':            false,
+                'params':           [
+                    { 'name': 'lower_bound',    'type': 'number',   'default': 0 },
+                    { 'name': 'upper_bound',    'type': 'number',   'default': 10 }
+                ]
+            },
             
         };
 

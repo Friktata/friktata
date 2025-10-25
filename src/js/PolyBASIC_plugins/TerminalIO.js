@@ -66,7 +66,43 @@
             'bold':             false,
             'italic':           false,
             'underline':        false
-        }
+        };
+
+
+        let     __cursor =      {
+            'enabled':          'false',
+            'row':              0,
+            'column':           0,
+            'blinkrate':        500,
+            'on':               {
+                'fg':           {
+                    'red':          255,
+                    'green':        255,
+                    'blue':         255,
+                    'alpha':        255
+                },
+                'bg':           {
+                    'red':          0,
+                    'green':        0,
+                    'blue':         0,
+                    'alpha':        255
+                }
+            },
+            'off':              {
+                'fg':           {
+                    'red':          0,
+                    'green':        0,
+                    'blue':         0,
+                    'alpha':        255
+                },
+                'bg':           {
+                    'red':          255,
+                    'green':        255,
+                    'blue':         255,
+                    'alpha':        255
+                }
+            }
+        };
 
 
     /**************************************************************************
@@ -280,6 +316,74 @@
 
 
     /**************************************************************************
+     *  __move_cursor()
+     * 
+     */
+        const   __move_cursor = (
+            row,
+            column
+        ) => {
+
+            if (! __cursor.hasOwnProperty('column_width')) {
+                __cursor['column_width'] = window.__display.display_info().width;
+            }
+            if (! __cursor.hasOwnProperty('column_height')) {
+                __cursor['column_height'] = window.__display.display_info().height;
+            }
+
+            // let row = __cursor['row'];
+            // let column = __cursor['column'];
+
+            if (++column >= (__cursor['column_width'] - __cursor['column_start'])) {
+                column = __cursor['column_start'];
+                if (++row >= (__cursor['column_height'] - __cursor['row_start'])) {
+                    row--;
+                }
+            }
+
+            __cursor['row'] = row;
+            __cursor['column'] = column;
+
+        };
+
+
+    /**************************************************************************
+     *  __toggle_cursor()
+     * 
+     */
+        const   __toggle_cursor = (
+            on = false
+        ) => {
+
+            let row = __cursor['row'];
+            let column = __cursor['column'];
+
+            let fg = structuredClone(__cursor['on']['fg']);
+            let bg = structuredClone(__cursor['on']['bg']);
+
+            if (on === true) {
+                __cursor['state'] = "off";
+            }
+
+            if (__cursor['state'] === "on") {
+                __cursor['state'] = "off";
+            }
+            else {
+                __cursor['state'] = "on";
+                
+                fg = structuredClone(__cursor['off']['fg']);
+                bg = structuredClone(__cursor['off']['bg']);
+            }
+
+            $(`#cell_${row}_${column}`).css({
+                'color': `rgba(${fg['red']}, ${fg['green']}, ${fg['blue']}, ${fg['alpha']})`,
+                'background-color': `rgba(${bg['red']}, ${bg['green']}, ${bg['blue']}, ${bg['alpha']})`,
+            });
+
+        };
+
+
+    /**************************************************************************
      *  putchar()
      * 
      */
@@ -380,6 +484,10 @@
                 $(`#cell_${row.toString()}_${column.toString()}`).attr('title', `Goto page ${__page}`)
                 $(`#cell_${row.toString()}_${column.toString()}`).css('cursor', 'pointer');
             }
+
+            __move_cursor(row, column);
+            // __cursor.row = row;
+            // __cursor.column = column;
 
             return "OK";
 
@@ -629,6 +737,30 @@
 
 
     /**************************************************************************
+     *  clear_row()
+     * 
+     */
+        const   clear_row = async (
+            obj_params = {}
+        ) => {
+
+            let row = obj_params['row'];
+            let start = obj_params['start'];
+
+            while (start < (window.__display.display_info().columns)) {
+                await putchar({
+                    'row': row,
+                    'column': start++,
+                    'char': " "
+                });
+            }
+
+            return "";
+
+        };
+
+
+    /**************************************************************************
      *  __execute_commands()
      * 
      */
@@ -704,6 +836,11 @@
                 start_line = parseInt(start_line);
             }
 
+            __cursor['row_start'] = row;
+            __cursor['column_start'] = column;
+            __cursor['column_width'] = width;
+            __cursor['column_height'] = height;
+
             __attributes['bold'] = __attributes['italic'] = __attributes['underline'] = false;
             __current_link = __current_page = false;
 
@@ -729,9 +866,6 @@
                 if (start < str.length) {
                     ch = str.substring(start, (start + 1));
                 }
-                // else {
-                //     ch = "";
-                // }
 
                 start++;
 
@@ -819,31 +953,31 @@
                             'char': ch
                         }, (999999 - start));
 
-                    column++;
+                        column++;
 
-                    if (start < str.length && obj_params['delay'] > 0) {
-                        if (obj_params['skip'] === "true" || obj_params['skip'] === true) {
-                            let ch = await window.__methods['getch']['callback'](
-                                {
-                                    'delay': obj_params['delay'],
-                                    'skip': obj_params['skip']
+                        if (start < str.length && obj_params['delay'] > 0) {
+                            if (obj_params['skip'] === "true" || obj_params['skip'] === true) {
+                                let ch = await window.__methods['getch']['callback'](
+                                    {
+                                        'delay': obj_params['delay'],
+                                        'skip': obj_params['skip']
+                                    }
+                                );
+                                if (ch !== "") {
+                                    obj_params['delay'] = 0;
                                 }
-                            );
-                            if (ch !== "") {
-                                obj_params['delay'] = 0;
+
+                                __return_val = ch;
                             }
-
-                            __return_val = ch;
+                            else {
+                                await window.__methods['getch']['callback'](
+                                    {
+                                        'delay': obj_params['delay'],
+                                        'skip': obj_params['skip']
+                                    }
+                                );
+                            }
                         }
-                        else {
-                            await window.__methods['getch']['callback'](
-                                {
-                                    'delay': obj_params['delay'],
-                                    'skip': obj_params['skip']
-                                }
-                            );
-                        }
-                    }
                     }
                 }
 
@@ -943,6 +1077,56 @@
         };
 
 
+    /*************************************************************************
+     *  cursor()
+     * 
+     */
+        const   cursor = (
+            obj_params = {}
+        ) => {
+
+            let mode = obj_params['mode'];
+            let row = obj_params['row'];
+            let column = obj_params['column'];
+            let blinkrate = obj_params['blinkrate'];
+
+            if (mode !== "on" && mode !== "true" && mode !== "off" && mode !== "false") {
+                return `Error in cursor(): Invalid 'mode' option '${mode}'`;
+            }
+
+            if (typeof row !== 'number') {
+                row = 0;
+            }
+            if (typeof column !== 'number') {
+                column = 0;
+            }
+            if (typeof blinkrate !== 'number') {
+                blinkrate = 500;
+            }
+
+            __cursor['row'] = row;
+            __cursor['column'] = column;
+            __cursor['blinkrate'] = blinkrate;
+            __cursor['state'] = "off";
+
+            if (! __cursor.hasOwnProperty('interval_id')) {
+                __cursor['interval_id'] = false;
+            }
+
+            if (mode == 'on' && __cursor['interval_id'] === false) {
+                __cursor['interval_id'] = setInterval(__toggle_cursor, __cursor['blinkrate']);
+            }
+            
+            if (mode == 'off' && __cursor['interval_id'] !== false) {
+                clearInterval(__cursor['interval_id']);
+                __cursor['interval_id'] = false;
+            }
+
+            return "";
+
+        };
+
+
         const   _methods =          {
             
             'putchar':              {
@@ -1027,6 +1211,15 @@
                 'params':           []
             },
 
+            'clear_row':            {
+                'callback':         clear_row,
+                'async':            true,
+                'params':           [
+                    { 'name': 'row',    'type': 'number',   'default': 0 },
+                    { 'name': 'start',  'type': 'number',   'default': 0 }
+                ]
+            },
+
             'putcolumn':            {
                 'callback':         putcolumn,
                 'async':            true,
@@ -1051,6 +1244,17 @@
                     { 'name': 'width',      'type': 'number' },
                     { 'name': 'string',     'type': 'string' },
                     { 'name': 'wrap',       'type': 'boolean',  'default': true }
+                ]
+            },
+
+            'cursor':               {
+                'callback':         cursor,
+                'async':            false,
+                'params':           [
+                    { 'name': 'mode',       'type': 'string',   'default': 'on' },
+                    { 'name': 'row',        'type': 'number',   'default': 0 },
+                    { 'name': 'column',     'type': 'number',   'default': 0 },
+                    { 'name': 'blinkrate',  'type': 'number',   'default': 500 }
                 ]
             }
             

@@ -11,28 +11,64 @@
     setbg(0, 0, 0, 255);
     setfg(32, 220, 127, 255);
 
-    page_delay = 1;
-    page_lines = 1;
-    page_title = "SDLua - Intermission -";
-    page_data = load("pages/1000/1104");    
+    print("You found a page_>");
     
-    page_lines = countlines(
-        (global->title_screen->display_width - 4),
-        here->page_data,
-        true
+    page_data = load("pages/1000/1104");
+
+    putcolumn(
+        3,
+        1,
+        global->title_screen->display_width - 5,
+        global->title_screen->display_height - 7,
+        global->page_data,
+        1,
+        true,
+        true,
+        0
     );
 
-    page_name = pagename();
-    page_path = pagepath();
+    cursor();
 
-    border_red = 64;
-    border_green = 64;
-    border_blue = 64;
-    border_alpha = 255;
+    block [x] repl;
 
-    default_red = 0;
-    default_green = 0;
-    default_blue = 0;
-    default_alpha = 255;
-    
-    goto->display_page;
+        1 input_buffer = "";
+        2 input_byte = "";
+        3 input_max = 64;
+        4 input_start = 0;
+        5 input_width = (global->title_screen->width - 10);
+
+        9 putstring((global->title_screen->display_height - 3), 2, "_> ");
+
+        10 putstring((global->title_screen->display_height - 3), 5, here->input_buffer);
+        11 input_byte = getch(1000);
+
+        20 if (here->input_byte == Enter)
+            goto->100;
+
+        21 if (here->input_byte == Backspace)
+            goto->900;
+
+        30 input_buffer = (here->input_buffer . here->input_byte);
+        31 goto->10;
+        
+        100 print("Command: " . here->input_buffer);
+        200 input_buffer = "";
+        201 clear_row((global->title_screen->display_height - 3), 5);
+        222 cursor("on", (global->title_screen->display_height - 3), 5);
+
+        800 goto->10;
+
+        900 input_buf_len = strlen(here->input_buffer);
+        901 if (here->input_buf_len <= 0)
+            goto->10;
+
+        902 here->input_buffer = substring(here->input_buffer, 0, (here->input_buf_len - 1));
+        903 clear_row((global->title_screen->display_height - 3), 5);
+        904 cursor("on", (global->title_screen->display_height - 3), (5 + here->input_buf_len - 1));
+        
+        999 goto->10;
+
+        1000 return;
+
+    endblock;
+

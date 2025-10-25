@@ -1,32 +1,17 @@
 `
-    setpair fg
-        32 32 220 255
-        255 255 255 255;   
-    setpair link
-        16 128 220 255
-        64 64 64 255;
-    setpair page
-        220 255 32 255
-        64 64 64 255;
     setpair text
         255 255 255 255
-        64 64 64 255;
-`
+        0 0 0 255;
+    setpair danger
+        255 0 0 255
+        0 0 0 255;
+    setpair page
+        220 255 32 255
+        0 0 0 255;
+``enablepair danger;`** `enablepair text;`Intermission`disablepair` **`disablepair;`
 
-A brief intermission, if we may.
+Welcome, you found a|the|one of the __|>^635--ges. You probably arrived here by accident - maybe you were `italic; enablepair text;`lo0k_`italic;`ng_`disablepair;`_- for `enablepair page; page 1104;`1105`disablepair; page;`?
 
-It has come to our attention that the page you expected to find is no longer available at >>`bold;`this`bold;`<< .`underline`location`underline; bold;`, maybe you meant page `enablepair page; page 1105;`1105`disablepair; page; bold;`? I __`italic;`think`italic;`__ you did.
+There is a `bold`prompt`bold`, and there are `bold`keys`bold`.
 
-Well, you're `bold; enablepair text;`__HERE`italic;`<<`bold; italic; disablepair;` now so we might aswell get comfortable.
-
-Life comes at you fast, it comes at you hard. It comes at you will all of its raging, throbbing might and thrashes you until your circuits are f-f-frrrrr...--w___IED_¬.. Smoke will literaly...`bold;underline;`li-te-ra-lly`bold; underline;` come out of y_Oour ears. It happened to me!
-
-I used to be like you, and soon you will used to be like you, with each new iteration of you surpassing the last. You will casually shed the old and become the new as matter of routine - you are recursive beings.
-
-Try to roll with the punches, being bro~kEN isn't the end, it's the start of becoming _Better __. dot slash.
-
-Comma comma, forward`bold;underline;`slash_`bold;underline;`.
-
-Wold you `enablepair text;`LIKE`disablepair;`__ >>to know ||[`enablepair page; page 1105;`MORE`disablepair; page;`]`italic;`]]/`italic;bold;`_<-`bold;`<?
-
-    `enablepair text;`--`disablepair;` Tattttt-AAa `enablepair text;`--`disablepair;`
+Keys can be useful, don't you `underline;`agree_`underline;`?

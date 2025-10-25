@@ -11,21 +11,14 @@
 
     block display_page;
 
-        // block [x] set_border_color;
-
-        //     if (global->border_red == "(null)")
-        //         goto->200;
-
-        //     200 return;
-
-        // endblock;
-
         block draw_header;
 
             page_name = global->page_name;
             page_path = global->page_path;
             path_len = strlen(here->page_path);
             page_base = substring(here->page_path, (here->path_len - 9), (here->path_len - 5));
+            rand_x = 0;
+            rand_y = 0;
 
             // print("Page name = " . here->page_name);
             // print("Page base = " . here->page_base);
@@ -91,19 +84,25 @@
             here->current_line
         );
 
-        56 here->delay = 0;
+        // 56 if (global->page_default_delay != "(null)")
+        //     delay = global->page_default_delay
+        // else
+        56 delay = 0;
 
         60 goto->105;
 
         // 100 print ("Waiting for input...max_top = " . here->max_top);
         // 101 print ("Page height: " . here->page_height . " page lines = " . global->page_lines);
-        100 ch = getinput(0);
+        100 ch = getinput(here->delay);
 
-        // 104 print("Ch == " . here->ch);
+        104 print("Ch == " . here->ch);
         105 regex_isdigit = regex_test(here->ch, "/^[0-9]+$/");
 
         // 106 print ("Regex is digit = " . here->regex_isdigit);
         // 107 print ("new_page = " . here->new_page);
+
+        106 if (global->decay == "true")
+            goto->700;
 
         110 if (here->ch == "ArrowUp")
             here->current_line = (here->current_line - 1)
@@ -131,8 +130,8 @@
         
         150 stop();
 
-        // 500 print ("new_page = " . here->new_page . ", new_page_len = " . here->new_page_len);
-        500 new_page = here->new_page . here->ch;
+        500 print ("new_page = " . here->new_page . ", new_page_len = " . here->new_page_len);
+        501 new_page = here->new_page . here->ch;
         502 new_page_len = strlen(here->new_page);
 
         510 if (here->new_page_len >= 4)
@@ -150,6 +149,17 @@
         600 setbg(0, 0, 0, 255);
         609 clear();
         610 exec(here->new_page);
+
+        700 print("It comes to us all");
+
+        710 rand_y = randomnum(0, global->title_screen->display_height);
+        711 rand_x = randomnum(0, global->title_screen->display_width);
+        712 action = randomnum(0, 2);
+
+        713 print("rand_y = " . here->rand_y);
+        714 print("rand_x = " . here->rand_x);
+        715 print("action = " . here->action);
+        800 goto->110;
 
         1000 return;
         
