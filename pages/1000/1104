@@ -87,28 +87,29 @@
         102 input_buf_len = strlen(here->input_buffer);
 
         103 if (here->is_digits != "true")
-            goto->106
+            goto->108
         elseif (here->input_buf_len != 4)
-            goto->106;
+            goto->108;
 
         104 cursor("off");
-        105 exec(here->input_buffer);
+        105 clear();
+        106 exec(here->input_buffer);
 
-        106 if (here->input_buffer != "help")
-            goto->110
+        108 if (here->input_buffer != "help")
+            goto->115
         elseif (here->input_buffer == "more")
             help_info = load("pages/1000/1104data/help_more")
         elseif (here->input_buffer == "exit")
             goto->3000;
         
 
-        107 cleararea(
+        109 cleararea(
             3,
             1,
             global->title_screen->display_width - 5,
             global->title_screen->display_height - 3
         );
-        108 putcolumn(
+        110 putcolumn(
             3,
             1,
             global->title_screen->display_width - 5,
@@ -118,9 +119,9 @@
             true,
             true
         );
-        109 goto->200;
+        111 goto->200;
 
-        110 if (here<-state == 0)
+        115 if (here<-state == 0)
             goto->1100;
         120 if (here<-state == 1)
             goto->1500;
