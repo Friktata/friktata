@@ -5,6 +5,9 @@
     setpair text
         32 220 128 255
         0 0 0 255;
+    setpair stop
+        32 128 220 255
+        0 0 0 255;
 enablepair text;
 `
 `enablepair one;` READY   [`disablepair;`       \\      .  .-  -..  `enablepair one;`=  |`disablepair;`
@@ -17,5 +20,5 @@ enablepair text;
                              _   _       `enablepair one;`|`disablepair;`
      ------------------------------------`enablepair one;`;`disablepair;`
      ....................................`enablepair one;`;`disablepair;`
-     `enablepair one;`]`disablepair;`?                                  ;
+     `enablepair stop;`stop`disablepair;``enablepair one;`]`disablepair;`?                              ;
  `enablepair one;`]`disablepair;`
