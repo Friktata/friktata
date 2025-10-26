@@ -1078,8 +1078,20 @@
         const   _execute = async (
             proc,
             indent = 0,
-            start_token = false
+            start_token = false,
+            magic = false
         ) => {
+
+            if (proc.id === "root" && proc.parent === false) {
+                if (magic !== false) {
+                    proc.name['magic'] = "magic";
+                    proc.data['magic'] = magic;
+                }
+                else {
+                    proc.name['magic'] = "magic";
+                    proc.data['magic'] = "false";
+                }
+            }
             
             if (_proc === false) {
                 _proc = proc;

@@ -25,7 +25,8 @@
 	 */
 		const	_exec_script = async (
 			script_name,
-			script_data
+			script_data,
+			magic = false
 		) => {
 
 			__helpers.log(`>>> Preprocessing scripts...`);
@@ -53,7 +54,7 @@
 			__runtime.reset();
 			window.__runtime = __runtime;
 
-			return __runtime.execute(result.proc, 4);
+			return __runtime.execute(result.proc, 4, false, magic);
 
 		};
 

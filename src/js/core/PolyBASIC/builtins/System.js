@@ -33,6 +33,8 @@
         ) => {
 
             stop();
+
+            let magic = obj_params['magic'];
             
             const   __polybasic = await PolyBASIC();
 
@@ -44,7 +46,7 @@
             const   __script_path = window.__router.get_page_path();
             const   __script_data = await window.__router.get_page_data();
 
-            let result = await window.__polybasic.exec_script(__script_path, __script_data);
+            let result = await window.__polybasic.exec_script(__script_path, __script_data, magic);
 
             if (result.status === "success") {
                 window.__helpers.log(`>>>`);
@@ -86,7 +88,8 @@
                 'callback':         exec,
                 'async':            true,
                 'params':           [
-                    { 'name': 'script_path',    'type': 'string' }
+                    { 'name': 'script_path',    'type': 'string' },
+                    { 'name': 'magic',          'type': 'string',   'default': false }
                 ]
             },
 

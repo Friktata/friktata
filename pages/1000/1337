@@ -14,8 +14,13 @@
     page_delay = 1;
     page_lines = 1;
     page_title = "You fffound a thiiiII_ng-";
-    page_data = load("pages/1000/1337");    
-    
+    page_data = load("pages/1000/1337data/0");    
+
+    if (global->magic != "game")
+        page_title = "Just another unfinished page";
+    if (global->magic != "game")
+        page_data = load("pages/1000/1337");
+    print("magic = " . global->magic);
     page_lines = countlines(
         (global->title_screen->display_width - 4),
         here->page_data,
