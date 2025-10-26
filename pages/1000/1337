@@ -1,6 +1,32 @@
     
     @include "default_layout";
     @include "display_page";
+
+
+    block play_game;
+
+        block draw_game_screen;
+
+            game_screen_top = (global->title_screen->display_height - 12) / 2;
+            game_screen_left = (global->title_screen->display_width - 30) / 2;
+
+            putcolumn(
+                here->game_screen_top,
+                here->game_screen_left,
+                (global->title_screen->display_width - 31),
+                (global->title_screen->display_height - 12),
+                global->page_data,
+                0
+            );
+
+        endblock;
+
+        goto->draw_game_screen;
+
+        return;
+
+    endblock;
+
     
     clear();
     
@@ -16,10 +42,15 @@
     page_title = "You fffound a thiiiII_ng-";
     page_data = load("pages/1000/1337data/0");    
 
+    magic = "game";
+
     if (global->magic != "game")
         page_title = "Just another unfinished page";
     if (global->magic != "game")
         page_data = load("pages/1000/1337");
+    if (global->magic != "game")
+        game_stage = 0;
+
     print("magic = " . global->magic);
     page_lines = countlines(
         (global->title_screen->display_width - 4),
@@ -40,4 +71,4 @@
     default_blue = 0;
     default_alpha = 255;
     
-    goto->display_page;
+    goto->play_game;
