@@ -15,6 +15,11 @@
     
     page_data = load("pages/1000/1104");
 
+    setfg(220, 255, 32, 255);
+    putstring(0, 2, "????");
+    putstring(0, (global->title_screen->display_width - 6), "<??>");
+    setfg(32, 220, 128, 255);
+
     putcolumn(
         3,
         1,
@@ -27,7 +32,9 @@
         0
     );
 
-    cursor();
+    cursor("on");
+
+    state = 0;
 
     block [x] repl;
 
@@ -36,39 +43,234 @@
         3 input_max = 64;
         4 input_start = 0;
         5 input_width = (global->title_screen->width - 10);
+        6 help_info = load("pages/1000/_1104/help");
 
-        9 putstring((global->title_screen->display_height - 3), 2, "_> ");
+    //  Create the prompt and dump the command buffer.
+    //
+        10 setfg(32, 220, 220, 255);
+        11 putstring((global->title_screen->display_height - 3), 2, "_> ");
+        12 setfg(220, 220, 220, 255);
+        14 putstring((global->title_screen->display_height - 3), 5, here->input_buffer);
 
-        10 putstring((global->title_screen->display_height - 3), 5, here->input_buffer);
-        11 input_byte = getch(1000);
+    //  Next byte of input...
+    //
+        15 input_byte = getch(0);
 
         20 if (here->input_byte == Enter)
             goto->100;
-
         21 if (here->input_byte == Backspace)
             goto->900;
 
-        30 input_buffer = (here->input_buffer . here->input_byte);
-        31 goto->10;
+    //  We only accept alpha-numeric input along with spaces and _
+    //
+        28 is_text = regex_test(here->input_byte, "/^[a-zA-Z0-9_ ]+$/");
+        29 input_len = strlen(here->input_byte);
+
+    //  Discard unwated inputs.
+    //
+        30 if (here->input_len > 1)
+            goto->10
+        elseif (here->is_text != "true")
+            goto->10;
+
+    //  Append the input byte to the input buffer.
+    //
+        31 input_buffer = (here->input_buffer . here->input_byte);
+        32 putstring((global->title_screen->display_height - 3), 5, here->input_buffer);
+        35 goto->10;
         
+    //  We have a command!
+    //
         100 print("Command: " . here->input_buffer);
+
+        101 is_digits = regex_test(here->input_buffer, "/^[0-9]+$/");
+        102 input_buf_len = strlen(here->input_buffer);
+
+        103 if (here->is_digits != "true")
+            goto->106
+        elseif (here->input_buf_len != 4)
+            goto->106;
+
+        104 cursor("off");
+        105 exec(here->input_buffer);
+
+        106 if (here->input_buffer != "help")
+            goto->110
+        elseif (here->input_buffer == "more")
+            help_info = load("pages/1000/_1104/help_more")
+        elseif (here->input_buffer == "exit")
+            goto->3000;
+        
+
+        107 cleararea(
+            3,
+            1,
+            global->title_screen->display_width - 5,
+            global->title_screen->display_height - 3
+        );
+        108 putcolumn(
+            3,
+            1,
+            global->title_screen->display_width - 5,
+            global->title_screen->display_height - 7,
+            here->help_info,
+            1,
+            true,
+            true
+        );
+        109 goto->200;
+
+        110 if (here<-state == 0)
+            goto->1100;
+        120 if (here<-state == 1)
+            goto->1500;
+        121 if (here<-state == 2)
+            goto->2100;
+
+        150 
+
+    //  Clear and reset the input buffer.
+    //
         200 input_buffer = "";
         201 clear_row((global->title_screen->display_height - 3), 5);
-        222 cursor("on", (global->title_screen->display_height - 3), 5);
+        220 cursor("on", (global->title_screen->display_height - 3), 5);
 
-        800 goto->10;
+        300 goto->10;
 
+        400 here<-state = 0;
+
+        404 cursor("off");    
+        405 setfg(32, 220, 128, 255);
+
+        406 cleararea(
+            3,
+            1,
+            global->title_screen->display_width - 5,
+            global->title_screen->display_height - 4
+        );
+
+        410 putcolumn(
+            3,
+            1,
+            global->title_screen->display_width - 5,
+            global->title_screen->display_height - 7,
+            global->page_data,
+            1,
+            true,
+            true,
+            0
+        );
+        411 cursor("on");
+
+        420 goto->200;
+
+    //  Handle the Backspace.
+    //
         900 input_buf_len = strlen(here->input_buffer);
         901 if (here->input_buf_len <= 0)
             goto->10;
 
         902 here->input_buffer = substring(here->input_buffer, 0, (here->input_buf_len - 1));
-        903 clear_row((global->title_screen->display_height - 3), 5);
-        904 cursor("on", (global->title_screen->display_height - 3), (5 + here->input_buf_len - 1));
         
+        910 clear_row((global->title_screen->display_height - 3), 5);
+        920 putstring((global->title_screen->display_height - 3), 5, here->input_buffer);
+        925 if (here->input_buf_len == 1)
+            cursor_left = 5
+        else
+            cursor_left = (5 + here->input_buf_len - 1);
+        930 cursor("on", (global->title_screen->display_height - 3), here->cursor_left);
+
         999 goto->10;
 
         1000 return;
+
+        1100 print("Advancing...");
+
+        1110 if (here->input_buffer == "unlock")
+            goto->1130
+        else
+            goto->400;
+
+        1120 goto->200;
+
+        1130 cleararea(
+            3,
+            1,
+            global->title_screen->display_width - 5,
+            global->title_screen->display_height - 4
+        );
+        // 1131 cursor("off");
+
+        1135 page_output = load("pages/1000/_1104/0");
+
+        1140 putcolumn(
+            3,
+            1,
+            global->title_screen->display_width - 5,
+            global->title_screen->display_height - 7,
+            here->page_output,
+            1,
+            true,
+            true,
+            0
+        );
+
+        1150 here<-state = 1;
+        1161 cursor("on", (global->title_screen->display_height - 3), 5);
+
+        1200 goto->200;
+
+        1500 print("Advancing 2...");
+
+        1510 if (here->input_buffer == "__path__")
+            goto->1530
+        else
+            goto->400;
+
+        1520 goto->200;
+
+        1530 here<-state = 2;
+
+        1540 cleararea(
+            3,
+            1,
+            global->title_screen->display_width - 5,
+            global->title_screen->display_height - 4
+        );
+        1541 cursor("off");
+
+        1550 page_output = load("pages/1000/_1104/1");
+
+        1551 putcolumn(
+            3,
+            1,
+            global->title_screen->display_width - 5,
+            global->title_screen->display_height - 7,
+            here->page_output,
+            1,
+            true,
+            true,
+            0
+        );
+
+        2000 goto->200;
+
+        2100 print("Advancing 3...");
+
+        2110 if (here->input_buffer == "game")
+            goto->2120
+        else
+            goto->400;
+
+        2120 clear();
+        2121 cursor("off");
+        2130 exec("1337");
+
+        2500 goto->200;
+
+        3000 clear();
+        3001 cursor("off");
+        3002 exec("1105");
 
     endblock;
 

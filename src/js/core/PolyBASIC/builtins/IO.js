@@ -65,7 +65,7 @@
                 const handler = (event) => {
                     clearTimeout(timeoutId);
                     document.removeEventListener('keydown', handler);
-                    resolve(event.key); 
+                    resolve(`"${event.key}"`); 
                 };
 
                 document.addEventListener('keydown', handler);
@@ -198,7 +198,7 @@
 
                 const onKey = (event) => {
                     cleanup();
-                    resolve(event.key);
+                    resolve(`"${event.key}"`);
                 };
 
                 const onWheel = (event) => {

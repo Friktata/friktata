@@ -1,17 +1,22 @@
 `
     setpair text
-        255 255 255 255
+        220 220 220 255
         0 0 0 255;
     setpair danger
         255 0 0 255
         0 0 0 255;
+    setpair highlight
+        32 220 128 255
+        0 0 0 255;
     setpair page
         220 255 32 255
         0 0 0 255;
-``enablepair danger;`** `enablepair text;`Intermission`disablepair` **`disablepair;`
+``enablepair danger;`** `enablepair text;`Intermission`disablepair` **
 
-Welcome, you found a|the|one of the __|>^635--ges. You probably arrived here by accident - maybe you were `italic; enablepair text;`lo0k_`italic;`ng_`disablepair;`_- for `enablepair page; page 1104;`1105`disablepair; page;`?
+`disablepair;`Welcome, you found a|the|one of the __|>^635--ges. You probably arrived here by accident - maybe you were `italic; enablepair text;`lo0k_`italic;`ng_`disablepair;`_- for `enablepair page; page 1104;`1105`disablepair; page;`?
 
 There is a `bold`prompt`bold`, and there are `bold`keys`bold`.
 
 Keys can be useful, don't you `underline;`agree_`underline;`?
+
+Maybe try '`enablepair text;`help`disablepair;`' for help?

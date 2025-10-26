@@ -70,10 +70,11 @@
 
 
         let     __cursor =      {
-            'enabled':          'false',
+            'enabled':          false,
             'row':              0,
             'column':           0,
             'blinkrate':        500,
+            'interval_id':      false,
             'on':               {
                 'fg':           {
                     'red':          255,
@@ -324,15 +325,16 @@
             column
         ) => {
 
-            if (! __cursor.hasOwnProperty('column_width')) {
-                __cursor['column_width'] = window.__display.display_info().width;
-            }
-            if (! __cursor.hasOwnProperty('column_height')) {
-                __cursor['column_height'] = window.__display.display_info().height;
+            if (__cursor['enabled'] !== "on") {
+                return;
             }
 
-            // let row = __cursor['row'];
-            // let column = __cursor['column'];
+            if (! __cursor.hasOwnProperty('column_width')) {
+                __cursor['column_width'] = window.__display.display_info().columns;
+            }
+            if (! __cursor.hasOwnProperty('column_height')) {
+                __cursor['column_height'] = window.__display.display_info().rows;
+            }
 
             if (++column >= (__cursor['column_width'] - __cursor['column_start'])) {
                 column = __cursor['column_start'];
@@ -341,8 +343,20 @@
                 }
             }
 
+            let node = document.getElementById(`cell_${row}_${column}`);
+
+            let top = node.getBoundingClientRect().top;
+            let left = node.getBoundingClientRect().left;
+
+            $(`#__cursor__`).css({
+                'top': `${top}px`,
+                'left': `${left}px`
+            });
+
             __cursor['row'] = row;
             __cursor['column'] = column;
+
+            __toggle_cursor(true);
 
         };
 
@@ -355,14 +369,19 @@
             on = false
         ) => {
 
-            let row = __cursor['row'];
-            let column = __cursor['column'];
+            if (__cursor['enabled'] !== "on") {
+                return;
+            }
 
-            let fg = structuredClone(__cursor['on']['fg']);
-            let bg = structuredClone(__cursor['on']['bg']);
+            let fg = __cursor['on']['fg'];
+            let bg = __cursor['on']['bg'];
 
             if (on === true) {
                 __cursor['state'] = "off";
+                if (__cursor.hasOwnProperty('interval_id') && __cursor['interval_id'] !== false) {
+                    clearInterval(__cursor['interval_id']);
+                    __cursor['interval_id'] = setInterval(__toggle_cursor, __cursor['blinkrate']);
+                }
             }
 
             if (__cursor['state'] === "on") {
@@ -371,11 +390,11 @@
             else {
                 __cursor['state'] = "on";
                 
-                fg = structuredClone(__cursor['off']['fg']);
-                bg = structuredClone(__cursor['off']['bg']);
+                fg = __cursor['off']['fg'];
+                bg = __cursor['off']['bg'];
             }
 
-            $(`#cell_${row}_${column}`).css({
+            $(`#__cursor__`).css({
                 'color': `rgba(${fg['red']}, ${fg['green']}, ${fg['blue']}, ${fg['alpha']})`,
                 'background-color': `rgba(${bg['red']}, ${bg['green']}, ${bg['blue']}, ${bg['alpha']})`,
             });
@@ -405,6 +424,8 @@
             let row = obj_params['row'];
             let column = obj_params['column'];
             let char = obj_params['char'];
+
+            let update_cursor = obj_params['update_cursor'] ?? false;
 
             let display_info = window.__display.display_info();
 
@@ -485,9 +506,9 @@
                 $(`#cell_${row.toString()}_${column.toString()}`).css('cursor', 'pointer');
             }
 
-            __move_cursor(row, column);
-            // __cursor.row = row;
-            // __cursor.column = column;
+            if (update_cursor !== false) {
+                __move_cursor(row, column);
+            }
 
             return "OK";
 
@@ -535,7 +556,8 @@
                 putchar({
                     'row': row,
                     'column': column,
-                    'char': char
+                    'char': char,
+                    'update_cursor': true
                 });
 
                 if (obj_params['delay'] > 0) {
@@ -728,10 +750,34 @@
             obj_params = []
         ) => {
 
-            $(`.cell`).html("&nbsp;");
+            $(`.cell`).html("");
             $(`.cell`).off();
             $(`.cell`).css('cursor', "text");
             $(`.cell`).attr('title', "");
+
+        };
+
+
+    /**************************************************************************
+     *  cleararea()
+     * 
+     */
+        const   cleararea = (
+            obj_params = {}
+        ) => {
+
+            let row = obj_params['row'] ?? 0;
+            let column = obj_params['column'] ?? 0;
+            let width = obj_params['width'] ?? window.__display.display_info().columns;
+            let height = obj_params['height'] ?? window.__display.display_info().rows;
+
+            for (let r = row; r < height; r++) {
+                for (let c = column; c < width; c++) {
+                    $(`#cell_${r}_${c}`).html('');
+                }
+            }
+
+            return "";
 
         };
 
@@ -751,7 +797,8 @@
                 await putchar({
                     'row': row,
                     'column': start++,
-                    'char': " "
+                    'char': " ",
+                    'update_cursor': false
                 });
             }
 
@@ -908,7 +955,8 @@
                             putchar({
                                 'row': row,
                                 'column': column,
-                                'char': " "
+                                'char': " ",
+                                'update_cursor': false
                             }, (999999 - start));
                         }
                     }
@@ -947,11 +995,14 @@
                             ch = " ";
                         }
 
+                        if (start <= str.length) {
                         putchar({
                             'row': row,
                             'column': column,
-                            'char': ch
+                            'char': ch,
+                            'update_cursor': true
                         }, (999999 - start));
+                    }
 
                         column++;
 
@@ -1107,17 +1158,22 @@
             __cursor['row'] = row;
             __cursor['column'] = column;
             __cursor['blinkrate'] = blinkrate;
-            __cursor['state'] = "off";
+            __cursor['enabled'] = mode;
+            __cursor['row_start'] = row;
+            __cursor['column_start'] = column;
 
             if (! __cursor.hasOwnProperty('interval_id')) {
                 __cursor['interval_id'] = false;
             }
 
             if (mode == 'on' && __cursor['interval_id'] === false) {
+                $(`#__cursor__`).css('visibility', "visible");
                 __cursor['interval_id'] = setInterval(__toggle_cursor, __cursor['blinkrate']);
+                __move_cursor(row, column);
             }
             
             if (mode == 'off' && __cursor['interval_id'] !== false) {
+                $(`#__cursor__`).css('visibility', "hidden");
                 clearInterval(__cursor['interval_id']);
                 __cursor['interval_id'] = false;
             }
@@ -1209,6 +1265,17 @@
                 'callback':         clear,
                 'async':            false,
                 'params':           []
+            },
+
+            'cleararea':            {
+                'callback':         cleararea,
+                'async':            false,
+                'params':           [
+                    { 'name': 'row',        'type': 'number' },
+                    { 'name': 'column',     'type': 'number' },
+                    { 'name': 'width',      'type': 'number' },
+                    { 'name': 'height',     'type': 'number' }
+                ]
             },
 
             'clear_row':            {

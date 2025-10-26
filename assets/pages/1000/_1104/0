@@ -1,0 +1,21 @@
+`
+    setpair one
+        255 255 255 255
+        0 0 0 255;
+    setpair text
+        32 220 128 255
+        0 0 0 255;
+enablepair text;
+`
+`enablepair one;` READY   [`disablepair;`       \\      .  .-  -..  `enablepair one;`=  |`disablepair;`
+ \\ ......`enablepair one;`[`disablepair;`                              `enablepair one;`;`disablepair;`
+         _   _                           `enablepair one;`;`disablepair;`
+             .   -   -   .               `enablepair one;`;`disablepair;`
+                 .   -                   `enablepair one;`;`disablepair;`
+                     -                   `enablepair one;`;`disablepair;`
+                         .   .   .   .   `enablepair one;`;`disablepair;`
+                             _   _       `enablepair one;`|`disablepair;`
+     ------------------------------------`enablepair one;`;`disablepair;`
+     ....................................`enablepair one;`;`disablepair;`
+     `enablepair one;`]`disablepair;`?                                  ;
+ `enablepair one;`]`disablepair;`

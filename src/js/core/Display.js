@@ -134,6 +134,27 @@
                 }
             }
 
+            html_out += `
+                <div
+                    id="__cursor__"
+                    class="cell" 
+                    style="
+                        top: ${__top}px;
+                        left: ${__left}px;
+                        width: ${Math.ceil(_column_width) + 1}px;
+                        height: ${Math.ceil(_column_height)}px;
+                        line-height: 0.8;
+                        font-size: ${_font_size}px;
+                        display: inline-block;
+                        margin: 0;
+                        padding: 0;
+                        z-index: 1000000;
+                    "
+                >
+                    &nbsp;
+                </div>
+            `;
+
             $(`#${__config['terminal']}`).html(html_out);
             
             document.querySelectorAll('.cell').forEach(c =>
@@ -153,18 +174,18 @@
 
             __build_display();
 
-            $(window).on("resize", () => {
-                if (__resize_handler) {
-                    window.clearTimeout(__resize_handler);
-                    __resize_handler = false;
-                }
+            // $(window).on("resize", () => {
+            //     if (__resize_handler) {
+            //         window.clearTimeout(__resize_handler);
+            //         __resize_handler = false;
+            //     }
 
-                __resize_handler = window.setTimeout(() => {
-                    __build_display();
-                }, 50);
+            //     __resize_handler = window.setTimeout(() => {
+            //         __build_display();
+            //     }, 50);
             
-                __build_display();
-            });
+            //     __build_display();
+            // });
         
         };
 

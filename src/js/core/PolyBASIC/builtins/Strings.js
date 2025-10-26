@@ -48,7 +48,7 @@
                 return "Error in strlen(): Expected 'string' parameter";
             }
 
-            return obj_params['string'].length;
+            return `"${obj_params['string'].length}"`;
 
         };
 
@@ -77,7 +77,7 @@
                 'callback':         strlen,
                 'async':            false,
                 'params':           [
-                    { 'name': 'string',     'type': 'string' }
+                    { 'name': 'string',     'type': 'string',   'default': "" }
                 ]
             }
             

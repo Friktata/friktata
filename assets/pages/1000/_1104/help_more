@@ -1,0 +1,22 @@
+`
+    setpair highlight
+        32 220 128 255
+        0 0 0 255;
+    setpair text
+        220 220 220 255
+        0 0 0 255;
+    setpair hidden
+        0 0 0 255
+        0 0 0 255;
+
+`
+    `enablepair text;`Command         Description`disablepair;`
+
+    `enablepair highlight;`exit`disablepair;`            `italic;`Better luck next time!`italic;`
+    `enablepair highlight;`help`disablepair;`            `italic;`No(NO)_body can helpp yo0u_!.`italic;`
+    `enablepair hidden;`
+
+    uZZ6@_          5nN_^@
+    xxl=-_          _-@o00
+    -xXZc#          K1x¬4k
+    `disablepair;`
