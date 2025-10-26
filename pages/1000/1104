@@ -43,7 +43,7 @@
         3 input_max = 64;
         4 input_start = 0;
         5 input_width = (global->title_screen->width - 10);
-        6 help_info = load("pages/1000/_1104/help");
+        6 help_info = load("pages/1000/1104data/help");
 
     //  Create the prompt and dump the command buffer.
     //
@@ -97,7 +97,7 @@
         106 if (here->input_buffer != "help")
             goto->110
         elseif (here->input_buffer == "more")
-            help_info = load("pages/1000/_1104/help_more")
+            help_info = load("pages/1000/1104data/help_more")
         elseif (here->input_buffer == "exit")
             goto->3000;
         
@@ -201,7 +201,7 @@
         );
         // 1131 cursor("off");
 
-        1135 page_output = load("pages/1000/_1104/0");
+        1135 page_output = load("pages/1000/1104data/0");
 
         1140 putcolumn(
             3,
@@ -239,7 +239,7 @@
         );
         1541 cursor("off");
 
-        1550 page_output = load("pages/1000/_1104/1");
+        1550 page_output = load("pages/1000/1104data/1");
 
         1551 putcolumn(
             3,
