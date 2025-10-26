@@ -14,4 +14,5 @@
 
     `enablepair highlight;`exit`disablepair;`            `italic;`Better luck next time!`italic;`
     `enablepair highlight;`help`disablepair;`            `italic;`No(NO)_body can helpp yo0u_!.`italic;`
+    `neablepair highlight;`xxxx`disablepair`             `italic;`Any 4 digits, win yourself a `bold;`___paGE_`bold; italic;!`
     `enablepair highlight;`more`disablepair;`            `italic;`Would you like to know more?`italic;`
