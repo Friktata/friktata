@@ -1,37 +1,34 @@
-
-    ///////////////////////////////////////////////////////////////////////////////
-//  frikt/\t^/p465s/9000/9999
-//
-
-//  Contruction.
-//  /
-
+    
     @include "default_layout";
     @include "display_page";
     
     clear();
+    
     skip_title_sequence = true;
 
     goto->title_screen;
 
-    setfg(255, 255, 255, 255);
-
     setbg(0, 0, 0, 255);
     setfg(32, 220, 127, 255);
 
+    page_delay = 1;
     page_lines = 1;
-    page_title = "Page under construction";
-    page_data = "Page under construction";
+    page_title = "SDLua";
+    page_data = load("pages/2000/2001");    
+    
+    page_lines = countlines(
+        (global->title_screen->display_width - 4),
+        here->page_data,
+        true
+    );
 
     page_name = pagename();
     page_path = pagepath();
 
-    print("Page path = " . here->page_path);
-
     border_red = 0;
     border_green = 0;
     border_blue = 0;
-    border_alpha = 0;
+    border_alpha = 255;
 
     default_red = 0;
     default_green = 0;

@@ -52,10 +52,15 @@
     };
 
 
+    const   __donate_url = "https://donate.stripe.com/3cI5kDb07a1cg7ueq2dQQ00";
+
+
     export const TerminalIO = () => {
 
         let     __current_link = false;
         let     __current_page = false;
+
+        let     __is_donate_link = false;
 
         let     __color_pairs = {
         };
@@ -300,6 +305,28 @@
 
 
     /**************************************************************************
+     *  __donate_link()
+     * 
+     */
+        const   __donate_link = (
+            tokens
+        ) => {
+
+            if (__is_donate_link !== false) {
+                __is_donate_link = false;
+            }
+            else {
+                __is_donate_link = __donate_url;
+            }
+
+            console.log(`SET DONATE LINK TO ${__is_donate_link}`)
+
+            return "";
+
+        };
+
+
+    /**************************************************************************
      *  All of these commands can be `embedded` within a string passed to
      *  the putcolumn() method.
      * 
@@ -312,7 +339,8 @@
             'italic':           __italic_attribute,
             'underline':        __underline_attribute,
             'site':             __external_link,
-            'page':             __internal_link
+            'page':             __internal_link,
+            'donate':           __donate_link
         };
 
 
@@ -503,6 +531,18 @@
                     });
                 });
                 $(`#cell_${row.toString()}_${column.toString()}`).attr('title', `Goto page ${__page}`)
+                $(`#cell_${row.toString()}_${column.toString()}`).css('cursor', 'pointer');
+            }
+
+            else if (__is_donate_link !== false) {
+                let __link = __is_donate_link;
+
+                $(`#cell_${row.toString()}_${column.toString()}`).off();
+                $(`#cell_${row.toString()}_${column.toString()}`).on("click", () => {
+                    console.log(`>>> DONATE LINK: ${__link}`)
+                    window.open(__link, "_blank");
+                });
+                $(`#cell_${row.toString()}_${column.toString()}`).attr('title', `Chuck me a bob for a crust!`)
                 $(`#cell_${row.toString()}_${column.toString()}`).css('cursor', 'pointer');
             }
 
