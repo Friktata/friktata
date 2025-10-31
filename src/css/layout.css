@@ -17,6 +17,7 @@
         background-color: var(--bg);
     }
 
+    #outer_bg,
     #outer {
         position: absolute;
         top: 0px;
@@ -30,6 +31,10 @@
         animation-duration: .15s;
         animation-direction: forwards;
         animation-iteration-count: infinite;
+    }
+
+    #outer_bg {
+        background-color: rgba(0, 0, 0, 0);
     }
 
     .cell {

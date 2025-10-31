@@ -22,13 +22,15 @@
                 'IO',
                 'File',
                 'Strings',
-                'System'
+                'System',
+                'Stack'
             ],
 
             'plugins_path':     plugins_path,
 
             'plugins':          [
-                'TerminalIO'
+                'TerminalIO',
+                'SpaceInvaders'
             ]
 
         };

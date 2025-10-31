@@ -12,8 +12,6 @@
             obj_params = []
         ) => {
 
-            console.log(obj_params['string']);
-
             return "OK";
 
         };
@@ -74,6 +72,72 @@
 
                 timeoutId = setTimeout(() => {
                     document.removeEventListener('keydown', handler);
+                    resolve("");
+                }, delay);
+            });
+
+        };
+
+
+    /**************************************************************************
+     *  getkbdevent()
+     * 
+     */
+        const   getkbdevent = async (
+            obj_params = []
+        ) => {
+            
+            let delay = obj_params['delay'];
+
+            if (delay <= 0) {
+                return new Promise(resolve => {
+                    const keyup_handler = (event) => {
+                        document.removeEventListener('keydown', keyup_handler);
+                        document.removeEventListener('keydown', keydown_handler);
+                        resolve({
+                            'event': "keyup",
+                            'key': event.key
+                        });
+                    }
+                    const keydown_handler = (event) => {
+                        document.removeEventListener('keydown', keyup_handler);
+                        document.removeEventListener('keydown', keydown_handler);
+                        resolve({
+                            'event': "keydown",
+                            'key': event.key
+                        });
+                    }
+                    document.addEventListener("keydown", keydown_handler);
+                    document.addEventListener("keyup", keyup_handler);
+                });
+            }
+
+            return new Promise(resolve => {
+                const keyup_handler = (event) => {
+                    document.removeEventListener('keydown', keyup_handler);
+                    document.removeEventListener('keydown', keydown_handler);
+                    resolve({
+                        'event': "keyup",
+                        'key': event.key
+                    });
+                }
+                const keydown_handler = (event) => {
+                    document.removeEventListener('keydown', keyup_handler);
+                    document.removeEventListener('keydown', keydown_handler);
+                    resolve({
+                        'event': "keydown",
+                        'key': event.key
+                    });
+                }
+
+                document.addEventListener("keydown", keydown_handler);
+                document.addEventListener("keyup", keyup_handler);
+
+                let timeoutId;
+
+                timeoutId = setTimeout(() => {
+                    document.removeEventListener("keydown", keydown_handler);
+                    document.removeEventListener("keyup", keyup_handler);
                     resolve("");
                 }, delay);
             });
@@ -276,7 +340,6 @@
         };
 
 
-
     /**************************************************************************
      *  All builtin modules and plugins must follow this simple format.
      *
@@ -306,6 +369,14 @@
 
             'getch':                {
                 'callback':         getch,
+                'async':            true,
+                'params':           [
+                    { 'name': 'delay',      'type': 'number',   'default': 0 }
+                ]
+            },
+
+            'getkbdevent':          {
+                'callback':         getkbdevent,
                 'async':            true,
                 'params':           [
                     { 'name': 'delay',      'type': 'number',   'default': 0 }
@@ -352,7 +423,7 @@
                     { 'name': 'lower_bound',    'type': 'number',   'default': 0 },
                     { 'name': 'upper_bound',    'type': 'number',   'default': 10 }
                 ]
-            },
+            }
             
         };
 

@@ -104,12 +104,35 @@
             $(`#${__config['terminal']}`).html("");
 
             let html_out = "";
+            let bg_out = "";
 
             let __top = Math.floor((_display_height - (_column_height * _rows)) / 2);
             let __left = Math.floor((_display_width - (_column_width * _columns)) / 2);
 
             for (let row = 0; row < _rows; row++) {
                 for (let column = 0; column < _columns; column++) {
+                    bg_out += `
+                        <div
+                            id="cell_bg_${row}_${column}"
+                            class="cell"
+                            style="
+                                top: ${Math.floor(row * _column_height) + __top}px;
+                                left: ${Math.floor(column * _column_width) + __left}px;
+                                width: ${Math.ceil(_column_width) + 1}px;
+                                height: ${Math.ceil(_column_height)}px;
+                                line-height: 0.8;
+                                font-size: ${_font_size}px;
+                                display: inline-block;
+                                margin: 0;
+                                padding: 0;
+                                z-index: 1;
+                                color: rgba(${_foreground['red']}, ${_foreground['green']}, ${_foreground['blue']}, ${_foreground['alpha']});
+                                background-color: rgba(${_background['red']}, ${_background['green']}, ${_background['blue']}, ${_background['alpha']});
+                            "
+                        >
+                            &nbsp;
+                        </div>
+                    `
                     html_out += `
                         <div
                             id="cell_${row}_${column}"
@@ -124,6 +147,7 @@
                                 display: inline-block;
                                 margin: 0;
                                 padding: 0;
+                                z-index: 2;
                                 color: rgba(${_foreground['red']}, ${_foreground['green']}, ${_foreground['blue']}, ${_foreground['alpha']});
                                 background-color: rgba(${_background['red']}, ${_background['green']}, ${_background['blue']}, ${_background['alpha']});
                             "
@@ -160,6 +184,8 @@
             document.querySelectorAll('.cell').forEach(c =>
                 c.style.setProperty('--rand', Math.random())
             );
+
+            $(`#${__config['terminal']}_bg`).html(bg_out);
 
         };
 

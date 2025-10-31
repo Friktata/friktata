@@ -319,8 +319,6 @@
                 __is_donate_link = __donate_url;
             }
 
-            console.log(`SET DONATE LINK TO ${__is_donate_link}`)
-
             return "";
 
         };
@@ -509,42 +507,51 @@
             }
 
             node.style.zIndex = z_index;
+
+            let __cell_prefix = "cell_";
+
+            if (obj_params['bg'] === true) {
+                __cell_prefix = "cell_bg_";
+            }
                 
             if (__current_link !== false) {
                 let __link = __current_link;
 
-                $(`#cell_${row.toString()}_${column.toString()}`).off();
-                $(`#cell_${row.toString()}_${column.toString()}`).on("click", () => {
+                $(`#${__cell_prefix}${row.toString()}_${column.toString()}`).off();
+                $(`#${__cell_prefix}${row.toString()}_${column.toString()}`).on("click", () => {
                     window.open(__link, "_blank");
                 });
-                $(`#cell_${row.toString()}_${column.toString()}`).attr('title', `Goto ${__link} (opens in new tab)`)
-                $(`#cell_${row.toString()}_${column.toString()}`).css('cursor', 'pointer');
+                $(`#${__cell_prefix}${row.toString()}_${column.toString()}`).attr('title', `Goto ${__link} (opens in new tab)`)
+                $(`#${__cell_prefix}${row.toString()}_${column.toString()}`).css('cursor', 'pointer');
             }
             
             else if (__current_page !== false) {
                 let __page = __current_page;
 
-                $(`#cell_${row.toString()}_${column.toString()}`).off();
-                $(`#cell_${row.toString()}_${column.toString()}`).on("click", () => {
+                $(`#${__cell_prefix}${row.toString()}_${column.toString()}`).off();
+                $(`#${__cell_prefix}${row.toString()}_${column.toString()}`).on("click", () => {
                     window.__methods['exec']['callback']({
                         'script_path': __page
                     });
                 });
-                $(`#cell_${row.toString()}_${column.toString()}`).attr('title', `Goto page ${__page}`)
-                $(`#cell_${row.toString()}_${column.toString()}`).css('cursor', 'pointer');
+                $(`#${__cell_prefix}${row.toString()}_${column.toString()}`).attr('title', `Goto page ${__page}`)
+                $(`#${__cell_prefix}${row.toString()}_${column.toString()}`).css('cursor', 'pointer');
             }
 
             else if (__is_donate_link !== false) {
                 let __link = __is_donate_link;
 
-                $(`#cell_${row.toString()}_${column.toString()}`).off();
-                $(`#cell_${row.toString()}_${column.toString()}`).on("click", () => {
-                    console.log(`>>> DONATE LINK: ${__link}`)
+                $(`#${__cell_prefix}${row.toString()}_${column.toString()}`).off();
+                $(`#${__cell_prefix}${row.toString()}_${column.toString()}`).on("click", () => {
                     window.open(__link, "_blank");
                 });
-                $(`#cell_${row.toString()}_${column.toString()}`).attr('title', `Chuck me a bob for a crust!`)
-                $(`#cell_${row.toString()}_${column.toString()}`).css('cursor', 'pointer');
+                $(`#${__cell_prefix}${row.toString()}_${column.toString()}`).attr('title', `Chuck me a bob for a crust!`)
+                $(`#${__cell_prefix}${row.toString()}_${column.toString()}`).css('cursor', 'pointer');
             }
+
+            // $(`#cell_${row.toString()}_${column.toString()}`).css({
+            //     'opacity': '0.99'
+            // });
 
             if (update_cursor !== false) {
                 __move_cursor(row, column);
@@ -576,6 +583,7 @@
             let row = obj_params['row'];
             let column = obj_params['column'];
             let string = obj_params['string'];
+            let bg = obj_params['bg'];
 
             let display_info = window.__display.display_info();
 
@@ -597,8 +605,13 @@
                     'row': row,
                     'column': column,
                     'char': char,
-                    'update_cursor': true
+                    'update_cursor': true,
+                    'bg': bg
                 });
+
+                // if (blanks && char === ' ') {
+                //     $(`#cell_${row}_${column}`).css('opacity', '0.01');
+                // }
 
                 if (obj_params['delay'] > 0) {
                     if (obj_params['skip']) {
@@ -811,8 +824,10 @@
             let width = obj_params['width'] ?? window.__display.display_info().columns;
             let height = obj_params['height'] ?? window.__display.display_info().rows;
 
-            for (let r = row; r < height; r++) {
-                for (let c = column; c < width; c++) {
+            // alert(JSON.stringify(obj_params, null, 2))
+
+            for (let r = row; r < (row + height); r++) {
+                for (let c = column; c < (column + width); c++) {
                     $(`#cell_${r}_${c}`).html('');
                 }
             }
@@ -909,6 +924,7 @@
             let     delay = obj_params['delay'];
             let     wrap = obj_params['wrap'];
             let     start_line = obj_params['start_line'];
+            let     bg = obj_params['bg'];
 
             let     start = 0;
             let     str = obj_params['string'];
@@ -937,6 +953,10 @@
 
             while (true) {
 
+                if ((lines - start_line) >= height) {
+                    break;
+                }
+
                 if (lines === start_line) {
                     row = obj_params['row'] - 1;
                     column = obj_params['column'];
@@ -945,7 +965,7 @@
                 let ch = " ";
 
                 if (row >= (obj_params['row'] + obj_params['height'])) {
-                    if (column > (obj_params['column'] + obj_params['width'])) {
+                    if (column >= (obj_params['column'] + obj_params['width'])) {
                         break;
                     }
                 }
@@ -980,6 +1000,11 @@
                     next_word_end = __next_word_length(str, start);
                 }
 
+                let z_index = (999999 - start);
+
+                if (bg === true) {
+                    z_index = (49999 - start);
+                }
                 if (
                     (wrap &&
                         (ch === " "  || ch === "\t") && 
@@ -996,8 +1021,9 @@
                                 'row': row,
                                 'column': column,
                                 'char': " ",
-                                'update_cursor': false
-                            }, (999999 - start));
+                                'update_cursor': false,
+                                'bg': bg
+                            }, z_index);
                         }
                     }
 
@@ -1025,7 +1051,7 @@
                 }
 
                 if (row >= (obj_params['row'] + height)) {
-                    if (lines >= start_line)
+                    if (lines >= start_line || start >= str.length)
                     break;
                 }
 
@@ -1036,13 +1062,14 @@
                         }
 
                         if (start <= str.length) {
-                        putchar({
-                            'row': row,
-                            'column': column,
-                            'char': ch,
-                            'update_cursor': true
-                        }, (999999 - start));
-                    }
+                            putchar({
+                                'row': row,
+                                'column': column,
+                                'char': ch,
+                                'update_cursor': true,
+                                'bg': bg
+                            }, z_index);
+                        }
 
                         column++;
 
@@ -1231,7 +1258,8 @@
                 'params':           [
                     { 'name': 'row',        'type': 'number' },
                     { 'name': 'column',     'type': 'number' },
-                    { 'name': 'char',       'type': 'string' }
+                    { 'name': 'char',       'type': 'string' },
+                    { 'name': 'bg',         'type': 'boolean',  'default': false }
                 ]
             },
 
@@ -1243,7 +1271,8 @@
                     { 'name': 'column',     'type': 'number' },
                     { 'name': 'string',     'type': 'string' },
                     { 'name': 'delay',      'type': 'number',   'default': 0 },
-                    { 'name': 'skip',       'type': 'boolean',  'default': false }
+                    { 'name': 'skip',       'type': 'boolean',  'default': false },
+                    { 'name': 'bg',         'type': 'boolean',  'default': false }
                 ]
             },
 
@@ -1340,7 +1369,8 @@
                     { 'name': 'skip',       'type': 'boolean',  'default': false },
                     { 'name': 'wrap',       'type': 'boolean',  'default': true },
                     { 'name': 'start_line', 'type': 'number',   'default': 0 },
-                    { 'name': 'end',        'type': 'number',   'default': 0 }
+                    { 'name': 'end',        'type': 'number',   'default': 0 },
+                    { 'name': 'bg',         'type': 'boolean',  'default': false }
                 ]
             },
 

@@ -7,23 +7,138 @@
 
         block draw_game_screen;
 
-            game_screen_top = (global->title_screen->display_height - 12) / 2;
-            game_screen_left = (global->title_screen->display_width - 30) / 2;
+            game_screen_top = (global->title_screen->display_height - 18) / 2;
+            game_screen_left = (global->title_screen->display_width - 40) / 2;
+
+            putcolumn(
+                3,
+                1,
+                (global->title_screen->display_width - 2),
+                (global->title_screen->display_height - 4),
+                "",
+                0
+            );
 
             putcolumn(
                 here->game_screen_top,
                 here->game_screen_left,
-                (global->title_screen->display_width - 31),
-                (global->title_screen->display_height - 12),
+                40,
+                19,
                 global->page_data,
                 0
             );
 
         endblock;
 
-        goto->draw_game_screen;
+        game_level = 1;
+        player_lives = 3;
 
-        return;
+        block player_reset;
+
+            here<-player_x = (here<-draw_game_screen->game_screen_left - 19);
+            here<-player_y = (here<-draw_game_screen->game_screen_top - 18);
+            here<-player_health = 100;
+            here<-game_score = 0;
+
+            clearstack("game");
+            insertstack("game", "game_score", 0);
+            insertstack("game", "game_level", here<-game_level);
+
+            clearstack("player");
+            insertstack("player", "position", 19);
+            insertstack("player", "lives", here<-player_lives);
+            
+            clearstack("bullets");
+            clearstack("enemies");
+
+        endblock;
+
+
+        block start_level;
+
+            if (here<-game_level <= 10)
+                goto->100;
+
+            // here<-enemies = load("pages/1000/1337data/enemies_" . here<-game_level);
+
+            90 here<-game_level = "-";
+            91 goto->1000;
+
+            100 getch();
+
+            110 insertstack("game", "game_score", 0);
+
+            // 113 putstring()
+            
+            1000 return;
+
+        endblock;
+
+        
+        // 99 game_score = 0;
+        99 cleararea(
+                2,
+                1,
+                (global->title_screen->display_width - 2),
+                (global->title_screen->display_height - 3)
+            );
+
+        101 goto->draw_game_screen;
+
+        105 goto->player_reset;
+
+        // 110 print("Level = " . peekstack("game", "game_level"));
+        120 print("level_score = " . peekstack("game", "game_score"));
+        // 121 print("Enemies = " . here->enemies);
+        122 if (here->game_level <= 10)
+            putstring(3, 1, "Level " . here->game_level);
+        
+        130 setfg(255, 255, 255, 255);
+        131 putstring((here->draw_game_screen->game_screen_top + 1), (here->draw_game_screen->game_screen_left + 2), "Score");
+        132 putstring((here->draw_game_screen->game_screen_top + 1), (here->draw_game_screen->game_screen_left + 30), "Level");
+
+        133 putstring((here->draw_game_screen->game_screen_top + 16), (here->draw_game_screen->game_screen_left + 2), "Lives");
+        134 putstring((here->draw_game_screen->game_screen_top + 16), (here->draw_game_screen->game_screen_left + 27), "Health");
+        135 setfg(32, 220, 128, 255);
+
+        150 goto->start_level;
+
+        155 game_status = SpaceInvaders(here->game_level, here->player_lives, here->game_score);
+        156 print("Game stats = " . here->game_status);
+    
+        160 if (here->game_level == "-")
+            goto->2000;
+
+        161 game_score = (here->game_score + peekstack("game", "game_score"));
+
+        170 here->game_level = (here->game_level + 1);
+        // 172 getch();
+        173 goto->120;
+
+    
+        2000 cleararea(
+                2,
+                1,
+                (global->title_screen->display_width - 2),
+                (global->title_screen->display_height - 3)
+            );
+
+        2001 putstring(3, 1, "Congratulations - you beat all 10 levels!");
+        2002 putstring(5, 1, "Your score: " . here->game_score);
+        2003 putstring(7, 1, "Press 'r' to restart or 'c' to resume transmission");
+        2004 here->ch = getch();
+        2005 game_level = 1;
+        2007 player_lives = 3;
+
+        2010 if (here->ch == "r")
+            goto->99
+        elseif (here->ch == "c")
+            goto->4999
+        else
+            goto->2000;
+
+        4999 exec("1337")
+        5000 return;
 
     endblock;
 
@@ -42,7 +157,7 @@
     page_title = "You fffound a thiiiII_ng-";
     page_data = load("pages/1000/1337data/0");    
 
-    magic = "game";
+    // magic = "game";
 
     if (global->magic != "game")
         page_title = "Just another unfinished page";
@@ -51,7 +166,7 @@
     if (global->magic != "game")
         game_stage = 0;
 
-    print("magic = " . global->magic);
+    // print("magic = " . global->magic);
     page_lines = countlines(
         (global->title_screen->display_width - 4),
         here->page_data,
@@ -70,5 +185,23 @@
     default_green = 0;
     default_blue = 0;
     default_alpha = 255;
+
+    if (global->magic != "game")
+        goto->499
+    else
+        goto->500;
+
+    499 goto->display_page;
+
+    500 if (global->title_screen->display_height < 23)
+        goto->600;
+    elseif (global->title_screen->display_width < 44)
+        goto->600;
     
-    goto->play_game;
+    510 goto->play_game;
+    520 goto->1000;
+
+    600 putstring(4, 1, "Sorry - display is too small!");
+    610 putstring(6, 1, "We need at least 23 rows, 44 columns!");
+
+    1000 return;
